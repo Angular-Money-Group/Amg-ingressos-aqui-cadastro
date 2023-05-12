@@ -1,5 +1,5 @@
 ﻿namespace Amg_ingressos_aqui_cadastro_api.Model {
-    public class Contatos
+    public class Contact
     {
         /// <sumary>
         /// E-mail de validação 
