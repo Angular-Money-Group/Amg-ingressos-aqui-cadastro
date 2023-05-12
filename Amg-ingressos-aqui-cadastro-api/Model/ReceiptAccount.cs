@@ -5,7 +5,7 @@ using System.ComponentModel.DataAnnotations;
 
 namespace Amg_ingressos_aqui_cadastro_api.Model 
 {
-    public class ContaRecebimento 
+    public class ReceiptAccount 
     {
         // <summary>
         /// Nome do uruário
@@ -33,7 +33,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// Nome do uruário
         /// </summary>
         public string? bankDigit { get; set; }
-
     }
 
     

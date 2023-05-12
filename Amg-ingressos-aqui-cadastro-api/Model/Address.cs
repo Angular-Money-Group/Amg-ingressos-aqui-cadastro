@@ -1,5 +1,5 @@
 ﻿namespace Amg_ingressos_aqui_cadastro_api.Model {
-    public class Endereço
+    public class Address
     {
         /// <sumary>
         /// Cep residencia 
@@ -35,7 +35,5 @@
         /// Estado de residencia
         /// </sumary>
         public string state { get; set; }
-
-
     }
 }
