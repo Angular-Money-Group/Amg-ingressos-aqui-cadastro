@@ -34,11 +34,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// Desconto
         /// </summary>
         public decimal Discount { get; set; }
+
         /// <summary>
         /// Url de Retorno Transacao
         /// </summary>
         public string ReturnUrl { get; set; }
-        
-
     }
 }

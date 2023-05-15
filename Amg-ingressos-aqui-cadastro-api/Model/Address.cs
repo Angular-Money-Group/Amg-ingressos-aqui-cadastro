@@ -1,39 +1,44 @@
 ﻿namespace Amg_ingressos_aqui_cadastro_api.Model {
     public class Address
     {
-        /// <sumary>
-        /// Cep residencia 
-        /// </sumary>
-        public string cep { get; set; }
+        /// <summary>
+        /// Cep da residencia 
+        /// </summary>
+        public string Cep { get; set; }
 
-        /// <sumary>
-        /// Endereço residencia 
-        /// </sumary>
-        public string address { get; set; }
+        /// <summary>
+        /// Endereço da residencia 
+        /// </summary>
+        public string AddressDescription { get; set; }
 
-        /// <sumary>
+        /// <summary>
         /// Número da residencia
-        /// </sumary>
-        public string houserNumber { get; set; }
+        /// </summary>
+        public string AddressNumber { get; set; }
 
-        /// <sumary> 
+        /// <summary> 
         /// Complemento 
-        /// </sumary>
-        public string complement { get; set; }
+        /// </summary>
+        public string Complement { get; set; }
 
-        /// <sumary>
+        /// <summary> 
+        /// Ponto de referencia 
+        /// </summary>
+        public string ReferencePoint { get; set; }
+
+        /// <summary>
         /// Bairro de residencia 
-        /// </sumary>
-        public string neighborhood { get; set; }
+        /// </summary>
+        public string Neighborhood { get; set; }
 
-        ///<sumary> 
+        /// <summary> 
         /// Cidade de residencia 
-        /// </sumary>
-        public string city { get; set; }
+        /// </summary>
+        public string City { get; set; }
 
-        /// <sumary>
-        /// Estado de residencia
-        /// </sumary>
-        public string state { get; set; }
+       /// <summary>
+       /// Estado de residencia 
+       /// </summary>
+        public string State { get; set; }
     }
 }
