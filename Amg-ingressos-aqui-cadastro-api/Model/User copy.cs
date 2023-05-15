@@ -1,5 +1,8 @@
 ﻿using Amg_ingressos_aqui_cadastro_api.Enum;
 using Microsoft.EntityFrameworkCore.Metadata.Conventions;
+using System.ComponentModel.DataAnnotations;
+using MongoDB.Bson;
+using MongoDB.Bson.Serialization.Attributes;
 
 namespace Amg_ingressos_aqui_cadastro_api.Model {
     public class User 
@@ -9,15 +12,27 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </summary>
         public string Name { get; set; }
 
+        /// <sumary>
+        /// Nome usuário
+        /// </sumary>
+        [BsonId]
+        [BsonRepresentation(BsonType.ObjectId)]
+        public string? Id { get; set; }
         /// <summary>
-        /// Documento de identificação
+        /// name
         /// </summary>
-        public string Documentid { get; set; }
+        public string Name { get; set; }
 
-        /// <summary>
-        /// Status 
-        /// </summary>
-        public TypeStatusUserEnum Status { get; set; }
+        /// <sumary>
+        /// Documento identificação
+        /// </sumary>
+        public string DocumentId { get; set; }
+
+        /// <sumary>
+        /// Estatus
+        /// </sumary>
+        [Required]
+        public TypeStatusUserEnum? Status { get; set; }
 
         /// <summary>
         /// Endereço do usuário
