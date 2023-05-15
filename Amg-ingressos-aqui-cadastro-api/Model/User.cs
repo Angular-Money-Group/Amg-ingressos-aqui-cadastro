@@ -113,4 +113,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         [JsonPropertyName("Password")]
         public string? Password { get; set; }
     }
+
+
+
 }
