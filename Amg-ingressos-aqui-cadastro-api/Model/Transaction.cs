@@ -40,7 +40,4 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// </summary>
         public string ReturnUrl { get; set; }
     }
-
-
-
 }
