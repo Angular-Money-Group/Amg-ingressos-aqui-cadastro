@@ -23,7 +23,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-                idTransaction.ValidateIdMongo("Transação");
+                idTransaction.ValidateIdMongo();
 
                 _messageReturn.Data = await _transactionRepository.GetById(idTransaction);
 

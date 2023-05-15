@@ -23,10 +23,14 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // injecao de dependencia
 //services
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IUserService, UserService>();
 //repository
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository<object>>();
+builder.Services.AddScoped<IUserRepository, UserRepository<object>>();
 //infra
 builder.Services.AddScoped<IDbConnection<Transaction>, DbConnection<Transaction>>();
+builder.Services.AddScoped<IDbConnection<User>, DbConnection<User>>();
+
 
 var app = builder.Build();
 app.UseSwagger();
