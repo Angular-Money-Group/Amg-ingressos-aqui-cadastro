@@ -1,20 +1,14 @@
 ﻿namespace Amg_ingressos_aqui_cadastro_api.Model {
     public class Contact
     {
-        /// <sumary>
+        /// <summary>
         /// E-mail de validação 
-        /// </sumary> 
+        /// </summary> 
+        public string Email { get; set; }
 
-        public string email { get; set; }
-
-        /// <sumary>
-        /// Senha de acesso
-        /// </sumary>
-        public string password { get; set; }
-
-        /// <sumary>
-        /// Numero para contato 
-        /// </sumary>        
-        public string phoneNumber { get; set; }
+        /// <summary>
+        /// Número para contato 
+        /// </summary>    
+        public string PhoneNumber { get; set; }
     }
 }

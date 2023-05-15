@@ -5,15 +5,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
     {
         /// <summary>
         /// Confirmação de e-mail
-        /// </summary>
-
+        /// </summary>        
         public bool EmailConfirmationCode { get; set; }
             public DateTime EmailConfirmationExpirationDate { get; set; }
 
         /// <summary> 
         /// Confirmação do número 
         /// </summary>
-            public bool phoneVerified { get; set; } = false;
+        public bool PhoneVerified { get; set; } = false;
 
     }
 }

@@ -7,33 +7,31 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class ReceiptAccount 
     {
-        // <summary>
+        /// <summary>
         /// Nome do uruário
         /// </summary>
-        public string? fullName { get; set; }
+        public string? FullName { get; set; }
 
-        // <summary>
-        /// Nome do uruário
+        /// <summary>
+        /// Instituição Bancária
         /// </summary>
-        public string? bank { get; set; }
-
-
-        // <summary>
-        /// Nome do uruário
+        public string? Bank { get; set; }
+        
+        /// <summary>
+        /// Agência Bancária 
         /// </summary>
-        public string? bankAgency { get; set; }
+        public string? BankAgency { get; set; }
 
-        // <summary>
-        /// Nome do uruário
+        /// <summary>
+        /// Conta Bancária
         /// </summary>
-        public string? bankAccount { get; set; }
+        public string? BankAccount { get; set; }
 
-
-        // <summary>
-        /// Nome do uruário
+        /// <summary>
+        /// Dígito da Conta 
         /// </summary>
-        public string? bankDigit { get; set; }
-    }
-
+        public string? BankDigit { get; set; }
+    } 
     
+
 }
