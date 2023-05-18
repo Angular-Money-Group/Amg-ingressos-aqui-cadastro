@@ -12,5 +12,4 @@ public class HealthCheckController : ControllerBase
     {
         _logger = logger;
     }
-
 }
