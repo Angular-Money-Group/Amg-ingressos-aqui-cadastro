@@ -10,11 +10,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// <summary>
         /// Nome do usuário
         /// </summary>
-        public string Name { get; set; }
-
-        /// <sumary>
-        /// Nome usuário
-        /// </sumary>
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
@@ -37,7 +32,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// <summary>
         /// Endereço do usuário
         /// </summary>
-        public Address Address { get; set; }
+        [Required]
+        public Address? Address { get; set; }
 
         /// <summary>
         /// Contato do usuário

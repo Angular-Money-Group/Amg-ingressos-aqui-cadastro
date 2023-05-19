@@ -14,7 +14,7 @@
         /// <summary>
         /// Número da residencia
         /// </summary>
-        public string AddressNumber { get; set; }
+        public string Number { get; set; }
 
         /// <summary> 
         /// Complemento 

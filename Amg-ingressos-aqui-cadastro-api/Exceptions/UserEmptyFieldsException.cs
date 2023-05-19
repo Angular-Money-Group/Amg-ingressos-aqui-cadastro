@@ -1,21 +1,21 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Amg_ingressos_aqui_cadastro_api.Exceptions
+namespace Amg_ingressos_aqui_cadastro_api.Exceptions 
 {
-    public class IdMongoException : Exception
+    public class UserEmptyFieldsException : Exception
     {
 
-        public IdMongoException()
+        public UserEmptyFieldsException()
         {
         }
 
-        public IdMongoException(string message)
+        public UserEmptyFieldsException(string message)
             : base(message)
         {
         }
 
-        public IdMongoException(string message, Exception inner)
+        public UserEmptyFieldsException(string message, Exception inner)
             : base(message, inner)
         {
         }

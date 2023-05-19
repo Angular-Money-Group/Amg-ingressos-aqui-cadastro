@@ -7,7 +7,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// Confirmação de e-mail
         /// </summary>        
         public bool EmailConfirmationCode { get; set; }
-            public DateTime EmailConfirmationExpirationDate { get; set; }
+        public DateTime EmailConfirmationExpirationDate { get; set; }
 
         /// <summary> 
         /// Confirmação do número 
