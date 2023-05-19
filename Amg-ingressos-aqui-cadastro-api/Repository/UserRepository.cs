@@ -57,7 +57,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 if (user is not null)
                     return user;
                 else
-                    throw new UserNotFound("Usuario nao encontrado por " + fieldName + ".");
+                    throw new UserNotFound("Usuário não encontrado por " + fieldName + ".");
             }
             catch (UserNotFound ex) {
                 throw ex;

@@ -7,6 +7,8 @@ using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Utils;
 using System;
 using System.Text.RegularExpressions;
+using MongoDB.Bson;
+using MongoDB.Driver;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
@@ -45,16 +47,22 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
         
-        public async Task<MessageReturn> FindByIdAsync(string idUser)
+        public async Task<MessageReturn> FindByIdAsync(System.Enum TEnum, string idUser)
         {
             this._messageReturn = new MessageReturn();
             try
             {
                 idUser.ValidateIdMongo();
 
-                User user = await _userRepository.FindByField<User>("Id", idUser);
-                _messageReturn.Data = new UserDTO(user);
+                //validate user type
+                User user = await _userRepository.FindByField<User>("Id", idUser);  
+                UserDTO userDTO = new UserDTO(TEnum, user);
+                _messageReturn.Data = userDTO;
+            
 
+            } catch (InvalidUserTypeException ex) {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
             }
             catch (IdMongoException ex)
             {
@@ -74,16 +82,21 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
         
-        public async Task<MessageReturn> FindByEmailAsync(string email)
+        public async Task<MessageReturn> FindByEmailAsync(System.Enum TEnum, string email)
         {
             this._messageReturn = new MessageReturn();
             try
             {
                 UserDTO.ValidateEmailFormat(email);
 
+                //validate user type
                 User user = await _userRepository.FindByField<User>("Contact.Email", email);
-                _messageReturn.Data = new UserDTO(user);
+                UserDTO userDTO = new UserDTO(TEnum, user);
+                _messageReturn.Data = userDTO;
 
+            } catch (InvalidUserTypeException ex) {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
             }
             catch (EmptyFieldsException ex)
             {

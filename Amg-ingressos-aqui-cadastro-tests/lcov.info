@@ -708,8 +708,8 @@ DA:19,191
 FN:23,System.String Amg_ingressos_aqui_cadastro_api.Model.User::get_DocumentId()
 FNDA:160,System.String Amg_ingressos_aqui_cadastro_api.Model.User::get_DocumentId()
 DA:24,160
-FN:29,System.Nullable`1<Amg_ingressos_aqui_cadastro_api.Enum.TypeStatusUserEnum> Amg_ingressos_aqui_cadastro_api.Model.User::get_Status()
-FNDA:155,System.Nullable`1<Amg_ingressos_aqui_cadastro_api.Enum.TypeStatusUserEnum> Amg_ingressos_aqui_cadastro_api.Model.User::get_Status()
+FN:29,System.Nullable`1<Amg_ingressos_aqui_cadastro_api.Enum.TypeStatusEnum> Amg_ingressos_aqui_cadastro_api.Model.User::get_Status()
+FNDA:155,System.Nullable`1<Amg_ingressos_aqui_cadastro_api.Enum.TypeStatusEnum> Amg_ingressos_aqui_cadastro_api.Model.User::get_Status()
 DA:30,155
 FN:35,Amg_ingressos_aqui_cadastro_api.Model.Address Amg_ingressos_aqui_cadastro_api.Model.User::get_Address()
 FNDA:441,Amg_ingressos_aqui_cadastro_api.Model.Address Amg_ingressos_aqui_cadastro_api.Model.User::get_Address()
@@ -1065,24 +1065,24 @@ BRH:0
 FNF:3
 FNH:1
 end_of_record
-SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Exceptions\EmptyFieldsException.cs
-FN:23,System.Runtime.CompilerServices.TaskAwaiter Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::GetAwaiter()
-FNDA:0,System.Runtime.CompilerServices.TaskAwaiter Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::GetAwaiter()
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Exceptions\UserEmptyFieldsException.cs
+FN:23,System.Runtime.CompilerServices.TaskAwaiter Amg_ingressos_aqui_cadastro_api.Exceptions.UserEmptyFieldsException::GetAwaiter()
+FNDA:0,System.Runtime.CompilerServices.TaskAwaiter Amg_ingressos_aqui_cadastro_api.Exceptions.UserEmptyFieldsException::GetAwaiter()
 DA:24,0
 DA:25,0
 DA:26,0
-FN:8,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::.ctor()
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::.ctor()
+FN:8,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UserEmptyFieldsException::.ctor()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UserEmptyFieldsException::.ctor()
 DA:9,0
 DA:10,0
 DA:11,0
-FN:13,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::.ctor(System.String)
-FNDA:39,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::.ctor(System.String)
+FN:13,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UserEmptyFieldsException::.ctor(System.String)
+FNDA:39,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UserEmptyFieldsException::.ctor(System.String)
 DA:14,39
 DA:15,39
 DA:16,39
-FN:18,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::.ctor(System.String,System.Exception)
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::.ctor(System.String,System.Exception)
+FN:18,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UserEmptyFieldsException::.ctor(System.String,System.Exception)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UserEmptyFieldsException::.ctor(System.String,System.Exception)
 DA:19,0
 DA:20,0
 DA:21,0

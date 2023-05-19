@@ -31,7 +31,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         public bool? EmailVerified { get; set; } = false;
 
         /// <summary> 
-        /// Confirmação do número 
+        /// flag de telefone verificado 
         /// </summary>
         [Required]
         [BsonElement("PhoneVerified")]

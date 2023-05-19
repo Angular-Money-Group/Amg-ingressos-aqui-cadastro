@@ -27,5 +27,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Consts
         public const string savePaymentMethodMessage = "SavePaymentMethodAsync : Erro inesperado ao salvar um metodo de pagamento";
         public const string deletePaymentMethodMessage = "DeletePaymentMethodAsync : Erro inesperado ao deletar um metodo de pagamento";
         public const string updatePaymentMethodMessage = "UpdatePaymentMethodAsync : Erro inesperado ao atualizar um metodo de pagamento";
+        // ProducerColab
+        public const string FindByIdProducerColabMessage = "FindByIdProducerColabAsync : Erro inesperado ao buscar um produtorXcolaborador por id";
+        public const string GetAllProducerColabMessage = "GetAllProducerColabsAsync : Erro inesperado ao buscar produtorXcolaboradores";
+        public const string saveProducerColabMessage = "SaveProducerColabAsync : Erro inesperado ao salvar um produtorXcolaborador";
+        public const string deleteProducerColabMessage = "DeleteProducerColabAsync : Erro inesperado ao deletar um produtorXcolaborador";
+        public const string updateProducerColabMessage = "UpdateProducerColabAsync : Erro inesperado ao atualizar um produtorXcolaborador";
     }
 }

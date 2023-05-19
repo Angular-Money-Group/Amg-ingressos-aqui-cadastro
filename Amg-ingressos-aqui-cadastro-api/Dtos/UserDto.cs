@@ -21,7 +21,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             this.Password = null;
         }
 
-        public UserDTO(UserDTO userDTO) {
+        public UserDTO(System.Enum TEnum, UserDTO userDTO) {
+            ValidateUserType(TEnum, userDTO.Type);
             this.Id = userDTO.Id;
             this.Name = userDTO.Name;
             this.DocumentId = userDTO.DocumentId;
@@ -31,6 +32,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             this.Contact = userDTO.Contact;
             this.UserConfirmation = userDTO.UserConfirmation;
             this.Password = userDTO.Password;
+        }
+
+        public UserDTO(System.Enum TEnum, User user)
+        :base(user) {
+            ValidateUserType(TEnum, user.Type);
         }
 
         public UserDTO(User user)
@@ -47,26 +53,90 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         {
             if (this.Id is not null)
                 this.Id = null;
-            this.Status = StatusUserEnum.Active;
-            this.ValidateNameFormat();
-            this.ValidateDocumentIdAndTypeUserEnumFormat();
-            this.ValidateAdressFormat();
-            this.validateConctact();
-            this.validatePasswordFormat();
+            this.Status = TypeStatusEnum.Active;
+
+            this.ValidateBasicUserFormat();
+            switch(this.Type)
+            {
+                case TypeUserEnum.Colab:
+                    this.ValidateColabFormat();
+                break;
+                case TypeUserEnum.Admin:
+                    this.ValidateAdminFormat();
+                break;
+                case TypeUserEnum.Producer:
+                    this.ValidateProducerFormat();
+                break;
+                case TypeUserEnum.Customer:
+                    this.ValidateCustomerFormat();
+                break;
+            }
             return this.makeUser();
         }
 
         public User makeUserUpdate()
         {
             this.Id.ValidateIdMongo();
-            this.ValidateNameFormat();
-            this.ValidateDocumentIdAndTypeUserEnumFormat();
-            this.ValidateAdressFormat();
-            ValidatePhoneNumberFormat(this.Contact?.PhoneNumber);
-            this.validatePasswordFormat();
+            this.ValidateStatusFormat();
+
+            this.ValidateBasicUserFormat();
+            switch(this.Type)
+            {
+                case TypeUserEnum.Colab:
+                    this.ValidateColabFormat();
+                break;
+                case TypeUserEnum.Admin:
+                    this.ValidateAdminFormat();
+                    this.validateUserConfirmation();
+                break;
+                case TypeUserEnum.Producer:
+                    this.ValidateProducerFormat();
+                    this.validateUserConfirmation();
+                break;
+                case TypeUserEnum.Customer:
+                    this.ValidateCustomerFormat();
+                    this.validateUserConfirmation();
+                break;
+            }
             return this.makeUser();
         }
-        
+
+        public void ValidateBasicUserFormat() {
+            
+            this.ValidateNameFormat();
+            this.validatePasswordFormat();
+        }
+        public void ValidateAdminFormat() {
+            ValidateUserType(TypeUserEnum.Admin, this.Type);
+            this.ValidateDocumentIdFormat();
+            this.ValidateAdressFormat();
+            this.validateConctact();
+        }
+        public void ValidateCustomerFormat() {
+            ValidateUserType(TypeUserEnum.Customer, this.Type);
+            this.ValidateCpfFormat();
+            this.ValidateAdressFormat();
+            this.validateConctact();
+        }
+        public void ValidateProducerFormat() {
+            ValidateUserType(TypeUserEnum.Producer, this.Type);
+            this.ValidateCnpjFormat();
+            this.ValidateAdressFormat();
+            this.validateConctact();
+        }
+
+        public void ValidateColabFormat() {
+            if (this.Contact is null)
+                throw new EmptyFieldsException("Contato é Obrigatório.");
+            ValidateEmailFormat(this.Contact.Email);
+            this.ValidateCpfFormat();
+            this.Address = null;
+            this.Contact.PhoneNumber = null;
+            this.UserConfirmation = null;
+            ValidateUserType(TypeUserEnum.Colab, this.Type);
+        }
+
+        // VALIDATES
         // STATIC FUNCTIONS
         public static void ValidateEmailFormat(string email) {
             if (string.IsNullOrEmpty(email))
@@ -83,6 +153,16 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
                 throw new EmptyFieldsException("Formato de Telefone de Contato inválido.");
         }
 
+        public static void ValidateUserType(System.Enum typeExpected, System.Enum userType) {
+            try {
+                userType.ValidateObjectEnumType(typeExpected);
+            } catch (EmptyFieldsException) {
+                throw new EmptyFieldsException("Tipo de Usuario é obrigatório.");
+            } catch (InvalidUserTypeException) {
+                throw new InvalidUserTypeException("Tipo de Usuário não corresponde ao esperado");
+            }
+        }
+
         // PUBLIC FUNCTIONS
         public void ValidateNameFormat() {
             if (string.IsNullOrEmpty(this.Name))
@@ -91,25 +171,33 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
                 throw new InvalidFormatException("Formato de nome inválido.");
         }
 
-        public void ValidateStatusUserEnumFormat() {
+        public void ValidateStatusFormat() {
             if (this.Status is null)
                 throw new EmptyFieldsException("Status de Usuário é Obrigatório.");
         }
 
-        public void ValidateDocumentIdAndTypeUserEnumFormat() {
-            if (string.IsNullOrEmpty(this.DocumentId))
+        public void ValidateDocumentIdFormat() {
+            if(string.IsNullOrEmpty(this.DocumentId))
                 throw new EmptyFieldsException("Documento de Identificação é Obrigatório.");
-            if (this.Type is null)
-                throw new EmptyFieldsException("Tipo de Usuário é Obrigatório.");
             this.DocumentId = string.Join("", this.DocumentId.ToCharArray().Where(Char.IsDigit));
-            var DocumentIdLength = this.DocumentId.Length;
-            if (!((DocumentIdLength == 11) || (DocumentIdLength == 13))) {
-                throw new InvalidFormatException("Formato de CPF/CNPJ inválido.");
-            }
-            if ((this.Type == TypeUserEnum.Admin || this.Type == TypeUserEnum.Customer) && this.DocumentId.Length != 11)
-                throw new InvalidFormatException("Tipo de Usuário não corresponde com Documento de Identificação.");
-            if (this.Type == TypeUserEnum.Producer && this.DocumentId.Length != 13)
-                throw new InvalidFormatException("Tipo de Usuário não corresponde com Documento de Identificação.");
+            if(this.DocumentId.Length != 11 && this.DocumentId.Length !=13)
+                throw new EmptyFieldsException("Formato de Documento de Identificação inválido.");
+        }
+
+        public void ValidateCpfFormat() {
+            if(string.IsNullOrEmpty(this.DocumentId))
+                throw new EmptyFieldsException("Documento de CPF é Obrigatório.");
+            this.DocumentId = string.Join("", this.DocumentId.ToCharArray().Where(Char.IsDigit));
+            if(this.DocumentId.Length != 11)
+                throw new EmptyFieldsException("Formato de Documento de CPF inválido.");
+        }
+
+        public void ValidateCnpjFormat() {
+            if(string.IsNullOrEmpty(this.DocumentId))
+                throw new EmptyFieldsException("Documento de CNPJ é Obrigatório.");
+            this.DocumentId = string.Join("", this.DocumentId.ToCharArray().Where(Char.IsDigit));
+            if(this.DocumentId.Length != 11)
+                throw new EmptyFieldsException("Formato de Documento de CNPJ inválido.");
         }
 
         public void ValidateAdressFormat() {

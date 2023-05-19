@@ -3,19 +3,19 @@ using System.Runtime.CompilerServices;
 
 namespace Amg_ingressos_aqui_cadastro_api.Exceptions 
 {
-    public class UserEmptyFieldsException : Exception
+    public class EmptyFieldsException : Exception
     {
 
-        public UserEmptyFieldsException()
+        public EmptyFieldsException()
         {
         }
 
-        public UserEmptyFieldsException(string message)
+        public EmptyFieldsException(string message)
             : base(message)
         {
         }
 
-        public UserEmptyFieldsException(string message, Exception inner)
+        public EmptyFieldsException(string message, Exception inner)
             : base(message, inner)
         {
         }

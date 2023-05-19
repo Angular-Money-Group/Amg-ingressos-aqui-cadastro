@@ -31,7 +31,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
             this.Password = user.Password;
         }
         
-        public User(string? id, string? name, string? documentId, StatusUserEnum? status, TypeUserEnum? type, Address? address,
+        public User(string? id, string? name, string? documentId, TypeStatusEnum? status, TypeUserEnum? type, Address? address,
                     Contact? contact, UserConfirmation? userConfirmation, string? password) {
             this.Id = id;
             this.Name = name;
@@ -49,6 +49,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </summary>
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("Id")]
+        [JsonPropertyName("Id")]
         public string? Id { get; set; }
         /// <summary>
         /// name
@@ -72,7 +74,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         [Required]
         [BsonElement("Status")]
         [JsonPropertyName("Status")]
-        public StatusUserEnum? Status { get; set; }
+        public TypeStatusEnum? Status { get; set; }
 
         /// <summary>
         /// Endereço do usuário
@@ -113,7 +115,4 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         [JsonPropertyName("Password")]
         public string? Password { get; set; }
     }
-
-
-
 }

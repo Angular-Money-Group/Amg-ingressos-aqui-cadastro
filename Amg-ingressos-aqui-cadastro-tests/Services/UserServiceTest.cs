@@ -18,6 +18,8 @@ namespace Prime.UnitTests.Services
         private Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
         private User userComplet;
         private UserDTO userDTO;
+        private User userComplet;
+        private UserDTO userDTO;
 
 
         [SetUp]
@@ -95,7 +97,7 @@ namespace Prime.UnitTests.Services
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", id)).Returns(Task.FromResult(this.userDTO.makeUser()));
 
             //Act
-            var result = _userService.FindByIdAsync(id);
+            var result = _userService.FindByIdAsync(TypeUserEnum.Admin, id);
 
             //Assert
             Assert.IsInstanceOf<UserDTO>(result.Result.Data);
@@ -112,7 +114,7 @@ namespace Prime.UnitTests.Services
             var messageExpected = "Id é obrigatório e está menor que 24 digitos.";
 
             //Act
-            var result = _userService.FindByIdAsync(userComplet.Id);
+            var result = _userService.FindByIdAsync(TypeUserEnum.Admin, userComplet.Id);
 
             //Assert
             Assert.AreEqual(messageExpected, result.Result.Message);
@@ -129,7 +131,7 @@ namespace Prime.UnitTests.Services
             var messageExpected = "Id é Obrigatório.";
 
             //Act
-            var result = _userService.FindByIdAsync(userComplet.Id);
+            var result = _userService.FindByIdAsync(TypeUserEnum.Admin, userComplet.Id);
 
             //Assert
             Assert.AreEqual(messageExpected, result.Result.Message);
@@ -146,7 +148,7 @@ namespace Prime.UnitTests.Services
                 .Throws(new UserNotFound(messageReturn));
 
             //Act
-            var result = _userService.FindByIdAsync(idUser);
+            var result = _userService.FindByIdAsync(TypeUserEnum.Admin, idUser);
             //Assert
             Assert.AreEqual(messageReturn, result.Result.Message);
             Assert.IsNull(result.Result.Data);
@@ -163,7 +165,7 @@ namespace Prime.UnitTests.Services
                 .Throws(new Exception(expectedMessage));            
 
             // Act and Assert
-            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.FindByIdAsync(idUser));
+            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.FindByIdAsync(TypeUserEnum.Admin, idUser));
             Assert.AreEqual(expectedMessage, exception.Message);
         }
 
@@ -183,7 +185,7 @@ namespace Prime.UnitTests.Services
                 Returns(Task.FromResult(this.userComplet));
 
             //Act
-            var result = _userService.FindByEmailAsync(email);
+            var result = _userService.FindByEmailAsync(TypeUserEnum.Admin, email);
             
             //Assert
             Assert.IsInstanceOf<UserDTO>(result.Result.Data);
@@ -200,7 +202,7 @@ namespace Prime.UnitTests.Services
             var messageExpected = "Email é Obrigatório.";
 
             //Act
-            var result = _userService.FindByEmailAsync(userComplet.Contact.Email);
+            var result = _userService.FindByEmailAsync(TypeUserEnum.Admin, userComplet.Contact.Email);
 
             //Assert
             Assert.AreEqual(messageExpected, result.Result.Message);
@@ -217,7 +219,7 @@ namespace Prime.UnitTests.Services
             var messageExpected = "Formato de email inválido.";
 
             //Act
-            var result = _userService.FindByEmailAsync(userComplet.Contact.Email);
+            var result = _userService.FindByEmailAsync(TypeUserEnum.Admin, userComplet.Contact.Email);
 
             //Assert
             Assert.AreEqual(messageExpected, result.Result.Message);
@@ -234,7 +236,7 @@ namespace Prime.UnitTests.Services
                 .Throws(new UserNotFound(messageReturn));
 
             //Act
-            var result = _userService.FindByEmailAsync(email);
+            var result = _userService.FindByEmailAsync(TypeUserEnum.Admin, email);
             //Assert
             Assert.AreEqual(messageReturn, result.Result.Message);
             Assert.AreEqual(string.Empty, result.Result.Data);
@@ -251,7 +253,7 @@ namespace Prime.UnitTests.Services
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
-            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.FindByEmailAsync(email));
+            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.FindByEmailAsync(TypeUserEnum.Admin, email));
             Assert.AreEqual(expectedMessage, exception.Message);
         }
 

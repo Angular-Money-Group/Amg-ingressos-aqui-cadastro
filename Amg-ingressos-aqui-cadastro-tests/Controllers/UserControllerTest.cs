@@ -182,7 +182,7 @@ namespace Prime.UnitTests.Controllers
                 .Returns(Task.FromResult(this.userComplet));
 
             //Act
-            var result = await _userController.FindByIdUserAsync(id) as ObjectResult;
+            var result = await _userController.FindByIdUserAsync("Admin", id) as ObjectResult;
 
             //Assert
             Assert.IsInstanceOf<UserDTO>(result?.Value);
@@ -199,7 +199,7 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = "Id é Obrigatório.";
 
             //Act
-            var result = await _userController.FindByIdUserAsync(userComplet.Id) as ObjectResult;
+            var result = await _userController.FindByIdUserAsync("Admin", userComplet.Id) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -216,7 +216,7 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = "Id é obrigatório e está menor que 24 digitos.";
 
             //Act
-            var result = await _userController.FindByIdUserAsync(userComplet.Id) as ObjectResult;
+            var result = await _userController.FindByIdUserAsync("Admin", userComplet.Id) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -233,7 +233,7 @@ namespace Prime.UnitTests.Controllers
                 .Throws(new UserNotFound(expectedMessage));
 
             //Act
-            var result = await _userController.FindByIdUserAsync(idUser) as ObjectResult;
+            var result = await _userController.FindByIdUserAsync("Admin", idUser) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -252,7 +252,7 @@ namespace Prime.UnitTests.Controllers
 
 
             //Act
-            var result = await _userController.FindByIdUserAsync(idUser) as ObjectResult;
+            var result = await _userController.FindByIdUserAsync("Admin", idUser) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
