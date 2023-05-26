@@ -21,8 +21,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             _userService = userService;
         }
 
-        public bool hasRunnedSuccessfully(MessageReturn result) {
-            return !string.IsNullOrEmpty(result.Message);
+        private bool hasRunnedSuccessfully(MessageReturn result) {
+            return string.IsNullOrEmpty(result.Message);
         }
 
 
@@ -40,32 +40,26 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
             try
             {
-                // userObject.Password = hashPassword;
-                MessageReturn result = (await _userService.FindByEmailAsync(userObject.Contact.Email));
-
-                if (result.Data is not null)
+                if (!await _userService.IsEmailAvailable(userObject.Contact.Email))
                     throw new EmailAlreadyExists("Email Indisponível.");
 
-                result = await _userService.SaveAsync(userObject);
+                // userObject.Password = hashPassword;
+                MessageReturn result = await _userService.SaveAsync(userObject);
+
                 if (hasRunnedSuccessfully(result))
-                    return Ok();
+                    return Ok(result.Data);
                 else
                     throw new SaveUserException(result.Message);
             }
-            catch (InvalidEmailFormat ex)
-            {
-                    _logger.LogInformation(ex.Message);
-                    return BadRequest(ex.Message);
-            }
             catch (EmailAlreadyExists ex)
             {
-                    _logger.LogInformation(ex.Message);
-                    return Ok();
+                _logger.LogInformation(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + userObject.Contact.Email);
+                return Ok();
             }
             catch (SaveUserException ex)
             {
-                    _logger.LogInformation(ex.Message);
-                    return BadRequest(ex.Message);
+                _logger.LogInformation(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (Exception ex)
             {

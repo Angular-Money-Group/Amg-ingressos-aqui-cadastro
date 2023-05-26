@@ -3,19 +3,19 @@ using System.Runtime.CompilerServices;
 
 namespace Amg_ingressos_aqui_cadastro_api.Exceptions 
 {
-    public class InvalidEmailFormat : Exception
+    public class InvalidFormatException : Exception
     {
 
-        public InvalidEmailFormat()
+        public InvalidFormatException()
         {
         }
 
-        public InvalidEmailFormat(string message)
+        public InvalidFormatException(string message)
             : base(message)
         {
         }
 
-        public InvalidEmailFormat(string message, Exception inner)
+        public InvalidFormatException(string message, Exception inner)
             : base(message, inner)
         {
         }

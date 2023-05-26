@@ -3,7 +3,9 @@ using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using System.Diagnostics.CodeAnalysis;
 using Amg_ingressos_aqui_cadastro_api.Infra;
+using MongoDB.Bson;
 using MongoDB.Driver;
+using System.Threading.Tasks;
 
 namespace Amg_ingressos_aqui_cadastro_api.Repository
 {
@@ -11,9 +13,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
     {
         private readonly IMongoCollection<User> _userCollection;
 
-        public UserRepository(IDbConnection<User> dbConnection, string modelName) {
+        /* public UserRepository(IDbConnection<User> dbConnection, string modelName) {
             this._userCollection = dbConnection.GetConnection(modelName);
-        }
+        } */
 
         public UserRepository(IDbConnection<User> dbConnection) {
             this._userCollection = dbConnection.GetConnection("User");
@@ -31,7 +33,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             catch (SaveUserException ex) {
                 throw ex;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -50,30 +52,28 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             {
                 throw ex;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
 
-        public async Task<bool> DoesIdExists(string id) {
+        public async Task<bool> DoesValueExistsOnField<T>(string fieldName, T value) {
             try {
-
-                var result = await _userCollection.Find(x => x.Id == id as string).
-                    FirstOrDefaultAsync();
-                if (result == null)
+                var filter = Builders<User>.Filter.Eq(fieldName, value);
+                var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
+                if (user is null)
                     return false;
-                else
-                    return true;
+                return true;
             }   
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
 
         }
 
-        public async Task<object> FindByField<T>(string value, string fieldName) {
+        public async Task<object> FindByField<T>(string fieldName, string value) {
             try {
 
                 var filter = Builders<User>.Filter.Eq(fieldName, value);
@@ -86,7 +86,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             catch (UserNotFound ex) {
                 throw ex;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
@@ -111,13 +111,20 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             catch (UpdateUserException ex) {
                 throw ex;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }
         }
-        //  Task<object> removeValueFromArrayField<T>(object id, string fieldname, object IdValueToRemove) {
+        //  public async Task<object> removeValueFromArrayField<T>(object id, object fieldName, object idValueToRemove) {
 
+        //     var filter = Builders<T>.Filter.Eq("_id", id);
+        //     var update = Builders<T>.Update.Pull((FieldDefinition<T>)fieldName, idValueToRemove);
+        //     var options = new FindOneAndUpdateOptions<T> { ReturnDocument = ReturnDocument.After };
+
+        //     var result = await _userCollection.FindOneAndUpdateAsync(filter, update, options);
+
+        //     return result;
         // }
         public async Task<object> Delete<T>(object id) {
             try
@@ -132,7 +139,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             {
                 throw ex;
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
                 throw ex;
             }

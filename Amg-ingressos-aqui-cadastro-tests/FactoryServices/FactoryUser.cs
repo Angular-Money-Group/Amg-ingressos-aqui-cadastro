@@ -28,6 +28,11 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
                     Email = "gustavolima@gmail.com",
                     PhoneNumber = "34 994568769"
                 },
+                UserConfirmation = new UserConfirmation() {
+                    EmailConfirmationCode = "wieufhu233f23fnf",
+                    EmailConfirmationExpirationDate = new DateTime(2024, 02, 01, 16, 00, 00),
+                    PhoneVerified = true
+                },
                 Password = "12345678"
             };
         }
