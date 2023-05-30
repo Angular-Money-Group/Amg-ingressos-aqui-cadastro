@@ -16,6 +16,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// Confirmação do número 
         /// </summary>
         [Required]
+        public bool? EmailVerified { get; set; } = false;
         public bool? PhoneVerified { get; set; } = false;
     }
 }

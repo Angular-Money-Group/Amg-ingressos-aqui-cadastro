@@ -27,7 +27,6 @@ namespace Prime.UnitTests.Services
         }
 
 
-
           /**************/
          /*   GET ALL  */
         /**************/
@@ -345,7 +344,7 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             this.userComplet.DocumentId = string.Empty;
-            var expectedMessage = new MessageReturn() { Message = "Documento de identificação é Obrigatório." };
+            var expectedMessage = new MessageReturn() { Message = "Documento de Identificação é Obrigatório." };
 
             //Act
             var result = _userService.SaveAsync(this.userComplet);
@@ -360,7 +359,7 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             this.userComplet.Status = null;
-            var expectedMessage = new MessageReturn() { Message = "Status de usuario é Obrigatório." };
+            var expectedMessage = new MessageReturn("Status de Usuário é Obrigatório.");
 
             //Act
             var result = _userService.SaveAsync(this.userComplet);
@@ -375,7 +374,7 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             this.userComplet.Address = null;
-            var expectedMessage = new MessageReturn() { Message = "Endereço é Obrigatório." };
+            var expectedMessage = new MessageReturn("Endereço é Obrigatório.");
 
             //Act
             var result = _userService.SaveAsync(this.userComplet);
@@ -480,7 +479,7 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             this.userComplet.Address.City = string.Empty;
-            var expectedMessage = new MessageReturn() { Message = "Cidade é Obrigatório." };
+            var expectedMessage = new MessageReturn("Em endereço, Cidade é Obrigatório.");
 
             //Act
             var result = _userService.SaveAsync(this.userComplet);
@@ -495,7 +494,7 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             this.userComplet.Address.State = string.Empty;
-            var expectedMessage = new MessageReturn() { Message = "Estado é Obrigatório." };
+            var expectedMessage = new MessageReturn("Em endereço, Estado é Obrigatório.");
 
             //Act
             var result = _userService.SaveAsync(this.userComplet);
@@ -510,7 +509,7 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             this.userComplet.Contact = null;
-            var expectedMessage = new MessageReturn() { Message = "Contato é Obrigatório." };
+            var expectedMessage = new MessageReturn("Contato é Obrigatório.");
 
             //Act
             var result = _userService.SaveAsync(this.userComplet);
@@ -540,7 +539,7 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             this.userComplet.Contact.PhoneNumber = string.Empty;
-            var expectedMessage = new MessageReturn() { Message = "Número de Telefone é Obrigatório." };
+            var expectedMessage = new MessageReturn() { Message = "Telefone de Contato é Obrigatório." };
 
             //Act
             var result = _userService.SaveAsync(this.userComplet);
@@ -757,7 +756,7 @@ namespace Prime.UnitTests.Services
             User userUpdated = this.userComplet;
             userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Documento de identificação é Obrigatório.";
+            var expectedMessage = "Documento de Identificação é Obrigatório.";
 
             //Act
             var result = _userService.UpdateByIdAsync(userUpdated);
@@ -776,7 +775,7 @@ namespace Prime.UnitTests.Services
             User userUpdated = this.userComplet;
             userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Status de usuario é Obrigatório.";
+            var expectedMessage = "Status de Usuário é Obrigatório.";
 
             //Act
             var result = _userService.UpdateByIdAsync(userUpdated);
@@ -928,7 +927,7 @@ namespace Prime.UnitTests.Services
             User userUpdated = this.userComplet;
             userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Cidade é Obrigatório.";
+            var expectedMessage = "Em endereço, Cidade é Obrigatório.";
 
             //Act
             var result = _userService.UpdateByIdAsync(userUpdated);
@@ -947,7 +946,7 @@ namespace Prime.UnitTests.Services
             User userUpdated = this.userComplet;
             userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Estado é Obrigatório.";
+            var expectedMessage = "Em endereço, Estado é Obrigatório.";
 
             //Act
             var result = _userService.UpdateByIdAsync(userUpdated);
@@ -1004,7 +1003,7 @@ namespace Prime.UnitTests.Services
             User userUpdated = this.userComplet;
             userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Número de Telefone é Obrigatório.";
+            var expectedMessage = "Telefone de Contato é Obrigatório.";
 
             //Act
             var result = _userService.UpdateByIdAsync(userUpdated);

@@ -12,9 +12,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         private readonly ILogger<UserController> _logger;
         private readonly IUserService _userService;
 
-
-
-
         public UserController(ILogger<UserController> logger, IUserService userService)
         {
             _logger = logger;
@@ -24,9 +21,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         private bool hasRunnedSuccessfully(MessageReturn result) {
             return string.IsNullOrEmpty(result.Message);
         }
-
-
-
 
         /// <summary>
         /// Grava usuario
@@ -40,9 +34,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
             try
             {
-                if (!await _userService.IsEmailAvailable(userObject.Contact.Email))
-                    throw new EmailAlreadyExists("Email Indisponível.");
-
                 // userObject.Password = hashPassword;
                 MessageReturn result = await _userService.SaveAsync(userObject);
 

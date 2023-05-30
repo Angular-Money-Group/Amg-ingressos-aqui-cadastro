@@ -1,16 +1,13 @@
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
+using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Utils;
 using System;
 using System.Text.RegularExpressions;
-/* 
-Notas:
-    - ver os campos recebidos pelas funcoes de find by field
-    - testar as funcoes de find por field
- */
+
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
     public class UserService : IUserService
@@ -22,7 +19,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             IUserRepository userRepository)
         {
             this._userRepository = userRepository;
-            // this._messageReturn = new MessageReturn();
         }
         
         public async Task<MessageReturn> GetAllUsersAsync()
@@ -76,7 +72,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             this._messageReturn = new MessageReturn();
             try
             {
-                ValidateEmailFormat(email);
+                User.ValidateEmailFormat(email);
 
                 _messageReturn.Data = await _userRepository.FindByField<User>("Contact.Email", email);
 
@@ -114,6 +110,17 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 throw ex;
             }   
         }
+
+        public async Task<bool> IsDocumentIdAvailable(string documentId) {
+            this._messageReturn = new MessageReturn();
+            try {
+                return !await _userRepository.DoesValueExistsOnField("DocumentId", documentId);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }   
+        }
         public async Task<MessageReturn> SaveAsync(User userSave) {
             this._messageReturn = new MessageReturn();
             try
@@ -121,6 +128,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 if (userSave.Id is not null)
                     userSave.Id = null;
                 ValidateModelSave(userSave);
+                
+                if (!await IsDocumentIdAvailable(userSave.DocumentId))
+                    throw new EmailAlreadyExists("Documento de Identificação já cadastrado.");
+                
+                if (!await IsEmailAvailable(userSave.Contact.Email))
+                    throw new EmailAlreadyExists("Email Indisponível.");
                 //criptografar senha
                 _messageReturn.Data = await _userRepository.Save<User>(userSave);
             }
@@ -133,6 +146,15 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 _messageReturn.Data = null;
                 _messageReturn.Message = ex.Message;
+            }
+            catch (DocumentIdAlreadyExists ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (EmailAlreadyExists ex)
+            {
+                throw;
             }
             catch (SaveUserException ex)
             {
@@ -234,100 +256,27 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-
-        /************************************************************************/
-        /************************************************************************/
-        /************************************************************************/
-        /************************************************************************/
-        private void ValidateEmailFormat(string email) {
-            if (string.IsNullOrEmpty(email))
-                throw new UserEmptyFieldsException("Email é Obrigatório.");
-            if (!Regex.IsMatch(email, @"^[A-Za-z0-9+_.-]+[@]{1}[A-Za-z0-9-]+[.]{1}[A-Za-z.]+$"))
-                throw new InvalidFormatException("Formato de email inválido.");
-        }
         private void ValidateModelSave(User userSave)
         {
-            if (string.IsNullOrEmpty(userSave.Name))
-                throw new UserEmptyFieldsException("Nome é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.DocumentId))
-                throw new UserEmptyFieldsException("Documento de identificação é Obrigatório.");
-            if (userSave.Status is null) //VALIDAR SE O CPF CONDIZ COM O TIPO
-                throw new UserEmptyFieldsException("Status de usuario é Obrigatório.");
-
-            if (userSave.Address is null)
-                throw new UserEmptyFieldsException("Endereço é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.Cep))
-                throw new UserEmptyFieldsException("CEP é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.AddressDescription))
-                throw new UserEmptyFieldsException("Logradouro do Endereço é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.Number))
-                throw new UserEmptyFieldsException("Número Endereço é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.Neighborhood))
-                throw new UserEmptyFieldsException("Vizinhança é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.Complement))
-                throw new UserEmptyFieldsException("Complemento é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.ReferencePoint))
-                throw new UserEmptyFieldsException("Ponto de referência é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.City))
-                throw new UserEmptyFieldsException("Cidade é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.State))
-                throw new UserEmptyFieldsException("Estado é Obrigatório.");
-
-            if (userSave.Contact is null)
-                throw new UserEmptyFieldsException("Contato é Obrigatório.");
-            ValidateEmailFormat(userSave.Contact.Email);
-            if (string.IsNullOrEmpty(userSave.Contact.PhoneNumber))
-                throw new UserEmptyFieldsException("Número de Telefone é Obrigatório.");
-
-            if (string.IsNullOrEmpty(userSave.Password))
-                throw new UserEmptyFieldsException("Senha é Obrigatório.");
+            userSave.ValidateNameFormat();
+            userSave.ValidateDocumentIdFormat();
+            userSave.ValidateStatusUserEnumFormat();
+            userSave.ValidateTypeUserEnumFormat();
+            userSave.ValidateAdressFormat();
+            userSave.validateConctact();
+            userSave.validatePasswordFormat();
         }
         private void ValidateModelUpdate(User userUpdated)
         {
             userUpdated.Id.ValidateIdMongo();
-            if (string.IsNullOrEmpty(userUpdated.Name))
-                throw new UserEmptyFieldsException("Nome é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.DocumentId))
-                throw new UserEmptyFieldsException("Documento de identificação é Obrigatório.");
-            if (userUpdated.Status is null) //VALIDAR SE O CPF CONDIZ COM O TIPO
-                throw new UserEmptyFieldsException("Status de usuario é Obrigatório.");
-
-            if (userUpdated.Address is null)
-                throw new UserEmptyFieldsException("Endereço é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.Cep))
-                throw new UserEmptyFieldsException("CEP é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.AddressDescription))
-                throw new UserEmptyFieldsException("Logradouro do Endereço é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.Number))
-                throw new UserEmptyFieldsException("Número Endereço é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.Neighborhood))
-                throw new UserEmptyFieldsException("Vizinhança é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.Complement))
-                throw new UserEmptyFieldsException("Complemento é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.ReferencePoint))
-                throw new UserEmptyFieldsException("Ponto de referência é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.City))
-                throw new UserEmptyFieldsException("Cidade é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.State))
-                throw new UserEmptyFieldsException("Estado é Obrigatório.");
-
-            if (userUpdated.Contact is null)
-                throw new UserEmptyFieldsException("Contato é Obrigatório.");
-            ValidateEmailFormat(userUpdated.Contact.Email);
-            if (string.IsNullOrEmpty(userUpdated.Contact.PhoneNumber))
-                throw new UserEmptyFieldsException("Número de Telefone é Obrigatório.");
-
-            if (string.IsNullOrEmpty(userUpdated.Password))
-                throw new UserEmptyFieldsException("Senha é Obrigatório.");
-
-            if (userUpdated.UserConfirmation is null)
-                throw new UserEmptyFieldsException("UserConfirmation é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.UserConfirmation.EmailConfirmationCode))
-                throw new UserEmptyFieldsException("Código de Confirmação de Email é Obrigatório.");
-            if (!userUpdated.UserConfirmation.EmailConfirmationExpirationDate.HasValue)
-                throw new UserEmptyFieldsException("Data de Expiração de Código de Confirmação de Email é Obrigatório.");
-            if (!userUpdated.UserConfirmation.PhoneVerified.HasValue)
-                throw new UserEmptyFieldsException("Status de Verificação de Telefone é Obrigatório.");
+            userUpdated.ValidateNameFormat();
+            userUpdated.ValidateDocumentIdFormat();
+            userUpdated.ValidateStatusUserEnumFormat();
+            userUpdated.ValidateTypeUserEnumFormat();
+            userUpdated.ValidateAdressFormat();
+            userUpdated.validateConctact();
+            userUpdated.validateUserConfirmation();
+            userUpdated.validatePasswordFormat();
         }
     }
 }

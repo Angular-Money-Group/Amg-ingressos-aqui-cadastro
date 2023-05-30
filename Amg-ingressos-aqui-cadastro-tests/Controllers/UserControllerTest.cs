@@ -258,15 +258,6 @@ namespace Prime.UnitTests.Controllers
          /*   UPDATE BY ID   */
         /********************/
 
-        /**********************************************************/
-        /**********************************************************/
-        /**********************************************************/
-        // VALIDAR O MODEL DE UPDATE!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-        /**********************************************************/
-        /**********************************************************/
-        /**********************************************************/
-        /**********************************************************/
-
         [Test]
         public async Task Given_iduser_When_UpdateByIdUserAsync_Then_return_Ok()
         {
@@ -306,9 +297,6 @@ namespace Prime.UnitTests.Controllers
             //Act
             _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
             .Returns(Task.FromResult(true));
-
-            // _userRepositoryMock.Setup(x => x.UpdateUser<object>(id, userUpdated))
-            // .Returns(Task.FromResult(expectedMessage as object));
             
             var result = await _userController.UpdateByIdUserAsync(id, userUpdated) as ObjectResult;
 

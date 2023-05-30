@@ -13,10 +13,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
     {
         private readonly IMongoCollection<User> _userCollection;
 
-        /* public UserRepository(IDbConnection<User> dbConnection, string modelName) {
-            this._userCollection = dbConnection.GetConnection(modelName);
-        } */
-
         public UserRepository(IDbConnection<User> dbConnection) {
             this._userCollection = dbConnection.GetConnection("User");
         }
@@ -116,16 +112,16 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 throw ex;
             }
         }
-        //  public async Task<object> removeValueFromArrayField<T>(object id, object fieldName, object idValueToRemove) {
+         public async Task<object> removeValueFromArrayField<T>(object id, object fieldName, object idValueToRemove) {
 
-        //     var filter = Builders<T>.Filter.Eq("_id", id);
-        //     var update = Builders<T>.Update.Pull((FieldDefinition<T>)fieldName, idValueToRemove);
-        //     var options = new FindOneAndUpdateOptions<T> { ReturnDocument = ReturnDocument.After };
+            var filter = Builders<User>.Filter.Eq("_id", id);
+            var update = Builders<User>.Update.Pull((FieldDefinition<User>)fieldName, idValueToRemove);
+            var options = new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After };
 
-        //     var result = await _userCollection.FindOneAndUpdateAsync(filter, update, options);
+            var result = await _userCollection.FindOneAndUpdateAsync(filter, update, options);
 
-        //     return result;
-        // }
+            return result;
+        }
         public async Task<object> Delete<T>(object id) {
             try
             {
