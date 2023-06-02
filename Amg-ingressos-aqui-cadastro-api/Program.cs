@@ -31,7 +31,6 @@ builder.Services.AddScoped<IUserRepository, UserRepository<object>>();
 builder.Services.AddScoped<IDbConnection<Transaction>, DbConnection<Transaction>>();
 builder.Services.AddScoped<IDbConnection<User>, DbConnection<User>>();
 
-
 var app = builder.Build();
 app.UseSwagger();
 app.UseSwaggerUI();

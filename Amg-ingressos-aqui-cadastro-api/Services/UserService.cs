@@ -39,6 +39,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             return _messageReturn;
         }
+        
         public async Task<MessageReturn> FindByIdAsync(string idUser)
         {
             this._messageReturn = new MessageReturn();

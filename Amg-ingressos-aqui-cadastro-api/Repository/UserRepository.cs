@@ -86,7 +86,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             {
                 throw ex;
             }
-
         }
 
         public async Task<object> UpdateUser<T>(object id, object userComplet) {
@@ -112,7 +111,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 throw ex;
             }
         }
-         public async Task<object> removeValueFromArrayField<T>(object id, object fieldName, object idValueToRemove) {
+
+         public async Task<object> RemoveValueFromArrayField<T>(object id, object fieldName, object idValueToRemove) {
 
             var filter = Builders<User>.Filter.Eq("_id", id);
             var update = Builders<User>.Update.Pull((FieldDefinition<User>)fieldName, idValueToRemove);
@@ -122,6 +122,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
 
             return result;
         }
+        
         public async Task<object> Delete<T>(object id) {
             try
             {
