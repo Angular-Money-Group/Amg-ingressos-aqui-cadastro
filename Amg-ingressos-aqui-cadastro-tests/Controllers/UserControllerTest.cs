@@ -48,6 +48,8 @@ namespace Prime.UnitTests.Controllers
                 .Returns(Task.FromResult(expectedResult as object));
             _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<object>("Contact.Email", userComplet.Contact.Email))
                 .Returns(Task.FromResult(false));
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<object>("DocumentId", userComplet.DocumentId))
+                .Returns(Task.FromResult(false));
 
             // Act
             var result = (await _userController.SaveUserAsync(userComplet) as ObjectResult);

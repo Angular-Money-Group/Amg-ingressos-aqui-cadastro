@@ -14,7 +14,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
         private readonly IMongoCollection<User> _userCollection;
 
         public UserRepository(IDbConnection<User> dbConnection) {
-            this._userCollection = dbConnection.GetConnection("User");
+            this._userCollection = dbConnection.GetConnection("user");
         }
         
         public async Task<object> Save<T>(object userComplet) {
@@ -90,10 +90,23 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
 
         public async Task<object> UpdateUser<T>(object id, object userComplet) {
             try {
+                // var filter = Builders<User>.Filter
+                // .Eq(r => r.Id, id);
+                // ReplaceOneResult result = await this._userCollection.ReplaceOneAsync(filter, userComplet as User);
+                // if (result.ModifiedCount > 0 || result.MatchedCount > 0)
+                var userModel = (userComplet as User);
+                var update = Builders<User>.Update
+                   .Set(userMongo => userMongo.Name, userModel.Name)
+                   .Set(userMongo => userMongo.DocumentId, userModel.DocumentId)
+                   .Set(userMongo => userMongo.Address, userModel.Address)
+                   .Set(userMongo => userMongo.Contact.PhoneNumber, userModel.Contact.PhoneNumber)
+                   .Set(userMongo => userMongo.Password, userModel.Password);
+
                 var filter = Builders<User>.Filter
-                .Eq(r => r.Id, id);
-                ReplaceOneResult result = await this._userCollection.ReplaceOneAsync(filter, userComplet as User);
-                if (result.ModifiedCount > 0 || result.MatchedCount > 0)
+                    .Eq(userMongo => userMongo.Id, userModel.Id);
+
+                UpdateResult updateResult = await _userCollection.UpdateOneAsync(filter, update);
+                if (updateResult.IsAcknowledged && updateResult.ModifiedCount > 0)
                 {
                     // The data was successfully updated
                     return "Usuário Atualizado.";

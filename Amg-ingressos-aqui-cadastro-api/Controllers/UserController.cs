@@ -1,4 +1,5 @@
 using Amg_ingressos_aqui_cadastro_api.Consts;
+using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
@@ -19,7 +20,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         }
 
         private bool hasRunnedSuccessfully(MessageReturn result) {
-            return string.IsNullOrEmpty(result.Message);
+            return string.IsNullOrEmpty(result.Message) && (result.Data is not null);
         }
 
         /// <summary>
@@ -34,9 +35,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
             try
             {
-                // userObject.Password = hashPassword;
                 MessageReturn result = await _userService.SaveAsync(userObject);
-
+                // userObject.Password = hashPassword;
                 if (hasRunnedSuccessfully(result))
                     return Ok(result.Data);
                 else
@@ -125,16 +125,19 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// Busca usuario pelo ID
         /// </summary>
         /// <param name="id"> id do usuario</param>
+        /// <param name="usuarioUpdated">Corpo usuario a ser Gravado</param>
         /// <returns>200 usuario da busca</returns>
         /// <returns>204 Nenhum usuario encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPut]
         [Route("updateUserById")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateByIdUserAsync(string id, User usuarioUpdated)
+        public async Task<IActionResult> UpdateByIdUserAsync(string id, [FromBody] User usuarioUpdated)
         {
             try
             {
+                if (usuarioUpdated is null)
+                    throw new UserEmptyFieldsException("Json de Usuario veio Nulo.");
                 usuarioUpdated.Id = id;
                 MessageReturn result = await _userService.UpdateByIdAsync(usuarioUpdated);
 
@@ -142,6 +145,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                     return NoContent();
                 else
                     throw new UpdateUserException(result.Message);
+            }
+            catch (UserEmptyFieldsException ex)
+            {
+                return BadRequest(ex.Message);
             }
             catch (UpdateUserException ex)
             {

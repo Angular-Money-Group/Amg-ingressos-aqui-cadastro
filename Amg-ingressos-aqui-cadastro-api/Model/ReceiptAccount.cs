@@ -31,5 +31,5 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// Dígito da Conta 
         /// </summary>
         public string? BankDigit { get; set; }
-    } 
+    }
 }

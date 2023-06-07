@@ -314,7 +314,7 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             var messageReturn = userComplet.Id;
-            _userRepositoryMock.Setup(x => x.Save<object>(this.userComplet)).Returns(Task.FromResult(messageReturn as object));
+            _userRepositoryMock.Setup(x => x.Save<User>(this.userComplet)).Returns(Task.FromResult(messageReturn as object));
 
             //Act
             var result = _userService.SaveAsync(this.userComplet);
@@ -355,7 +355,7 @@ namespace Prime.UnitTests.Services
         }
 
         [Test]
-        public void Given_User_Without_Status_When_save_Then_Return_Message_Miss_DocumentId()
+        public void Given_User_Without_Status_When_save_Then_Save_With_Status_Active()
         {
             //Arrange
             this.userComplet.Status = null;
@@ -365,8 +365,8 @@ namespace Prime.UnitTests.Services
             var result = _userService.SaveAsync(this.userComplet);
 
             //Assert
-            Assert.AreEqual(expectedMessage.Message, result.Result.Message);
-            Assert.IsNull(result.Result.Data);
+            Assert.IsEmpty(result.Result.Message);
+            Assert.AreEqual(StatusUserEnum.Active, this.userComplet.Status);
         }
 
         [Test]
@@ -459,20 +459,20 @@ namespace Prime.UnitTests.Services
             Assert.IsNull(result.Result.Data);
         }
 
-        [Test]
-        public void Given_User_Without_AddressReferencePoint_When_save_Then_Return_message_Miss_AddressReferencePoint()
-        {
-            //Arrange
-            this.userComplet.Address.ReferencePoint = string.Empty;
-            var expectedMessage = new MessageReturn() { Message = "Ponto de referência é Obrigatório." };
+        // [Test]
+        // public void Given_User_Without_AddressReferencePoint_When_save_Then_Return_message_Miss_AddressReferencePoint()
+        // {
+        //     //Arrange
+        //     this.userComplet.Address.ReferencePoint = string.Empty;
+        //     var expectedMessage = new MessageReturn() { Message = "Ponto de referência é Obrigatório." };
 
-            //Act
-            var result = _userService.SaveAsync(this.userComplet);
+        //     //Act
+        //     var result = _userService.SaveAsync(this.userComplet);
 
-            //Assert
-            Assert.AreEqual(expectedMessage.Message, result.Result.Message);
-            Assert.IsNull(result.Result.Data);
-        }
+        //     //Assert
+        //     Assert.AreEqual(expectedMessage.Message, result.Result.Message);
+        //     Assert.IsNull(result.Result.Data);
+        // }
 
         [Test]
         public void Given_User_Without_AddressCity_When_save_Then_Return_message_Miss_AddressCity()
@@ -585,7 +585,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var expectedMessage = "Erro ao salvar usuario";
 
-            _userRepositoryMock.Setup(x => x.Save<object>(userComplet))
+            _userRepositoryMock.Setup(x => x.Save<User>(userComplet))
                 .Throws(new SaveUserException(expectedMessage));
 
             // Act
@@ -602,7 +602,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var expectedMessage = "Erro ao estabelecer conexao com o banco.";
 
-            _userRepositoryMock.Setup(x => x.Save<object>(userComplet))
+            _userRepositoryMock.Setup(x => x.Save<User>(userComplet))
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
@@ -766,24 +766,24 @@ namespace Prime.UnitTests.Services
             Assert.IsNull(result.Result.Data);
         }
 
-        [Test]
-        public async Task Given_User_Without_Status_When_UbpdateUserById_Then_Return_Message_Miss_Status()
-        {
-            //Arrange
-            var id = this.userComplet.Id;
-            this.userComplet.Status = null;
-            User userUpdated = this.userComplet;
-            userUpdated.Name = "Nome Atualizado";
+        // [Test]
+        // public async Task Given_User_Without_Status_When_UbpdateUserById_Then_Return_Message_Miss_Status()
+        // {
+        //     //Arrange
+        //     var id = this.userComplet.Id;
+        //     this.userComplet.Status = null;
+        //     User userUpdated = this.userComplet;
+        //     userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Status de Usuário é Obrigatório.";
+        //     var expectedMessage = "Status de Usuário é Obrigatório.";
 
-            //Act
-            var result = _userService.UpdateByIdAsync(userUpdated);
+        //     //Act
+        //     var result = _userService.UpdateByIdAsync(userUpdated);
 
-            //Assert
-            Assert.AreEqual(expectedMessage, result.Result.Message);
-            Assert.IsNull(result.Result.Data);
-        }
+        //     //Assert
+        //     Assert.AreEqual(expectedMessage, result.Result.Message);
+        //     Assert.IsNull(result.Result.Data);
+        // }
 
         [Test]
         public async Task Given_User_Without_Address_When_UbpdateUserById_Then_Return_Message_Miss_Address()
@@ -899,24 +899,24 @@ namespace Prime.UnitTests.Services
             Assert.IsNull(result.Result.Data);
         }
 
-        [Test]
-        public async Task Given_User_Without_Address_ReferencePoint_When_UbpdateUserById_Then_Return_Message_Miss_Address_ReferencePoint()
-        {
-            //Arrange
-            var id = this.userComplet.Id;
-            this.userComplet.Address.ReferencePoint = string.Empty;
-            User userUpdated = this.userComplet;
-            userUpdated.Name = "Nome Atualizado";
+        // [Test]
+        // public async Task Given_User_Without_Address_ReferencePoint_When_UbpdateUserById_Then_Return_Message_Miss_Address_ReferencePoint()
+        // {
+        //     //Arrange
+        //     var id = this.userComplet.Id;
+        //     this.userComplet.Address.ReferencePoint = string.Empty;
+        //     User userUpdated = this.userComplet;
+        //     userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Ponto de referência é Obrigatório.";
+        //     var expectedMessage = "Ponto de referência é Obrigatório.";
 
-            //Act
-            var result = _userService.UpdateByIdAsync(userUpdated);
+        //     //Act
+        //     var result = _userService.UpdateByIdAsync(userUpdated);
 
-            //Assert
-            Assert.AreEqual(expectedMessage, result.Result.Message);
-            Assert.IsNull(result.Result.Data);
-        }
+        //     //Assert
+        //     Assert.AreEqual(expectedMessage, result.Result.Message);
+        //     Assert.IsNull(result.Result.Data);
+        // }
 
         [Test]
         public async Task Given_User_Without_Address_City_When_UbpdateUserById_Then_Return_Message_Miss_Address_City()
@@ -956,43 +956,43 @@ namespace Prime.UnitTests.Services
             Assert.IsNull(result.Result.Data);
         }
 
-        [Test]
-        public async Task Given_User_Without_Contact_When_UbpdateUserById_Then_Return_Message_Miss_Contact()
-        {
-            //Arrange
-            var id = this.userComplet.Id;
-            this.userComplet.Contact = null;
-            User userUpdated = this.userComplet;
-            userUpdated.Name = "Nome Atualizado";
+        // [Test]
+        // public async Task Given_User_Without_Contact_When_UbpdateUserById_Then_Return_Message_Miss_Contact()
+        // {
+        //     //Arrange
+        //     var id = this.userComplet.Id;
+        //     this.userComplet.Contact = null;
+        //     User userUpdated = this.userComplet;
+        //     userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Contato é Obrigatório.";
+        //     var expectedMessage = "Contato é Obrigatório.";
 
-            //Act
-            var result = _userService.UpdateByIdAsync(userUpdated);
+        //     //Act
+        //     var result = _userService.UpdateByIdAsync(userUpdated);
 
-            //Assert
-            Assert.AreEqual(expectedMessage, result.Result.Message);
-            Assert.IsNull(result.Result.Data);
-        }
+        //     //Assert
+        //     Assert.AreEqual(expectedMessage, result.Result.Message);
+        //     Assert.IsNull(result.Result.Data);
+        // }
 
-        [Test]
-        public async Task Given_User_Without_Contact_Email_When_UbpdateUserById_Then_Return_Message_Miss_Contact_Email()
-        {
-            //Arrange
-            var id = this.userComplet.Id;
-            this.userComplet.Contact.Email = string.Empty;
-            User userUpdated = this.userComplet;
-            userUpdated.Name = "Nome Atualizado";
+        // [Test]
+        // public async Task Given_User_Without_Contact_Email_When_UbpdateUserById_Then_Return_Message_Miss_Contact_Email()
+        // {
+        //     //Arrange
+        //     var id = this.userComplet.Id;
+        //     this.userComplet.Contact.Email = string.Empty;
+        //     User userUpdated = this.userComplet;
+        //     userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Email é Obrigatório.";
+        //     var expectedMessage = "Email é Obrigatório.";
 
-            //Act
-            var result = _userService.UpdateByIdAsync(userUpdated);
+        //     //Act
+        //     var result = _userService.UpdateByIdAsync(userUpdated);
 
-            //Assert
-            Assert.AreEqual(expectedMessage, result.Result.Message);
-            Assert.IsNull(result.Result.Data);
-        }
+        //     //Assert
+        //     Assert.AreEqual(expectedMessage, result.Result.Message);
+        //     Assert.IsNull(result.Result.Data);
+        // }
 
         [Test]
         public async Task Given_User_Without_Contact_PhoneNumber_When_UbpdateUserById_Then_Return_Message_Miss_Contact_PhoneNumber()
@@ -1032,81 +1032,81 @@ namespace Prime.UnitTests.Services
             Assert.IsNull(result.Result.Data);
         }
 
-        [Test]
-        public async Task Given_User_Without_UserConfirmation_When_UbpdateUserById_Then_Return_message_Miss_UserConfirmation()
-        {
-            //Arrange
-            var id = this.userComplet.Id;
-            this.userComplet.UserConfirmation = null;
-            User userUpdated = this.userComplet;
-            userUpdated.Name = "Nome Atualizado";
+        // [Test]
+        // public async Task Given_User_Without_UserConfirmation_When_UbpdateUserById_Then_Return_message_Miss_UserConfirmation()
+        // {
+        //     //Arrange
+        //     var id = this.userComplet.Id;
+        //     this.userComplet.UserConfirmation = null;
+        //     User userUpdated = this.userComplet;
+        //     userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "UserConfirmation é Obrigatório.";
+        //     var expectedMessage = "UserConfirmation é Obrigatório.";
 
-            //Act
-            var result = _userService.UpdateByIdAsync(userUpdated);
+        //     //Act
+        //     var result = _userService.UpdateByIdAsync(userUpdated);
 
-            //Assert
-            Assert.AreEqual(expectedMessage, result.Result.Message);
-            Assert.IsNull(result.Result.Data);
-        }
+        //     //Assert
+        //     Assert.AreEqual(expectedMessage, result.Result.Message);
+        //     Assert.IsNull(result.Result.Data);
+        // }
 
-        [Test]
-        public async Task Given_User_Without_EmailConfirmationCode_When_UbpdateUserById_Then_Return_message_Miss_EmailConfirmationCode()
-        {
-            //Arrange
-            var id = this.userComplet.Id;
-            this.userComplet.UserConfirmation.EmailConfirmationCode = null;
-            User userUpdated = this.userComplet;
-            userUpdated.Name = "Nome Atualizado";
+        // [Test]
+        // public async Task Given_User_Without_EmailConfirmationCode_When_UbpdateUserById_Then_Return_message_Miss_EmailConfirmationCode()
+        // {
+        //     //Arrange
+        //     var id = this.userComplet.Id;
+        //     this.userComplet.UserConfirmation.EmailConfirmationCode = null;
+        //     User userUpdated = this.userComplet;
+        //     userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Código de Confirmação de Email é Obrigatório.";
+        //     var expectedMessage = "Código de Confirmação de Email é Obrigatório.";
 
-            //Act
-            var result = _userService.UpdateByIdAsync(userUpdated);
+        //     //Act
+        //     var result = _userService.UpdateByIdAsync(userUpdated);
 
-            //Assert
-            Assert.AreEqual(expectedMessage, result.Result.Message);
-            Assert.IsNull(result.Result.Data);
-        }
+        //     //Assert
+        //     Assert.AreEqual(expectedMessage, result.Result.Message);
+        //     Assert.IsNull(result.Result.Data);
+        // }
 
-        [Test]
-        public async Task Given_User_Without_EmailConfirmationExpirationDate_When_UbpdateUserById_Then_Return_message_Miss_EmailConfirmationExpirationDate()
-        {
-            //Arrange
-            var id = this.userComplet.Id;
-            this.userComplet.UserConfirmation.EmailConfirmationExpirationDate = null;
-            User userUpdated = this.userComplet;
-            userUpdated.Name = "Nome Atualizado";
+        // [Test]
+        // public async Task Given_User_Without_EmailConfirmationExpirationDate_When_UbpdateUserById_Then_Return_message_Miss_EmailConfirmationExpirationDate()
+        // {
+        //     //Arrange
+        //     var id = this.userComplet.Id;
+        //     this.userComplet.UserConfirmation.EmailConfirmationExpirationDate = null;
+        //     User userUpdated = this.userComplet;
+        //     userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Data de Expiração de Código de Confirmação de Email é Obrigatório.";
+        //     var expectedMessage = "Data de Expiração de Código de Confirmação de Email é Obrigatório.";
 
-            //Act
-            var result = _userService.UpdateByIdAsync(userUpdated);
+        //     //Act
+        //     var result = _userService.UpdateByIdAsync(userUpdated);
 
-            //Assert
-            Assert.AreEqual(expectedMessage, result.Result.Message);
-            Assert.IsNull(result.Result.Data);
-        }
+        //     //Assert
+        //     Assert.AreEqual(expectedMessage, result.Result.Message);
+        //     Assert.IsNull(result.Result.Data);
+        // }
 
-        [Test]
-        public async Task Given_User_Without_PhoneVerified_When_UbpdateUserById_Then_Return_message_Miss_PhoneVerified()
-        {
-            //Arrange
-            var id = this.userComplet.Id;
-            this.userComplet.UserConfirmation.PhoneVerified = null;
-            User userUpdated = this.userComplet;
-            userUpdated.Name = "Nome Atualizado";
+        // [Test]
+        // public async Task Given_User_Without_PhoneVerified_When_UbpdateUserById_Then_Return_message_Miss_PhoneVerified()
+        // {
+        //     //Arrange
+        //     var id = this.userComplet.Id;
+        //     this.userComplet.UserConfirmation.PhoneVerified = null;
+        //     User userUpdated = this.userComplet;
+        //     userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Status de Verificação de Telefone é Obrigatório.";
+        //     var expectedMessage = "Status de Verificação de Telefone é Obrigatório.";
 
-            //Act
-            var result = _userService.UpdateByIdAsync(userUpdated);
+        //     //Act
+        //     var result = _userService.UpdateByIdAsync(userUpdated);
 
-            //Assert
-            Assert.AreEqual(expectedMessage, result.Result.Message);
-            Assert.IsNull(result.Result.Data);
-        }
+        //     //Assert
+        //     Assert.AreEqual(expectedMessage, result.Result.Message);
+        //     Assert.IsNull(result.Result.Data);
+        // }
 
         [Test]
         public async Task Given_UserId_NotExistent_When_UbpdateUserById_Then_Return_message_UserNotFound()
@@ -1129,23 +1129,23 @@ namespace Prime.UnitTests.Services
             Assert.IsNull(result.Result.Data);
         }
 
-        [Test]
-        public async Task Given_UserId_InvalidEmail_When_UbpdateUserById_Then_Return_message_InvalidEmailFormat()
-        {
-            //Arrange
-            User userUpdated = this.userComplet;
-            var id = userUpdated.Id;
-            userUpdated.Contact.Email = "nao eh um email";
+        // [Test]
+        // public async Task Given_UserId_InvalidEmail_When_UbpdateUserById_Then_Return_message_InvalidEmailFormat()
+        // {
+        //     //Arrange
+        //     User userUpdated = this.userComplet;
+        //     var id = userUpdated.Id;
+        //     userUpdated.Contact.Email = "nao eh um email";
 
-            var expectedMessage = "Formato de email inválido.";
+        //     var expectedMessage = "Formato de email inválido.";
 
-            //Act
-            var result = _userService.UpdateByIdAsync(userUpdated);
+        //     //Act
+        //     var result = _userService.UpdateByIdAsync(userUpdated);
 
-            //Assert
-            Assert.AreEqual(expectedMessage, result.Result.Message);
-            Assert.IsNull(result.Result.Data);
-        }
+        //     //Assert
+        //     Assert.AreEqual(expectedMessage, result.Result.Message);
+        //     Assert.IsNull(result.Result.Data);
+        // }
 
         [Test]
         public async Task Given_Error_On_Update_When_UbpdateUserById_Then_Return_Message_UpdateUserException()

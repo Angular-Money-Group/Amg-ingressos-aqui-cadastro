@@ -131,11 +131,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 ValidateModelSave(userSave);
                 
                 if (!await IsDocumentIdAvailable(userSave.DocumentId))
-                    throw new EmailAlreadyExists("Documento de Identificação já cadastrado.");
+                    throw new DocumentIdAlreadyExists("Documento de Identificação já cadastrado.");
                 
                 if (!await IsEmailAvailable(userSave.Contact.Email))
                     throw new EmailAlreadyExists("Email Indisponível.");
-                //criptografar senha
+                
                 _messageReturn.Data = await _userRepository.Save<User>(userSave);
             }
             catch (UserEmptyFieldsException ex)
@@ -220,7 +220,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 throw ex;
             }
-
             return _messageReturn;
         }
 
@@ -259,9 +258,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         private void ValidateModelSave(User userSave)
         {
+            userSave.Status = 0;
             userSave.ValidateNameFormat();
             userSave.ValidateDocumentIdFormat();
-            userSave.ValidateStatusUserEnumFormat();
             userSave.ValidateTypeUserEnumFormat();
             userSave.ValidateAdressFormat();
             userSave.validateConctact();
@@ -272,11 +271,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             userUpdated.Id.ValidateIdMongo();
             userUpdated.ValidateNameFormat();
             userUpdated.ValidateDocumentIdFormat();
-            userUpdated.ValidateStatusUserEnumFormat();
-            userUpdated.ValidateTypeUserEnumFormat();
             userUpdated.ValidateAdressFormat();
-            userUpdated.validateConctact();
-            userUpdated.validateUserConfirmation();
+            User.ValidatePhoneNumberFormat(userUpdated.Contact.PhoneNumber);
             userUpdated.validatePasswordFormat();
         }
     }
