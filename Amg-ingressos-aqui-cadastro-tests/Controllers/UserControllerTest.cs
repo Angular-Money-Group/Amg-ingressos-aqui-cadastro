@@ -24,6 +24,7 @@ namespace Prime.UnitTests.Controllers
         private Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
         private Mock<ILogger<UserController>> _loggerMock = new Mock<ILogger<UserController>>();
         private User userComplet;
+        private UserDTO userDTO;
 
 
         [SetUp]
@@ -32,6 +33,7 @@ namespace Prime.UnitTests.Controllers
             this._userService = new UserService(_userRepositoryMock.Object);
             this._userController = new UserController(_loggerMock.Object, this._userService);
             this.userComplet = FactoryUser.SimpleUser();
+            this.userDTO = new UserDTO(this.userComplet);
         }
 
 
@@ -43,18 +45,18 @@ namespace Prime.UnitTests.Controllers
         public async Task Given_complet_user_When_SaveUserAsync_Then_return_Ok()
         {
             // Arrange
-            var expectedResult = userComplet.Id;
-            _userRepositoryMock.Setup(x => x.Save<object>(userComplet))
-                .Returns(Task.FromResult(expectedResult as object));
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<object>("Contact.Email", userComplet.Contact.Email))
+            var messageReturn = userComplet.Id;
+
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("DocumentId", userComplet.DocumentId))
                 .Returns(Task.FromResult(false));
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<object>("DocumentId", userComplet.DocumentId))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", userComplet.Contact.Email))
                 .Returns(Task.FromResult(false));
+            _userRepositoryMock.Setup(x => x.Save<User>(It.IsAny<User>())).Returns(Task.FromResult(messageReturn as object));
 
             // Act
-            var result = (await _userController.SaveUserAsync(userComplet) as ObjectResult);
+            var result = (await _userController.SaveUserAsync(this.userDTO) as ObjectResult);
             
-            Assert.AreEqual(expectedResult, result?.Value);
+            Assert.AreEqual(messageReturn, result?.Value);
             Assert.AreEqual(200, result?.StatusCode);
         }
 
@@ -62,14 +64,14 @@ namespace Prime.UnitTests.Controllers
         public async Task Given_user_without_name_When_SaveUserAsync_Then_return_message_miss_name()
         {
             //Arrange
-            this.userComplet.Name = string.Empty;
+            this.userDTO.Name = string.Empty;
             var expectedMessage = new MessageReturn() { Data = string.Empty, Message = "Nome é Obrigatório." };
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<object>("Contact.Email", userComplet.Contact.Email))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", userDTO.Contact.Email))
                 .Returns(Task.FromResult(false));
 
             //Act
-            var result = (await _userController.SaveUserAsync(userComplet) as ObjectResult);
+            var result = (await _userController.SaveUserAsync(this.userDTO) as ObjectResult);
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result?.Value);
@@ -82,11 +84,11 @@ namespace Prime.UnitTests.Controllers
             //Arrange
             // var expectedLogMessage = MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + userComplet.Contact.Email;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<object>("Contact.Email", userComplet.Contact.Email))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", userComplet.Contact.Email))
                 .Returns(Task.FromResult(true));
 
             //Act
-            var result = (await _userController.SaveUserAsync(userComplet) as OkResult);
+            var result = (await _userController.SaveUserAsync(this.userDTO) as OkResult);
 
             //Assert
             Assert.IsInstanceOf<OkResult>(result);
@@ -99,11 +101,11 @@ namespace Prime.UnitTests.Controllers
             // Arrange
             var expectedMessage = MessageLogErrors.saveUserMessage;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<object>("Contact.Email", userComplet.Contact.Email))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", userComplet.Contact.Email))
                 .Throws(new Exception("Erro ao conectar-se ao banco, qualque frase aqui cabe"));
 
             //Act
-            var result = (await _userController.SaveUserAsync(userComplet) as ObjectResult);
+            var result = (await _userController.SaveUserAsync(this.userDTO) as ObjectResult);
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -120,14 +122,17 @@ namespace Prime.UnitTests.Controllers
         {
             //Arrange
             var expectedResult = FactoryUser.ListSimpleUser();
-            _userRepositoryMock.Setup(x => x.GetAllUsers<object>()).Returns(Task.FromResult(expectedResult as IEnumerable<object>));
+            _userRepositoryMock.Setup(x => x.GetAllUsers<User>()).Returns(Task.FromResult(expectedResult as List<User>));
 
             //Act
             var result = await _userController.GetAllUsersAsync() as ObjectResult;
-
+            var list = result.Value as IEnumerable<UserDTO>;
+            
             //Assert
-            Assert.AreEqual(expectedResult, result?.Value);
             Assert.AreEqual(200, result?.StatusCode);
+            foreach (object user in list) {
+                Assert.IsInstanceOf<UserDTO>(user);
+            }
         }
 
         [Test]
@@ -135,7 +140,7 @@ namespace Prime.UnitTests.Controllers
         {
             //Arrange
             var expectedResult = new NoContentResult();
-            _userRepositoryMock.Setup(x => x.GetAllUsers<object>())
+            _userRepositoryMock.Setup(x => x.GetAllUsers<User>())
                 .Throws(new GetAllUserException("Usuários não encontrados"));
 
             //Act
@@ -151,7 +156,7 @@ namespace Prime.UnitTests.Controllers
         {
             //Arrange
             var expectedMessage = MessageLogErrors.GetAllUserMessage;
-            _userRepositoryMock.Setup(x => x.GetAllUsers<object>())
+            _userRepositoryMock.Setup(x => x.GetAllUsers<User>())
                 .Throws(new Exception("Erro ao conectar-se ao banco"));
 
             //Act
@@ -171,17 +176,16 @@ namespace Prime.UnitTests.Controllers
         public async Task Given_iduser_When_FindByIdUserAsync_Then_return_Ok()
         {
             //Arrange
-            this.userComplet = FactoryUser.SimpleUser();
-            var id = this.userComplet.Id;
+            var id = this.userDTO.Id;
 
-            _userRepositoryMock.Setup(x => x.FindByField<object>("Id", id))
-                .Returns(Task.FromResult(this.userComplet as object));
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", id))
+                .Returns(Task.FromResult(this.userComplet));
 
             //Act
             var result = await _userController.FindByIdUserAsync(id) as ObjectResult;
 
             //Assert
-            Assert.AreEqual(this.userComplet, result?.Value);
+            Assert.IsInstanceOf<UserDTO>(result?.Value);
             Assert.AreEqual(200, result?.StatusCode);
         }
 
@@ -225,7 +229,7 @@ namespace Prime.UnitTests.Controllers
             //Arrange
             var idUser = "6442dcb6523d52533aeb1ae4";
             var expectedMessage = "Usuario nao encontrado por Id.";
-            _userRepositoryMock.Setup(x => x.FindByField<object>("Id", idUser))
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", idUser))
                 .Throws(new UserNotFound(expectedMessage));
 
             //Act
@@ -243,7 +247,7 @@ namespace Prime.UnitTests.Controllers
             var idUser = userComplet.Id;
             
             var expectedMessage = MessageLogErrors.FindByIdUserMessage;
-            _userRepositoryMock.Setup(x => x.FindByField<object>("Id", idUser))
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", idUser))
                 .Throws(new Exception("Erro ao se conectar com o banco"));
 
 
@@ -264,16 +268,16 @@ namespace Prime.UnitTests.Controllers
         public async Task Given_iduser_When_UpdateByIdUserAsync_Then_return_Ok()
         {
             //Arrange
-            var id = this.userComplet.Id;
-            User userUpdated = this.userComplet;
+            var id = this.userDTO.Id;
+            UserDTO userUpdated = this.userDTO;
             userUpdated.Name = "nome atualizado";
 
             var expectedResult = "Usuário Atualizado.";
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
             .Returns(Task.FromResult(true));
 
-            _userRepositoryMock.Setup(x => x.UpdateUser<object>(id, userUpdated))
+            _userRepositoryMock.Setup(x => x.UpdateUser<User>(id, It.IsAny<User>()))
                                 .Returns(Task.FromResult(expectedResult as object));
 
             //Act
@@ -286,18 +290,18 @@ namespace Prime.UnitTests.Controllers
 
 
         [Test]
-        public async Task Given_user_with_Empty_Field_When_UbpdateUserById_Then_return_UserEmptyFieldsException()
+        public async Task Given_user_with_Empty_Field_When_UbpdateUserById_Then_return_EmptyFieldsException()
         {
             //Arrange
-            var id = this.userComplet.Id;
-            User userUpdated = this.userComplet;
+            var id = this.userDTO.Id;
+            UserDTO userUpdated = this.userDTO;
             userUpdated.Name = string.Empty;
             userUpdated.DocumentId = "111.111.111-11";
 
             var expectedMessage = "Nome é Obrigatório.";
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
             .Returns(Task.FromResult(true));
             
             var result = await _userController.UpdateByIdUserAsync(id, userUpdated) as ObjectResult;
@@ -319,11 +323,11 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = MessageLogErrors.updateUserMessage;
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
                 .Throws(new Exception(expectedMessage));
 
             //Act
-            var result = await _userController.UpdateByIdUserAsync(id, userUpdated) as ObjectResult;
+            var result = await _userController.UpdateByIdUserAsync(id, this.userDTO) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -340,11 +344,11 @@ namespace Prime.UnitTests.Controllers
 
             var expectedMessage = "Id de usuário não encontrado.";
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
             .Returns(Task.FromResult(false));
 
             //Act
-            var result = await _userController.UpdateByIdUserAsync(id, userUpdated) as ObjectResult;
+            var result = await _userController.UpdateByIdUserAsync(id, this.userDTO) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -363,7 +367,7 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = "Id é Obrigatório.";
 
             //Act
-            var result = await _userController.UpdateByIdUserAsync(id, userUpdated) as ObjectResult;
+            var result = await _userController.UpdateByIdUserAsync(id, this.userDTO) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -384,7 +388,7 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = "Usuário Deletado.";
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
             .Returns(Task.FromResult(true));
 
             _userRepositoryMock.Setup(x => x.Delete<object>(id))
@@ -406,7 +410,7 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = "Id é obrigatório e está menor que 24 digitos.";
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
             .Returns(Task.FromResult(true));
 
             _userRepositoryMock.Setup(x => x.Delete<object>(id))
@@ -429,7 +433,7 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = "Id é Obrigatório.";
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
             .Returns(Task.FromResult(true));
 
             _userRepositoryMock.Setup(x => x.Delete<object>(id))
@@ -452,7 +456,7 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = MessageLogErrors.deleteUserMessage;
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
                 .Throws(new Exception(expectedMessage));
 
             

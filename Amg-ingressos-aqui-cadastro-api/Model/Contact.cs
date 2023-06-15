@@ -9,13 +9,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </summary> 
         [BsonElement("Email")]
         [JsonPropertyName("Email")]
-        public string Email { get; set; }
+        public string? Email { get; set; }
 
         /// <summary>
         /// Número para contato 
         /// </summary>    
         [BsonElement("PhoneNumber")]
         [JsonPropertyName("PhoneNumber")]
-        public string PhoneNumber { get; set; }
+        public string? PhoneNumber { get; set; }
     }
 }

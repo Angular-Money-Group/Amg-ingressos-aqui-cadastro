@@ -1,5 +1,5 @@
 using Amg_ingressos_aqui_cadastro_api.Consts;
-using Amg_ingressos_aqui_cadastro_api.Enum;
+using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
@@ -31,12 +31,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
         [Route("createUser")]
-        public async Task<IActionResult> SaveUserAsync([FromBody] User userObject)
+        public async Task<IActionResult> SaveUserAsync([FromBody] UserDTO userObject)
         {
             try
             {
                 MessageReturn result = await _userService.SaveAsync(userObject);
-                // userObject.Password = hashPassword;
+                // userDTOObject.Password = hashPassword;
                 if (hasRunnedSuccessfully(result))
                     return Ok(result.Data);
                 else
@@ -74,7 +74,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             {
                 var result = await _userService.GetAllUsersAsync();
                 if (hasRunnedSuccessfully(result))
-                    return Ok(result.Data as List<User>);
+                    return Ok(result.Data as List<UserDTO>);
                 else
                     throw new GetAllUserException(result.Message);
             }
@@ -106,7 +106,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             {
                 var result = await _userService.FindByIdAsync(id);
                 if(hasRunnedSuccessfully(result))
-                    return Ok(result.Data as User);
+                    return Ok(result.Data as UserDTO);
                 else
                     throw new UserNotFound(result.Message);
             }
@@ -122,7 +122,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         }
 
         /// <summary>
-        /// Busca usuario pelo ID
+        /// Atualiza usuario pelo ID
         /// </summary>
         /// <param name="id"> id do usuario</param>
         /// <param name="usuarioUpdated">Corpo usuario a ser Gravado</param>
@@ -132,12 +132,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpPut]
         [Route("updateUserById")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateByIdUserAsync(string id, [FromBody] User usuarioUpdated)
+        public async Task<IActionResult> UpdateByIdUserAsync(string id, [FromBody] UserDTO usuarioUpdated)
         {
             try
             {
                 if (usuarioUpdated is null)
-                    throw new UserEmptyFieldsException("Json de Usuario veio Nulo.");
+                    throw new EmptyFieldsException("Json de Usuario veio Nulo.");
                 usuarioUpdated.Id = id;
                 MessageReturn result = await _userService.UpdateByIdAsync(usuarioUpdated);
 
@@ -146,7 +146,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 else
                     throw new UpdateUserException(result.Message);
             }
-            catch (UserEmptyFieldsException ex)
+            catch (EmptyFieldsException ex)
             {
                 return BadRequest(ex.Message);
             }

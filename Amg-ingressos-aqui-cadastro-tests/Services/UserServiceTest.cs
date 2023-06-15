@@ -17,6 +17,7 @@ namespace Prime.UnitTests.Services
         private UserService _userService;
         private Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
         private User userComplet;
+        private UserDTO userDTO;
 
 
         [SetUp]
@@ -24,6 +25,7 @@ namespace Prime.UnitTests.Services
         {
             this._userService = new UserService(_userRepositoryMock.Object);
             this.userComplet = FactoryUser.SimpleUser();
+            this.userDTO = new UserDTO(this.userComplet);
         }
 
 
@@ -32,18 +34,22 @@ namespace Prime.UnitTests.Services
         /**************/
 
         [Test]
-        public void Given_Events_When_GetAllEvents_Then_Return_list_objects_events()
+        public void Given_Events_When_GetAllUsers_Then_Return_list_objects_users()
         {
             //Arrange
             var messageReturn = FactoryUser.ListSimpleUser();
-            _userRepositoryMock.Setup(x => x.GetAllUsers<object>()).Returns(Task.FromResult(messageReturn as IEnumerable<object>));
+            _userRepositoryMock.Setup(x => x.GetAllUsers<User>())
+                .Returns(Task.FromResult<List<User>>(messageReturn));
 
             //Act
             var result = _userService.GetAllUsersAsync();
+            var list = result.Result.Data as IEnumerable<UserDTO>;
 
             //Assert
-            Assert.AreEqual(messageReturn, result.Result.Data);
             Assert.IsEmpty(result.Result.Message);
+            foreach (object user in list) {
+                Assert.IsInstanceOf<UserDTO>(user);
+            }
         }
 
         [Test]
@@ -84,16 +90,15 @@ namespace Prime.UnitTests.Services
         public void Given_iduser_When_FindByIdUser_Then_Return_Ok()
         {
             //Arrange
-            this.userComplet = FactoryUser.SimpleUser();
-            var id = this.userComplet.Id;
+            var id = this.userDTO.Id;
 
-            _userRepositoryMock.Setup(x => x.FindByField<object>("Id", id)).Returns(Task.FromResult(this.userComplet as object));
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", id)).Returns(Task.FromResult(this.userDTO.makeUser()));
 
             //Act
             var result = _userService.FindByIdAsync(id);
 
             //Assert
-            Assert.AreEqual(this.userComplet, result.Result.Data);
+            Assert.IsInstanceOf<UserDTO>(result.Result.Data);
             Assert.IsEmpty(result.Result.Message);
         }
 
@@ -174,14 +179,14 @@ namespace Prime.UnitTests.Services
             this.userComplet = FactoryUser.SimpleUser();
             var email = this.userComplet.Contact.Email;
 
-            _userRepositoryMock.Setup(x => x.FindByField<object>("Contact.Email", email)).
-                Returns(Task.FromResult(this.userComplet as object));
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Contact.Email", email)).
+                Returns(Task.FromResult(this.userComplet));
 
             //Act
             var result = _userService.FindByEmailAsync(email);
             
             //Assert
-            Assert.AreEqual(this.userComplet, result.Result.Data);
+            Assert.IsInstanceOf<UserDTO>(result.Result.Data);
             Assert.IsEmpty(result.Result.Message);
         }
 
@@ -262,7 +267,7 @@ namespace Prime.UnitTests.Services
             this.userComplet = FactoryUser.SimpleUser();
             var email = this.userComplet.Contact.Email;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Contact.Email", email))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", email))
                 .Returns(Task.FromResult(false));
 
             //Act
@@ -279,7 +284,7 @@ namespace Prime.UnitTests.Services
             this.userComplet = FactoryUser.SimpleUser();
             var email = this.userComplet.Contact.Email;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Contact.Email", email))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", email))
                 .Returns(Task.FromResult(true));
 
             //Act
@@ -296,7 +301,7 @@ namespace Prime.UnitTests.Services
             var email = userComplet.Contact.Email;
             var expectedMessage = "erro ao conectar na base de dados";
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Contact.Email", email))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", email))
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
@@ -314,10 +319,15 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             var messageReturn = userComplet.Id;
-            _userRepositoryMock.Setup(x => x.Save<User>(this.userComplet)).Returns(Task.FromResult(messageReturn as object));
+
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("DocumentId", userComplet.DocumentId))
+                .Returns(Task.FromResult(false));
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", userComplet.Contact.Email))
+                .Returns(Task.FromResult(false));
+            _userRepositoryMock.Setup(x => x.Save<User>(It.IsAny<User>())).Returns(Task.FromResult(messageReturn as object));
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(this.userDTO);
 
             //Assert
             Assert.AreEqual(messageReturn, result.Result.Data);
@@ -328,11 +338,12 @@ namespace Prime.UnitTests.Services
         public void Given_User_Without_name_When_save_Then_Return_message_Miss_name()
         {
             //Arrange
-            this.userComplet.Name = string.Empty;
+            UserDTO user = new UserDTO(this.userComplet);
+            user.Name = string.Empty;
             var expectedMessage = new MessageReturn() { Message = "Nome é Obrigatório." };
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(user);
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -347,7 +358,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn() { Message = "Documento de Identificação é Obrigatório." };
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -358,15 +369,21 @@ namespace Prime.UnitTests.Services
         public void Given_User_Without_Status_When_save_Then_Save_With_Status_Active()
         {
             //Arrange
-            this.userComplet.Status = null;
-            var expectedMessage = new MessageReturn("Status de Usuário é Obrigatório.");
+            this.userDTO.Status = null;
+            var messageReturn = userComplet.Id;
+
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", userComplet.Id))
+                .Returns(Task.FromResult(false));
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", userComplet.Contact.Email))
+                .Returns(Task.FromResult(false));
+            _userRepositoryMock.Setup(x => x.Save<User>(It.IsAny<User>())).Returns(Task.FromResult(messageReturn as object));
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
+            Assert.AreEqual(messageReturn, result.Result.Data);
             Assert.IsEmpty(result.Result.Message);
-            Assert.AreEqual(StatusUserEnum.Active, this.userComplet.Status);
         }
 
         [Test]
@@ -377,7 +394,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn("Endereço é Obrigatório.");
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -389,10 +406,10 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             this.userComplet.Address.Cep = string.Empty;
-            var expectedMessage = new MessageReturn() { Message = "CEP é Obrigatório." };
+            var expectedMessage = new MessageReturn() { Message = "Em Endereço, CEP é Obrigatório." };
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -404,10 +421,10 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             this.userComplet.Address.AddressDescription = string.Empty;
-            var expectedMessage = new MessageReturn() { Message = "Logradouro do Endereço é Obrigatório." };
+            var expectedMessage = new MessageReturn() { Message = "Em Endereço, Logradouro é Obrigatório." };
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -419,10 +436,10 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             this.userComplet.Address.Number = string.Empty;
-            var expectedMessage = new MessageReturn() { Message = "Número Endereço é Obrigatório." };
+            var expectedMessage = new MessageReturn() { Message = "Em Endereço, Número é Obrigatório." };
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -434,10 +451,10 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             this.userComplet.Address.Neighborhood = string.Empty;
-            var expectedMessage = new MessageReturn() { Message = "Vizinhança é Obrigatório." };
+            var expectedMessage = new MessageReturn() { Message = "Em Endereço, Bairro é Obrigatório." };
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -449,10 +466,10 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             this.userComplet.Address.Complement = string.Empty;
-            var expectedMessage = new MessageReturn() { Message = "Complemento é Obrigatório." };
+            var expectedMessage = new MessageReturn() { Message = "Em Endereço, Complemento é Obrigatório." };
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -467,7 +484,7 @@ namespace Prime.UnitTests.Services
         //     var expectedMessage = new MessageReturn() { Message = "Ponto de referência é Obrigatório." };
 
         //     //Act
-        //     var result = _userService.SaveAsync(this.userComplet);
+        //     var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
         //     //Assert
         //     Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -482,7 +499,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn("Em endereço, Cidade é Obrigatório.");
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -497,7 +514,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn("Em endereço, Estado é Obrigatório.");
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -512,7 +529,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn("Contato é Obrigatório.");
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -527,7 +544,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn() { Message = "Email é Obrigatório." };
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -542,7 +559,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn() { Message = "Telefone de Contato é Obrigatório." };
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -557,7 +574,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn() { Message = "Senha é Obrigatório." };
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -572,7 +589,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn("Formato de email inválido.");
 
             //Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(new UserDTO(this.userComplet));
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -585,11 +602,15 @@ namespace Prime.UnitTests.Services
             //Arrange
             var expectedMessage = "Erro ao salvar usuario";
 
-            _userRepositoryMock.Setup(x => x.Save<User>(userComplet))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", userComplet.Id))
+                .Returns(Task.FromResult(false));
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", userComplet.Contact.Email))
+                .Returns(Task.FromResult(false));
+            _userRepositoryMock.Setup(x => x.Save<User>(It.IsAny<User>()))
                 .Throws(new SaveUserException(expectedMessage));
 
             // Act
-            var result = _userService.SaveAsync(this.userComplet);
+            var result = _userService.SaveAsync(userDTO);
 
             //Assert
             Assert.AreEqual(expectedMessage, result.Result.Message);
@@ -602,11 +623,11 @@ namespace Prime.UnitTests.Services
             //Arrange
             var expectedMessage = "Erro ao estabelecer conexao com o banco.";
 
-            _userRepositoryMock.Setup(x => x.Save<User>(userComplet))
+            _userRepositoryMock.Setup(x => x.Save<User>(It.IsAny<User>()))
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
-            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.SaveAsync(userComplet));
+            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.SaveAsync(new UserDTO(userComplet)));
             Assert.AreEqual(expectedMessage, exception.Message);
         }
 
@@ -622,7 +643,7 @@ namespace Prime.UnitTests.Services
             this.userComplet = FactoryUser.SimpleUser();
             var id = this.userComplet.Id;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id)).Returns(Task.FromResult(true));
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id)).Returns(Task.FromResult(true));
 
             //Act
             var result = _userService.DoesIdExists(id);
@@ -638,7 +659,7 @@ namespace Prime.UnitTests.Services
             this.userComplet = FactoryUser.SimpleUser();
             var id = this.userComplet.Id;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id)).Returns(Task.FromResult(false));
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id)).Returns(Task.FromResult(false));
 
             //Act
             var result = _userService.DoesIdExists(id);
@@ -654,7 +675,7 @@ namespace Prime.UnitTests.Services
             var id = userComplet.Id;
             var expectedMessage = "erro ao conectar na base de dados";
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
@@ -673,19 +694,18 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             var id = this.userComplet.Id;
-            User userUpdated = this.userComplet;
-            userUpdated.Name = "nome atualizado";
+            this.userDTO.Name = "nome atualizado";
 
             var messageReturn = "Usuário Atualizado.";
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
             .Returns(Task.FromResult(true));
 
-            _userRepositoryMock.Setup(x => x.UpdateUser<object>(id, userUpdated))
+            _userRepositoryMock.Setup(x => x.UpdateUser<object>(id, It.IsAny<User>()))
                                 .Returns(Task.FromResult(messageReturn as object));
 
             //Act
-            var result = _userService.UpdateByIdAsync(userUpdated);
+            var result = _userService.UpdateByIdAsync(this.userDTO);
 
             //Assert
             Assert.AreEqual(messageReturn, result.Result.Data);
@@ -696,7 +716,7 @@ namespace Prime.UnitTests.Services
         public async Task Given_User_Without_Id_When_UbpdateUserById_Then_Return_message_Miss_Id()
         {
             //Arrange
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             userUpdated.Id = null;
             userUpdated.Name = "Nome Atualizado";
 
@@ -714,7 +734,7 @@ namespace Prime.UnitTests.Services
         public async Task Given_User_with_NotMongoId_When_UbpdateUserById_Then_Return_message_InvalidMongoId()
         {
             //Arrange
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             userUpdated.Id = "1234";
             userUpdated.Name = "Nome Atualizado";
 
@@ -734,7 +754,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.userComplet.Id;
             this.userComplet.Name = string.Empty;
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             userUpdated.DocumentId = "111.111.111-11";
 
             var expectedMessage = "Nome é Obrigatório.";
@@ -753,7 +773,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.userComplet.Id;
             this.userComplet.DocumentId = string.Empty;
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             userUpdated.Name = "Nome Atualizado";
 
             var expectedMessage = "Documento de Identificação é Obrigatório.";
@@ -772,7 +792,7 @@ namespace Prime.UnitTests.Services
         //     //Arrange
         //     var id = this.userComplet.Id;
         //     this.userComplet.Status = null;
-        //     User userUpdated = this.userComplet;
+        //     UserDTO userUpdated = new UserDTO(this.userComplet);
         //     userUpdated.Name = "Nome Atualizado";
 
         //     var expectedMessage = "Status de Usuário é Obrigatório.";
@@ -791,7 +811,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.userComplet.Id;
             this.userComplet.Address = null;
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             userUpdated.Name = "Nome Atualizado";
 
             var expectedMessage = "Endereço é Obrigatório.";
@@ -810,10 +830,10 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.userComplet.Id;
             this.userComplet.Address.Cep = string.Empty;
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "CEP é Obrigatório.";
+            var expectedMessage = "Em Endereço, CEP é Obrigatório.";
 
             //Act
             var result = _userService.UpdateByIdAsync(userUpdated);
@@ -829,10 +849,10 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.userComplet.Id;
             this.userComplet.Address.AddressDescription = string.Empty;
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Logradouro do Endereço é Obrigatório.";
+            var expectedMessage = "Em Endereço, Logradouro é Obrigatório.";
 
             //Act
             var result = _userService.UpdateByIdAsync(userUpdated);
@@ -848,10 +868,10 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.userComplet.Id;
             this.userComplet.Address.Number = string.Empty;
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Número Endereço é Obrigatório.";
+            var expectedMessage = "Em Endereço, Número é Obrigatório.";
 
             //Act
             var result = _userService.UpdateByIdAsync(userUpdated);
@@ -867,10 +887,10 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.userComplet.Id;
             this.userComplet.Address.Neighborhood = string.Empty;
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Vizinhança é Obrigatório.";
+            var expectedMessage = "Em Endereço, Bairro é Obrigatório.";
 
             //Act
             var result = _userService.UpdateByIdAsync(userUpdated);
@@ -886,10 +906,10 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.userComplet.Id;
             this.userComplet.Address.Complement = string.Empty;
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             userUpdated.Name = "Nome Atualizado";
 
-            var expectedMessage = "Complemento é Obrigatório.";
+            var expectedMessage = "Em Endereço, Complemento é Obrigatório.";
 
             //Act
             var result = _userService.UpdateByIdAsync(userUpdated);
@@ -905,7 +925,7 @@ namespace Prime.UnitTests.Services
         //     //Arrange
         //     var id = this.userComplet.Id;
         //     this.userComplet.Address.ReferencePoint = string.Empty;
-        //     User userUpdated = this.userComplet;
+        //     UserDTO userUpdated = new UserDTO(this.userComplet);
         //     userUpdated.Name = "Nome Atualizado";
 
         //     var expectedMessage = "Ponto de referência é Obrigatório.";
@@ -924,7 +944,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.userComplet.Id;
             this.userComplet.Address.City = string.Empty;
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             userUpdated.Name = "Nome Atualizado";
 
             var expectedMessage = "Em endereço, Cidade é Obrigatório.";
@@ -943,7 +963,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.userComplet.Id;
             this.userComplet.Address.State = string.Empty;
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             userUpdated.Name = "Nome Atualizado";
 
             var expectedMessage = "Em endereço, Estado é Obrigatório.";
@@ -962,7 +982,7 @@ namespace Prime.UnitTests.Services
         //     //Arrange
         //     var id = this.userComplet.Id;
         //     this.userComplet.Contact = null;
-        //     User userUpdated = this.userComplet;
+        //     UserDTO userUpdated = new UserDTO(this.userComplet);
         //     userUpdated.Name = "Nome Atualizado";
 
         //     var expectedMessage = "Contato é Obrigatório.";
@@ -981,7 +1001,7 @@ namespace Prime.UnitTests.Services
         //     //Arrange
         //     var id = this.userComplet.Id;
         //     this.userComplet.Contact.Email = string.Empty;
-        //     User userUpdated = this.userComplet;
+        //     UserDTO userUpdated = new UserDTO(this.userComplet);
         //     userUpdated.Name = "Nome Atualizado";
 
         //     var expectedMessage = "Email é Obrigatório.";
@@ -1000,7 +1020,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.userComplet.Id;
             this.userComplet.Contact.PhoneNumber = string.Empty;
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             userUpdated.Name = "Nome Atualizado";
 
             var expectedMessage = "Telefone de Contato é Obrigatório.";
@@ -1019,7 +1039,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.userComplet.Id;
             this.userComplet.Password = string.Empty;
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             userUpdated.Name = "Nome Atualizado";
 
             var expectedMessage = "Senha é Obrigatório.";
@@ -1038,7 +1058,7 @@ namespace Prime.UnitTests.Services
         //     //Arrange
         //     var id = this.userComplet.Id;
         //     this.userComplet.UserConfirmation = null;
-        //     User userUpdated = this.userComplet;
+        //     UserDTO userUpdated = new UserDTO(this.userComplet);
         //     userUpdated.Name = "Nome Atualizado";
 
         //     var expectedMessage = "UserConfirmation é Obrigatório.";
@@ -1057,7 +1077,7 @@ namespace Prime.UnitTests.Services
         //     //Arrange
         //     var id = this.userComplet.Id;
         //     this.userComplet.UserConfirmation.EmailConfirmationCode = null;
-        //     User userUpdated = this.userComplet;
+        //     UserDTO userUpdated = new UserDTO(this.userComplet);
         //     userUpdated.Name = "Nome Atualizado";
 
         //     var expectedMessage = "Código de Confirmação de Email é Obrigatório.";
@@ -1076,7 +1096,7 @@ namespace Prime.UnitTests.Services
         //     //Arrange
         //     var id = this.userComplet.Id;
         //     this.userComplet.UserConfirmation.EmailConfirmationExpirationDate = null;
-        //     User userUpdated = this.userComplet;
+        //     UserDTO userUpdated = new UserDTO(this.userComplet);
         //     userUpdated.Name = "Nome Atualizado";
 
         //     var expectedMessage = "Data de Expiração de Código de Confirmação de Email é Obrigatório.";
@@ -1095,7 +1115,7 @@ namespace Prime.UnitTests.Services
         //     //Arrange
         //     var id = this.userComplet.Id;
         //     this.userComplet.UserConfirmation.PhoneVerified = null;
-        //     User userUpdated = this.userComplet;
+        //     UserDTO userUpdated = new UserDTO(this.userComplet);
         //     userUpdated.Name = "Nome Atualizado";
 
         //     var expectedMessage = "Status de Verificação de Telefone é Obrigatório.";
@@ -1112,14 +1132,14 @@ namespace Prime.UnitTests.Services
         public async Task Given_UserId_NotExistent_When_UbpdateUserById_Then_Return_message_UserNotFound()
         {
             //Arrange
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             var id = userUpdated.Id;
             userUpdated.Name = "Nome Atualizado";
 
             var expectedMessage = "Id de usuário não encontrado.";
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
             .Returns(Task.FromResult(false));
 
             var result = _userService.UpdateByIdAsync(userUpdated);
@@ -1133,7 +1153,7 @@ namespace Prime.UnitTests.Services
         // public async Task Given_UserId_InvalidEmail_When_UbpdateUserById_Then_Return_message_InvalidEmailFormat()
         // {
         //     //Arrange
-        //     User userUpdated = this.userComplet;
+        //     UserDTO userUpdated = new UserDTO(this.userComplet);
         //     var id = userUpdated.Id;
         //     userUpdated.Contact.Email = "nao eh um email";
 
@@ -1151,14 +1171,14 @@ namespace Prime.UnitTests.Services
         public async Task Given_Error_On_Update_When_UbpdateUserById_Then_Return_Message_UpdateUserException()
         {
             //Arrange
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             var id = userUpdated.Id;
             userUpdated.Name = "novo nome";
 
             var expectedMessage = "Erro ao atualizar usuario.";
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
                 .Throws(new UpdateUserException(expectedMessage));
 
             var result = _userService.UpdateByIdAsync(userUpdated);
@@ -1172,13 +1192,13 @@ namespace Prime.UnitTests.Services
         public async Task Given_Connection_Lost_When_UbpdateUserById_Then_Return_InternalException()
         {
             //Arrange
-            User userUpdated = this.userComplet;
+            UserDTO userUpdated = new UserDTO(this.userComplet);
             var id = userUpdated.Id;
             userUpdated.Name = "novo nome";
 
             var expectedMessage = "Erro ao conectar-se ao banco.";
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
@@ -1203,7 +1223,7 @@ namespace Prime.UnitTests.Services
             _userRepositoryMock.Setup(x => x.Delete<object>(id))
             .Returns(Task.FromResult(expectedMessage as object));
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
             .Returns(Task.FromResult(true));
             
             var result = _userService.DeleteAsync(id);
@@ -1254,7 +1274,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Id de usuário não encontrado.";
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
             .Returns(Task.FromResult(false));
             
             var result = _userService.DeleteAsync(id);
@@ -1273,7 +1293,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Id de usuário não encontrado.";
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
             .Returns(Task.FromResult(true));
 
             _userRepositoryMock.Setup(x => x.Delete<object>(id))
@@ -1295,7 +1315,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Erro ao se conectar ao banco.";
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
             .Throws(new Exception(expectedMessage));
 
             

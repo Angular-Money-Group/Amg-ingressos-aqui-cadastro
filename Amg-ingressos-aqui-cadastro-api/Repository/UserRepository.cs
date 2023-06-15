@@ -17,14 +17,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             this._userCollection = dbConnection.GetConnection("user");
         }
         
-        public async Task<object> Save<T>(object userComplet) {
+        public async Task<object> Save<T>(User userComplet) {
             try {
-                await this._userCollection.InsertOneAsync(userComplet as User);
+                await this._userCollection.InsertOneAsync(userComplet);
 
-                if ((userComplet as User).Id is null)
+                if (userComplet.Id is null)
                     throw new SaveUserException("Erro ao salvar usuario");
 
-                return (userComplet as User).Id;
+                return userComplet.Id;
             }
             catch (SaveUserException ex) {
                 throw ex;
@@ -35,26 +35,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
         }
 
-        public async Task<IEnumerable<object>> GetAllUsers<T>() {
-            try
-            {
-                var result = await _userCollection.Find(_ => true).ToListAsync();
-                if (!result.Any())
-                    throw new GetAllUserException("Usuários não encontrados");
-
-                return result;
-            }
-            catch (GetAllUserException ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public async Task<bool> DoesValueExistsOnField<T>(string fieldName, T value) {
+        public async Task<bool> DoesValueExistsOnField<T>(string fieldName, object value) {
             try {
                 var filter = Builders<User>.Filter.Eq(fieldName, value);
                 var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
@@ -66,10 +47,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             {
                 throw ex;
             }
-
         }
 
-        public async Task<object> FindByField<T>(string fieldName, string value) {
+        public async Task<User> FindByField<T>(string fieldName, object value) {
             try {
 
                 var filter = Builders<User>.Filter.Eq(fieldName, value);
@@ -88,13 +68,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
         }
 
-        public async Task<object> UpdateUser<T>(object id, object userComplet) {
+        public async Task<object> UpdateUser<T>(object id, User userModel) {
             try {
-                // var filter = Builders<User>.Filter
-                // .Eq(r => r.Id, id);
-                // ReplaceOneResult result = await this._userCollection.ReplaceOneAsync(filter, userComplet as User);
-                // if (result.ModifiedCount > 0 || result.MatchedCount > 0)
-                var userModel = (userComplet as User);
                 var update = Builders<User>.Update
                    .Set(userMongo => userMongo.Name, userModel.Name)
                    .Set(userMongo => userMongo.DocumentId, userModel.DocumentId)
@@ -124,17 +99,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 throw ex;
             }
         }
-
-         public async Task<object> RemoveValueFromArrayField<T>(object id, object fieldName, object idValueToRemove) {
-
-            var filter = Builders<User>.Filter.Eq("_id", id);
-            var update = Builders<User>.Update.Pull((FieldDefinition<User>)fieldName, idValueToRemove);
-            var options = new FindOneAndUpdateOptions<User> { ReturnDocument = ReturnDocument.After };
-
-            var result = await _userCollection.FindOneAndUpdateAsync(filter, update, options);
-
-            return result;
-        }
         
         public async Task<object> Delete<T>(object id) {
             try
@@ -146,6 +110,25 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                     throw new DeleteUserException("Usuário não encontrado.");
             }
             catch (DeleteUserException ex)
+            {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public async Task<List<User>> GetAllUsers<T>() {
+            try
+            {
+                List<User> result = await _userCollection.Find(_ => true).ToListAsync();
+                if (!result.Any())
+                    throw new GetAllUserException("Usuários não encontrados");
+
+                return result;
+            }
+            catch (GetAllUserException ex)
             {
                 throw ex;
             }
