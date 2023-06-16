@@ -49,6 +49,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </summary>
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("Id")]
+        [JsonPropertyName("Id")]
         public string? Id { get; set; }
         /// <summary>
         /// name
