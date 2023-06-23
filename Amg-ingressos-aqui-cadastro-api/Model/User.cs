@@ -45,11 +45,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         }
 
         /// <summary>
-        /// Nome do usuário
+        /// Id do Usuario
         /// </summary>
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
+
         /// <summary>
         /// name
         /// </summary>

@@ -17,6 +17,15 @@ namespace Amg_ingressos_aqui_cadastro_api.Utils
                 throw new IdMongoException("Id é obrigatório e está menor que 24 digitos.");
         }
 
+        
+        public static void ValidateIdUserFormat(this string idUser) {
+            try {
+                idUser.ValidateIdMongo();
+            } catch (IdMongoException ex) {
+                throw new InvalidFormatException("Em IdUser: " + ex.Message);
+            }
+        }
+
         public static bool ValidateTextFormat(this string str ) {
             return Regex.IsMatch(str, @"^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
         }

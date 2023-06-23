@@ -48,23 +48,83 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             if (this.Id is not null)
                 this.Id = null;
             this.Status = StatusUserEnum.Active;
-            this.ValidateNameFormat();
-            this.ValidateDocumentIdAndTypeUserEnumFormat();
-            this.ValidateAdressFormat();
-            this.validateConctact();
-            this.validatePasswordFormat();
+
+            this.ValidateBasicUserFormat();
+            switch(this.Type)
+            {
+                case TypeUserEnum.Colab:
+                    this.ValidateColabFormat();
+                break;
+                case TypeUserEnum.Admin:
+                    this.ValidateAdminFormat();
+                break;
+                case TypeUserEnum.Producer:
+                    this.ValidateProducerFormat();
+                break;
+                case TypeUserEnum.Customer:
+                    this.ValidateCustomerFormat();
+                break;
+            }
             return this.makeUser();
         }
 
         public User makeUserUpdate()
         {
             this.Id.ValidateIdMongo();
-            this.ValidateNameFormat();
-            this.ValidateDocumentIdAndTypeUserEnumFormat();
-            this.ValidateAdressFormat();
-            ValidatePhoneNumberFormat(this.Contact?.PhoneNumber);
-            this.validatePasswordFormat();
+            this.ValidateStatusUserEnumFormat();
+
+            this.ValidateBasicUserFormat();
+            switch(this.Type)
+            {
+                case TypeUserEnum.Colab:
+                    this.ValidateColabFormat();
+                break;
+                case TypeUserEnum.Admin:
+                    this.ValidateAdminFormat();
+                    this.validateUserConfirmation();
+                break;
+                case TypeUserEnum.Producer:
+                    this.ValidateProducerFormat();
+                    this.validateUserConfirmation();
+                break;
+                case TypeUserEnum.Customer:
+                    this.ValidateCustomerFormat();
+                    this.validateUserConfirmation();
+                break;
+            }
             return this.makeUser();
+        }
+
+        // VALIDATE BY USER TYPE
+        public void ValidateBasicUserFormat() {
+            
+            this.ValidateNameFormat();
+            this.validatePasswordFormat();
+        }
+        public void ValidateAdminFormat() {
+            this.ValidateDocumentIdFormat();
+            this.ValidateAdressFormat();
+            this.validateConctact();
+        }
+        public void ValidateCustomerFormat() {
+            this.ValidateCpfFormat();
+            this.ValidateAdressFormat();
+            this.validateConctact();
+        }
+        public void ValidateProducerFormat() {
+            this.ValidateCnpjFormat();
+            this.ValidateAdressFormat();
+            this.validateConctact();
+        }
+
+        public void ValidateColabFormat() {
+            if (this.Contact is null)
+                throw new EmptyFieldsException("Contato é Obrigatório.");
+            ValidateEmailFormat(this.Contact.Email);
+            this.ValidateDocumentIdFormat();
+            this.Address = null;
+            this.Contact.PhoneNumber = null;
+            this.UserConfirmation = null;
         }
         
         // STATIC FUNCTIONS
@@ -97,15 +157,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         }
 
         public void ValidateDocumentIdAndTypeUserEnumFormat() {
-            if (string.IsNullOrEmpty(this.DocumentId))
-                throw new EmptyFieldsException("Documento de Identificação é Obrigatório.");
+            this.DocumentId.ValidateDocumentIdFormat();
             if (this.Type is null)
                 throw new EmptyFieldsException("Tipo de Usuário é Obrigatório.");
             this.DocumentId = string.Join("", this.DocumentId.ToCharArray().Where(Char.IsDigit));
-            var DocumentIdLength = this.DocumentId.Length;
-            if (!((DocumentIdLength == 11) || (DocumentIdLength == 13))) {
-                throw new InvalidFormatException("Formato de CPF/CNPJ inválido.");
-            }
             if ((this.Type == TypeUserEnum.Admin || this.Type == TypeUserEnum.Customer) && this.DocumentId.Length != 11)
                 throw new InvalidFormatException("Tipo de Usuário não corresponde com Documento de Identificação.");
             if (this.Type == TypeUserEnum.Producer && this.DocumentId.Length != 13)

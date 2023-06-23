@@ -32,7 +32,7 @@ namespace Prime.UnitTests.Controllers
         {
             this._userService = new UserService(_userRepositoryMock.Object);
             this._userController = new UserController(_loggerMock.Object, this._userService);
-            this.userComplet = FactoryUser.SimpleUser();
+            this.userComplet = FactoryUser.AdminUser();
             this.userDTO = new UserDTO(this.userComplet);
         }
 
@@ -121,7 +121,7 @@ namespace Prime.UnitTests.Controllers
         public async Task Given_Users_When_GetAllUsersAsync_Then_return_list_objects_events()
         {
             //Arrange
-            var expectedResult = FactoryUser.ListSimpleUser();
+            var expectedResult = FactoryUser.ListUser();
             _userRepositoryMock.Setup(x => x.GetAllUsers<User>()).Returns(Task.FromResult(expectedResult as List<User>));
 
             //Act
@@ -194,7 +194,7 @@ namespace Prime.UnitTests.Controllers
         {
             //Arrange
             //aqui pra testar a propriedade do modelo
-            this.userComplet = FactoryUser.SimpleUser();
+            this.userComplet = FactoryUser.AdminUser();
             this.userComplet.Id = string.Empty;
             var expectedMessage = "Id é Obrigatório.";
 
@@ -211,7 +211,7 @@ namespace Prime.UnitTests.Controllers
         {
             //Arrange
             //aqui pra testar a propriedade do modelo
-            this.userComplet = FactoryUser.SimpleUser();
+            this.userComplet = FactoryUser.AdminUser();
             this.userComplet.Id = "123";
             var expectedMessage = "Id é obrigatório e está menor que 24 digitos.";
 
