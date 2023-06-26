@@ -1,21 +1,21 @@
 using System;
 using System.Runtime.CompilerServices;
 
-namespace Amg_ingressos_aqui_cadastro_api.Exceptions
+namespace Amg_ingressos_aqui_cadastro_api.Exceptions 
 {
-    public class IdMongoException : Exception
+    public class DocumentIdAlreadyExists : Exception
     {
 
-        public IdMongoException()
+        public DocumentIdAlreadyExists()
         {
         }
 
-        public IdMongoException(string message)
+        public DocumentIdAlreadyExists(string message)
             : base(message)
         {
         }
 
-        public IdMongoException(string message, Exception inner)
+        public DocumentIdAlreadyExists(string message, Exception inner)
             : base(message, inner)
         {
         }

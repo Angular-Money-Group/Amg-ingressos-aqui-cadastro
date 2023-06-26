@@ -1,4 +1,4 @@
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Program.cs
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Program.cs
 FN:7,System.Void Program::<Main>$(System.String[])
 FNDA:0,System.Void Program::<Main>$(System.String[])
 DA:8,0
@@ -11,64 +11,42 @@ DA:19,0
 DA:21,0
 DA:25,0
 DA:26,0
-DA:27,0
+DA:28,0
 DA:29,0
-DA:30,0
+DA:31,0
 DA:32,0
-DA:33,0
-DA:34,0
+DA:35,0
 DA:36,0
 DA:37,0
-DA:38,0
+DA:40,0
 DA:41,0
-DA:42,0
-DA:45,0
-DA:47,0
-DA:49,0
-DA:51,0
-DA:53,0
-BRDA:41,238,0,0
-BRDA:41,238,1,0
-LF:26
+DA:44,0
+DA:46,0
+DA:48,0
+DA:50,0
+DA:52,0
+BRDA:40,214,0,0
+BRDA:40,214,1,0
+LF:24
 LH:0
 BRF:2
 BRH:0
 FNF:1
 FNH:0
 end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\WeatherForecast.cs
-FN:4,System.DateOnly Amg_ingressos_aqui_cadastro_api.WeatherForecast::get_Date()
-FNDA:0,System.DateOnly Amg_ingressos_aqui_cadastro_api.WeatherForecast::get_Date()
-DA:5,0
-FN:6,System.Int32 Amg_ingressos_aqui_cadastro_api.WeatherForecast::get_TemperatureC()
-FNDA:0,System.Int32 Amg_ingressos_aqui_cadastro_api.WeatherForecast::get_TemperatureC()
-DA:7,0
-FN:8,System.Int32 Amg_ingressos_aqui_cadastro_api.WeatherForecast::get_TemperatureF()
-FNDA:0,System.Int32 Amg_ingressos_aqui_cadastro_api.WeatherForecast::get_TemperatureF()
-DA:9,0
-FN:10,System.String Amg_ingressos_aqui_cadastro_api.WeatherForecast::get_Summary()
-FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.WeatherForecast::get_Summary()
-DA:11,0
-LF:4
-LH:0
-BRF:0
-BRH:0
-FNF:4
-FNH:0
-end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Utils\ExtensionMethods.cs
-FN:11,System.Void Amg_ingressos_aqui_cadastro_api.Utils.ExtensionMethods::ValidateIdMongo(System.String,System.String)
-FNDA:56,System.Void Amg_ingressos_aqui_cadastro_api.Utils.ExtensionMethods::ValidateIdMongo(System.String,System.String)
-DA:12,56
-DA:13,56
-DA:14,11
-DA:15,45
-DA:16,1
-DA:17,44
-BRDA:13,9,0,11
-BRDA:13,9,1,45
-BRDA:15,40,0,1
-BRDA:15,40,1,44
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Utils\ExtensionMethods.cs
+FN:11,System.Void Amg_ingressos_aqui_cadastro_api.Utils.ExtensionMethods::ValidateIdMongo(System.String)
+FNDA:53,System.Void Amg_ingressos_aqui_cadastro_api.Utils.ExtensionMethods::ValidateIdMongo(System.String)
+DA:12,53
+DA:13,53
+DA:14,6
+DA:15,47
+DA:16,5
+DA:17,42
+BRDA:13,9,0,6
+BRDA:13,9,1,47
+BRDA:15,34,0,5
+BRDA:15,34,1,42
 LF:6
 LH:6
 BRF:4
@@ -76,314 +54,554 @@ BRH:4
 FNF:1
 FNH:1
 end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Services\PaymentService.cs
-FN:17,System.Void Amg_ingressos_aqui_cadastro_api.Services.PaymentService::.ctor(Amg_ingressos_aqui_cadastro_api.Infra.ICieloClient)
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Services.PaymentService::.ctor(Amg_ingressos_aqui_cadastro_api.Infra.ICieloClient)
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Services\TransactionService.cs
+FN:14,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService::.ctor(Amg_ingressos_aqui_cadastro_api.Repository.Interfaces.ITransactionRepository)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService::.ctor(Amg_ingressos_aqui_cadastro_api.Repository.Interfaces.ITransactionRepository)
+DA:15,0
+DA:16,0
+DA:17,0
 DA:18,0
 DA:19,0
 DA:20,0
-DA:21,0
-FN:22,System.Void Amg_ingressos_aqui_cadastro_api.Services.PaymentService/<Payment>d__3::MoveNext()
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Services.PaymentService/<Payment>d__3::MoveNext()
+FN:22,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<GetByIdAsync>d__3::MoveNext()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<GetByIdAsync>d__3::MoveNext()
 DA:23,0
 DA:25,0
 DA:26,0
 DA:28,0
-DA:29,0
 DA:30,0
+DA:31,0
 DA:32,0
 DA:33,0
+DA:34,0
 DA:35,0
 DA:36,0
-LF:14
+DA:37,0
+DA:38,0
+DA:39,0
+DA:40,0
+DA:41,0
+DA:42,0
+DA:43,0
+DA:46,0
+DA:47,0
+LF:26
 LH:0
 BRF:0
 BRH:0
 FNF:2
 FNH:0
 end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Services\TicketService.cs
-FN:15,System.Void Amg_ingressos_aqui_cadastro_api.Services.TicketService::.ctor(Amg_ingressos_aqui_cadastro_api.Infra.ICieloClient)
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Services.TicketService::.ctor(Amg_ingressos_aqui_cadastro_api.Infra.ICieloClient)
-DA:16,0
-DA:17,0
-DA:18,0
-DA:19,0
-FN:21,System.Void Amg_ingressos_aqui_cadastro_api.Services.TicketService/<GetTicketsAsync>d__3::MoveNext()
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Services.TicketService/<GetTicketsAsync>d__3::MoveNext()
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Services\UserService.cs
+FN:241,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService::ValidateEmailFormat(System.String)
+FNDA:28,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService::ValidateEmailFormat(System.String)
+DA:242,28
+DA:243,28
+DA:244,3
+DA:245,25
+DA:246,3
+DA:247,22
+BRDA:243,9,0,3
+BRDA:243,9,1,25
+BRDA:245,38,0,3
+BRDA:245,38,1,22
+FN:248,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService::ValidateModelSave(Amg_ingressos_aqui_cadastro_api.Model.User)
+FNDA:22,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService::ValidateModelSave(Amg_ingressos_aqui_cadastro_api.Model.User)
+DA:249,22
+DA:250,22
+DA:251,2
+DA:252,20
+DA:253,1
+DA:254,19
+DA:255,1
+DA:257,18
+DA:258,1
+DA:259,17
+DA:260,1
+DA:261,16
+DA:262,1
+DA:263,15
+DA:264,1
+DA:265,14
+DA:266,1
+DA:267,13
+DA:268,1
+DA:269,12
+DA:270,1
+DA:271,11
+DA:272,1
+DA:273,10
+DA:274,1
+DA:276,9
+DA:277,1
+DA:278,8
+DA:279,6
+DA:280,1
+DA:282,5
+DA:283,1
+DA:284,4
+BRDA:250,14,0,2
+BRDA:250,14,1,20
+BRDA:252,40,0,1
+BRDA:252,40,1,19
+BRDA:254,72,0,1
+BRDA:254,72,1,18
+BRDA:257,98,0,1
+BRDA:257,98,1,17
+BRDA:259,131,0,1
+BRDA:259,131,1,16
+BRDA:261,164,0,1
+BRDA:261,164,1,15
+BRDA:263,197,0,1
+BRDA:263,197,1,14
+BRDA:265,230,0,1
+BRDA:265,230,1,13
+BRDA:267,263,0,1
+BRDA:267,263,1,12
+BRDA:269,296,0,1
+BRDA:269,296,1,11
+BRDA:271,329,0,1
+BRDA:271,329,1,10
+BRDA:273,362,0,1
+BRDA:273,362,1,9
+BRDA:276,388,0,1
+BRDA:276,388,1,8
+BRDA:279,439,0,1
+BRDA:279,439,1,5
+BRDA:282,467,0,1
+BRDA:282,467,1,4
+FN:285,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService::ValidateModelUpdate(Amg_ingressos_aqui_cadastro_api.Model.User)
+FNDA:32,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService::ValidateModelUpdate(Amg_ingressos_aqui_cadastro_api.Model.User)
+DA:286,32
+DA:287,32
+DA:288,29
+DA:289,2
+DA:290,27
+DA:291,1
+DA:292,26
+DA:293,1
+DA:295,25
+DA:296,1
+DA:297,24
+DA:298,1
+DA:299,23
+DA:300,1
+DA:301,22
+DA:302,1
+DA:303,21
+DA:304,1
+DA:305,20
+DA:306,1
+DA:307,19
+DA:308,1
+DA:309,18
+DA:310,1
+DA:311,17
+DA:312,1
+DA:314,16
+DA:315,1
+DA:316,15
+DA:317,13
+DA:318,1
+DA:320,12
+DA:321,1
+DA:323,11
+DA:324,1
+DA:325,10
+DA:326,1
+DA:327,9
+DA:328,1
+DA:329,8
+DA:330,1
+DA:331,7
+BRDA:288,26,0,2
+BRDA:288,26,1,27
+BRDA:290,52,0,1
+BRDA:290,52,1,26
+BRDA:292,84,0,1
+BRDA:292,84,1,25
+BRDA:295,110,0,1
+BRDA:295,110,1,24
+BRDA:297,143,0,1
+BRDA:297,143,1,23
+BRDA:299,176,0,1
+BRDA:299,176,1,22
+BRDA:301,209,0,1
+BRDA:301,209,1,21
+BRDA:303,242,0,1
+BRDA:303,242,1,20
+BRDA:305,275,0,1
+BRDA:305,275,1,19
+BRDA:307,308,0,1
+BRDA:307,308,1,18
+BRDA:309,341,0,1
+BRDA:309,341,1,17
+BRDA:311,374,0,1
+BRDA:311,374,1,16
+BRDA:314,400,0,1
+BRDA:314,400,1,15
+BRDA:317,451,0,1
+BRDA:317,451,1,12
+BRDA:320,479,0,1
+BRDA:320,479,1,11
+BRDA:323,505,0,1
+BRDA:323,505,1,10
+BRDA:325,538,0,1
+BRDA:325,538,1,9
+BRDA:327,578,0,1
+BRDA:327,578,1,8
+BRDA:329,618,0,1
+BRDA:329,618,1,7
+FN:20,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService::.ctor(Amg_ingressos_aqui_cadastro_api.Repository.Interfaces.IUserRepository)
+FNDA:93,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService::.ctor(Amg_ingressos_aqui_cadastro_api.Repository.Interfaces.IUserRepository)
+DA:21,93
+DA:22,93
+DA:23,93
+DA:24,93
+DA:26,93
+FN:203,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<DeleteAsync>d__10::MoveNext()
+FNDA:11,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<DeleteAsync>d__10::MoveNext()
+DA:204,11
+DA:205,11
+DA:207,11
+DA:208,11
+DA:210,7
+DA:211,1
+DA:213,3
+DA:214,2
+DA:215,4
+DA:216,4
+DA:217,4
+DA:218,4
+DA:219,4
+DA:220,1
+DA:221,1
+DA:222,1
+DA:223,1
+DA:224,1
+DA:225,1
+DA:226,1
+DA:227,1
+DA:228,1
+DA:229,1
+DA:230,3
+DA:231,3
+DA:232,3
+DA:234,8
+DA:235,8
+BRDA:210,188,0,1
+BRDA:210,188,1,3
+FN:149,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<DoesIdExists>d__8::MoveNext()
+FNDA:18,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<DoesIdExists>d__8::MoveNext()
+DA:150,18
+DA:151,18
+DA:152,18
+DA:153,18
+DA:155,7
+DA:156,7
+DA:157,7
+DA:159,11
+FN:74,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<FindByEmailAsync>d__5::MoveNext()
+FNDA:5,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<FindByEmailAsync>d__5::MoveNext()
+DA:75,5
+DA:76,5
+DA:78,5
+DA:79,5
+DA:81,3
+DA:83,1
+DA:84,1
+DA:85,1
+DA:86,1
+DA:87,1
+DA:88,1
+DA:89,1
+DA:90,1
+DA:91,1
+DA:92,1
+DA:93,1
+DA:94,1
+DA:95,1
+DA:96,1
+DA:97,1
+DA:98,1
+DA:99,1
+DA:100,1
+DA:101,1
+DA:104,4
+DA:105,4
+FN:46,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<FindByIdAsync>d__4::MoveNext()
+FNDA:10,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<FindByIdAsync>d__4::MoveNext()
+DA:47,10
+DA:48,10
+DA:50,10
+DA:51,10
+DA:53,6
+DA:55,2
+DA:56,4
+DA:57,4
+DA:58,4
+DA:59,4
+DA:60,4
+DA:61,2
+DA:62,2
+DA:63,2
+DA:64,2
+DA:65,2
+DA:66,2
+DA:67,2
+DA:68,2
+DA:71,8
+DA:72,8
+FN:28,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<GetAllUsersAsync>d__3::MoveNext()
+FNDA:6,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<GetAllUsersAsync>d__3::MoveNext()
+DA:29,6
+DA:30,6
+DA:32,6
+DA:33,6
+DA:34,2
+DA:35,2
+DA:36,2
+DA:37,2
+DA:38,2
+DA:39,2
+DA:40,2
+DA:41,2
+DA:42,2
+DA:44,4
+DA:45,4
+FN:106,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<IsEmailAvailable>d__6::MoveNext()
+FNDA:6,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<IsEmailAvailable>d__6::MoveNext()
+DA:107,6
+DA:108,6
+DA:109,6
+DA:110,6
+DA:112,2
+DA:113,2
+DA:114,2
+DA:116,4
+FN:116,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<SaveAsync>d__7::MoveNext()
+FNDA:22,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<SaveAsync>d__7::MoveNext()
+DA:117,22
+DA:118,22
+DA:120,22
+DA:121,22
+DA:122,22
+DA:123,22
+DA:125,4
+DA:126,2
+DA:127,17
+DA:128,17
+DA:129,17
+DA:130,17
+DA:131,17
+DA:132,1
+DA:133,1
+DA:134,1
+DA:135,1
+DA:136,1
+DA:137,1
+DA:138,1
+DA:139,1
+DA:140,1
+DA:141,1
+DA:142,1
+DA:143,1
+DA:144,1
+DA:147,21
+DA:148,21
+BRDA:121,62,0,22
+BRDA:121,62,1,22
+FN:160,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<UpdateByIdAsync>d__9::MoveNext()
+FNDA:32,System.Void Amg_ingressos_aqui_cadastro_api.Services.UserService/<UpdateByIdAsync>d__9::MoveNext()
+DA:161,32
+DA:162,32
+DA:163,32
+DA:164,32
+DA:166,7
+DA:167,2
+DA:169,2
+DA:170,2
+DA:171,3
+DA:172,3
+DA:173,3
+DA:174,3
+DA:175,3
+DA:176,21
+DA:177,21
+DA:178,21
+DA:179,21
+DA:180,21
+DA:181,2
+DA:182,2
+DA:183,2
+DA:184,2
+DA:185,2
+DA:186,1
+DA:187,1
+DA:188,1
+DA:189,1
+DA:190,1
+DA:191,1
+DA:192,1
+DA:193,1
+DA:194,1
+DA:195,1
+DA:196,2
+DA:197,2
+DA:198,2
+DA:201,30
+DA:202,30
+BRDA:166,199,0,2
+BRDA:166,199,1,2
+LF:258
+LH:258
+BRF:78
+BRH:78
+FNF:12
+FNH:12
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Repository\UserRepository.cs
+FN:19,System.Void Amg_ingressos_aqui_cadastro_api.Repository.UserRepository`1::.ctor(Amg_ingressos_aqui_cadastro_api.Infra.IDbConnection`1<Amg_ingressos_aqui_cadastro_api.Model.User>)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Repository.UserRepository`1::.ctor(Amg_ingressos_aqui_cadastro_api.Infra.IDbConnection`1<Amg_ingressos_aqui_cadastro_api.Model.User>)
+DA:20,0
+DA:21,0
 DA:22,0
-DA:23,0
+FN:128,System.Void Amg_ingressos_aqui_cadastro_api.Repository.UserRepository`1/<Delete>d__7`1::MoveNext()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Repository.UserRepository`1/<Delete>d__7`1::MoveNext()
+DA:129,0
+DA:131,0
+DA:132,0
+DA:133,0
+DA:134,0
+DA:136,0
+DA:138,0
+DA:139,0
+DA:140,0
+DA:142,0
+DA:143,0
+DA:144,0
+DA:146,0
+BRDA:133,336,0,0
+BRDA:133,336,1,0
+FN:60,System.Void Amg_ingressos_aqui_cadastro_api.Repository.UserRepository`1/<DoesValueExistsOnField>d__4`1::MoveNext()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Repository.UserRepository`1/<DoesValueExistsOnField>d__4`1::MoveNext()
+DA:61,0
+DA:62,0
+DA:63,0
+DA:64,0
+DA:65,0
+DA:66,0
+DA:67,0
+DA:69,0
+DA:70,0
+DA:71,0
+DA:74,0
+BRDA:65,222,0,0
+BRDA:65,222,1,0
+FN:75,System.Void Amg_ingressos_aqui_cadastro_api.Repository.UserRepository`1/<FindByField>d__5`1::MoveNext()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Repository.UserRepository`1/<FindByField>d__5`1::MoveNext()
+DA:76,0
+DA:77,0
+DA:79,0
+DA:80,0
+DA:81,0
+DA:82,0
+DA:84,0
+DA:86,0
+DA:87,0
+DA:89,0
+DA:90,0
+DA:91,0
+DA:94,0
+BRDA:81,222,0,0
+BRDA:81,222,1,0
+FN:41,System.Void Amg_ingressos_aqui_cadastro_api.Repository.UserRepository`1/<GetAllUsers>d__3`1::MoveNext()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Repository.UserRepository`1/<GetAllUsers>d__3`1::MoveNext()
+DA:42,0
+DA:44,0
+DA:45,0
+DA:46,0
+DA:47,0
+DA:49,0
+DA:51,0
+DA:52,0
+DA:53,0
+DA:55,0
+DA:56,0
+DA:57,0
+DA:59,0
+BRDA:46,249,0,0
+BRDA:46,249,1,0
+FN:23,System.Void Amg_ingressos_aqui_cadastro_api.Repository.UserRepository`1/<Save>d__2`1::MoveNext()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Repository.UserRepository`1/<Save>d__2`1::MoveNext()
 DA:24,0
+DA:25,0
 DA:26,0
 DA:28,0
 DA:29,0
-DA:30,0
-FN:31,System.Void Amg_ingressos_aqui_cadastro_api.Services.TicketService/<UpdateTicketsAsync>d__4::MoveNext()
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Services.TicketService/<UpdateTicketsAsync>d__4::MoveNext()
-DA:32,0
+DA:31,0
 DA:33,0
 DA:34,0
 DA:36,0
 DA:37,0
 DA:38,0
 DA:40,0
-DA:42,0
-DA:43,0
-DA:44,0
-LF:21
+BRDA:28,175,0,0
+BRDA:28,175,1,0
+FN:95,System.Void Amg_ingressos_aqui_cadastro_api.Repository.UserRepository`1/<UpdateUser>d__6`1::MoveNext()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Repository.UserRepository`1/<UpdateUser>d__6`1::MoveNext()
+DA:96,0
+DA:97,0
+DA:98,0
+DA:99,0
+DA:100,0
+DA:101,0
+DA:102,0
+DA:104,0
+DA:107,0
+DA:108,0
+DA:111,0
+DA:112,0
+DA:114,0
+DA:115,0
+DA:116,0
+DA:118,0
+BRDA:101,278,0,0
+BRDA:101,278,1,0
+BRDA:101,302,0,0
+BRDA:101,302,1,0
+LF:81
 LH:0
-BRF:0
+BRF:14
 BRH:0
-FNF:3
+FNF:7
 FNH:0
 end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Services\TransactionService.cs
-FN:249,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService::ValidateTransactionIten(Amg_ingressos_aqui_cadastro_api.Model.TransactionIten)
-FNDA:4,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService::ValidateTransactionIten(Amg_ingressos_aqui_cadastro_api.Model.TransactionIten)
-DA:250,4
-DA:251,4
-DA:252,4
-DA:254,4
-DA:255,0
-DA:256,4
-BRDA:254,54,0,0
-BRDA:254,54,1,4
-FN:17,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService::.ctor(Amg_ingressos_aqui_cadastro_api.Repository.Interfaces.ITransactionRepository,Amg_ingressos_aqui_cadastro_api.Repository.Interfaces.ITransactionItenRepository,Amg_ingressos_aqui_cadastro_api.Services.Interfaces.ITicketService,Amg_ingressos_aqui_cadastro_api.Services.Interfaces.IPaymentService)
-FNDA:38,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService::.ctor(Amg_ingressos_aqui_cadastro_api.Repository.Interfaces.ITransactionRepository,Amg_ingressos_aqui_cadastro_api.Repository.Interfaces.ITransactionItenRepository,Amg_ingressos_aqui_cadastro_api.Services.Interfaces.ITicketService,Amg_ingressos_aqui_cadastro_api.Services.Interfaces.IPaymentService)
-DA:18,38
-DA:19,38
-DA:20,38
-DA:21,38
-DA:22,38
-DA:23,38
-DA:24,38
-DA:25,38
-DA:26,38
-DA:27,38
-DA:28,38
-DA:29,38
-FN:36,Amg_ingressos_aqui_cadastro_api.Model.Ticket Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<>c::<FinishedTransactionAsync>b__6_0(Amg_ingressos_aqui_cadastro_api.Model.TransactionIten)
-FNDA:0,Amg_ingressos_aqui_cadastro_api.Model.Ticket Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<>c::<FinishedTransactionAsync>b__6_0(Amg_ingressos_aqui_cadastro_api.Model.TransactionIten)
-DA:37,0
-FN:169,System.Boolean Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<>c::<SaveTransactionItenAsync>b__10_1(Amg_ingressos_aqui_cadastro_api.Model.Ticket)
-FNDA:15,System.Boolean Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<>c::<SaveTransactionItenAsync>b__10_1(Amg_ingressos_aqui_cadastro_api.Model.Ticket)
-DA:170,15
-BRDA:170,173,0,0
-BRDA:170,173,1,6
-FN:31,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<FinishedTransactionAsync>d__6::MoveNext()
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<FinishedTransactionAsync>d__6::MoveNext()
-DA:32,0
-DA:34,0
-DA:35,0
-DA:36,0
-DA:39,0
-DA:40,0
-DA:41,0
-DA:42,0
-DA:43,0
-DA:44,0
-DA:45,0
-DA:46,0
-DA:47,0
-DA:48,0
-DA:49,0
-DA:50,0
-DA:51,0
-DA:52,0
-DA:55,0
-DA:56,0
-FN:58,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<GetByIdAsync>d__7::MoveNext()
-FNDA:11,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<GetByIdAsync>d__7::MoveNext()
-DA:59,11
-DA:61,11
-DA:62,11
-DA:64,8
-DA:66,4
-DA:67,3
-DA:68,3
-DA:69,3
-DA:70,3
-DA:71,3
-DA:72,1
-DA:73,1
-DA:74,1
-DA:75,1
-DA:76,1
-DA:77,3
-DA:78,3
-DA:79,3
-DA:82,8
-DA:83,8
-FN:85,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<Payment>d__8::MoveNext()
-FNDA:6,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<Payment>d__8::MoveNext()
-DA:86,6
-DA:88,6
-DA:89,6
-DA:90,5
-DA:91,4
-DA:92,2
-DA:94,2
-DA:95,2
-DA:96,2
-DA:97,2
-DA:99,2
-DA:100,1
-DA:101,1
-DA:102,1
-DA:103,1
-DA:104,1
-DA:105,2
-DA:106,2
-DA:107,2
-DA:108,2
-DA:109,2
-DA:110,1
-DA:111,1
-DA:112,1
-DA:115,5
-DA:116,5
-BRDA:91,193,0,2
-BRDA:91,193,1,2
-BRDA:91,218,0,2
-BRDA:91,218,1,2
-FN:118,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<SaveAsync>d__9::MoveNext()
-FNDA:10,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<SaveAsync>d__9::MoveNext()
-DA:119,10
-DA:121,10
-DA:122,10
-DA:123,7
-DA:124,7
-DA:125,7
-DA:126,7
-DA:127,7
-DA:129,7
-DA:131,6
-DA:132,6
-DA:133,6
-DA:134,5
-DA:135,3
-DA:136,3
-DA:137,3
-DA:138,3
-DA:139,3
-DA:140,2
-DA:141,2
-DA:142,2
-DA:145,8
-DA:146,8
-FN:148,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<SaveTransactionItenAsync>d__10::MoveNext()
-FNDA:6,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<SaveTransactionItenAsync>d__10::MoveNext()
-DA:149,6
-DA:151,6
-DA:152,6
-DA:153,5
-DA:155,5
-DA:157,5
-DA:161,5
-DA:165,5
-DA:166,5
-DA:167,5
-DA:173,5
-DA:182,5
-DA:185,5
-DA:186,5
-DA:197,5
-DA:202,5
-DA:203,5
-DA:205,2
-DA:206,1
-DA:207,1
-DA:208,1
-DA:209,1
-DA:210,2
-DA:211,2
-DA:212,2
-DA:213,2
-DA:214,1
-DA:215,1
-DA:216,1
-DA:219,5
-DA:220,5
-FN:222,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<UpdateAsync>d__11::MoveNext()
-FNDA:15,System.Void Amg_ingressos_aqui_cadastro_api.Services.TransactionService/<UpdateAsync>d__11::MoveNext()
-DA:223,15
-DA:225,15
-DA:226,15
-DA:228,11
-DA:230,6
-DA:231,4
-DA:232,4
-DA:233,4
-DA:234,4
-DA:235,4
-DA:236,1
-DA:237,1
-DA:238,1
-DA:239,1
-DA:240,1
-DA:241,4
-DA:242,4
-DA:243,4
-DA:246,11
-DA:247,11
-LF:160
-LH:138
-BRF:8
-BRH:6
-FNF:10
-FNH:8
-end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Model\Ticket.cs
-FN:18,System.String Amg_ingressos_aqui_cadastro_api.Model.Ticket::get_Id()
-FNDA:10,System.String Amg_ingressos_aqui_cadastro_api.Model.Ticket::get_Id()
-DA:19,10
-FN:24,System.String Amg_ingressos_aqui_cadastro_api.Model.Ticket::get_IdLot()
-FNDA:6,System.String Amg_ingressos_aqui_cadastro_api.Model.Ticket::get_IdLot()
-DA:25,6
-FN:30,System.String Amg_ingressos_aqui_cadastro_api.Model.Ticket::get_IdUser()
-FNDA:10,System.String Amg_ingressos_aqui_cadastro_api.Model.Ticket::get_IdUser()
-DA:31,10
-FN:36,System.String Amg_ingressos_aqui_cadastro_api.Model.Ticket::get_Position()
-FNDA:6,System.String Amg_ingressos_aqui_cadastro_api.Model.Ticket::get_Position()
-DA:37,6
-FN:42,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Ticket::get_Value()
-FNDA:19,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Ticket::get_Value()
-DA:43,19
-FN:49,System.Boolean Amg_ingressos_aqui_cadastro_api.Model.Ticket::get_isSold()
-FNDA:19,System.Boolean Amg_ingressos_aqui_cadastro_api.Model.Ticket::get_isSold()
-DA:50,19
-LF:6
-LH:6
-BRF:0
-BRH:0
-FNF:6
-FNH:6
-end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Model\Transaction.cs
-FN:14,System.String Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Id()
-FNDA:45,System.String Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Id()
-DA:15,45
-FN:20,System.String Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_IdPerson()
-FNDA:16,System.String Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_IdPerson()
-DA:21,16
-FN:26,System.String Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_IdPaymentMethod()
-FNDA:12,System.String Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_IdPaymentMethod()
-DA:27,12
-FN:31,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Tax()
-FNDA:12,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Tax()
-DA:32,12
-FN:36,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Discount()
-FNDA:3,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Discount()
-DA:37,3
-FN:42,System.Collections.Generic.List`1<Amg_ingressos_aqui_cadastro_api.Model.TransactionIten> Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_TransactionItens()
-FNDA:9,System.Collections.Generic.List`1<Amg_ingressos_aqui_cadastro_api.Model.TransactionIten> Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_TransactionItens()
-DA:43,9
-FN:47,Amg_ingressos_aqui_cadastro_api.Enum.StatusPaymentEnum Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Status()
-FNDA:18,Amg_ingressos_aqui_cadastro_api.Enum.StatusPaymentEnum Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Status()
-DA:48,18
-FN:51,Amg_ingressos_aqui_cadastro_api.Enum.StageTransactionEnum Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Stage()
-FNDA:15,Amg_ingressos_aqui_cadastro_api.Enum.StageTransactionEnum Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Stage()
-DA:52,15
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Model\Address.cs
+FN:6,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_Cep()
+FNDA:151,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_Cep()
+DA:7,151
+FN:11,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_AddressDescription()
+FNDA:149,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_AddressDescription()
+DA:12,149
+FN:16,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_Number()
+FNDA:147,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_Number()
+DA:17,147
+FN:21,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_Complement()
+FNDA:143,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_Complement()
+DA:22,143
+FN:26,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_ReferencePoint()
+FNDA:141,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_ReferencePoint()
+DA:27,141
+FN:31,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_Neighborhood()
+FNDA:145,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_Neighborhood()
+DA:32,145
+FN:36,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_City()
+FNDA:139,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_City()
+DA:37,139
+FN:41,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_State()
+FNDA:137,System.String Amg_ingressos_aqui_cadastro_api.Model.Address::get_State()
+DA:42,137
 LF:8
 LH:8
 BRF:0
@@ -391,45 +609,62 @@ BRH:0
 FNF:8
 FNH:8
 end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Model\TransactionIten.cs
-FN:16,System.String Amg_ingressos_aqui_cadastro_api.Model.TransactionIten::get_Id()
-FNDA:18,System.String Amg_ingressos_aqui_cadastro_api.Model.TransactionIten::get_Id()
-DA:17,18
-FN:23,System.String Amg_ingressos_aqui_cadastro_api.Model.TransactionIten::get_IdTransaction()
-FNDA:26,System.String Amg_ingressos_aqui_cadastro_api.Model.TransactionIten::get_IdTransaction()
-DA:24,26
-FN:29,System.String Amg_ingressos_aqui_cadastro_api.Model.TransactionIten::get_IdTicket()
-FNDA:26,System.String Amg_ingressos_aqui_cadastro_api.Model.TransactionIten::get_IdTicket()
-DA:30,26
-FN:34,System.Boolean Amg_ingressos_aqui_cadastro_api.Model.TransactionIten::get_HalfPrice()
-FNDA:22,System.Boolean Amg_ingressos_aqui_cadastro_api.Model.TransactionIten::get_HalfPrice()
-DA:35,22
-FN:39,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.TransactionIten::get_TicketPrice()
-FNDA:26,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.TransactionIten::get_TicketPrice()
-DA:40,26
-LF:5
-LH:5
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Model\Contact.cs
+FN:6,System.String Amg_ingressos_aqui_cadastro_api.Model.Contact::get_Email()
+FNDA:158,System.String Amg_ingressos_aqui_cadastro_api.Model.Contact::get_Email()
+DA:7,158
+FN:11,System.String Amg_ingressos_aqui_cadastro_api.Model.Contact::get_PhoneNumber()
+FNDA:129,System.String Amg_ingressos_aqui_cadastro_api.Model.Contact::get_PhoneNumber()
+DA:12,129
+LF:2
+LH:2
 BRF:0
 BRH:0
-FNF:5
-FNH:5
+FNF:2
+FNH:2
 end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Model\TransactionPayment.cs
-FN:17,System.String Amg_ingressos_aqui_cadastro_api.Model.TransactionPayment::get_Id()
-FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.TransactionPayment::get_Id()
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Model\MessageReturn.cs
+FN:5,System.Void Amg_ingressos_aqui_cadastro_api.Model.MessageReturn::.ctor()
+FNDA:254,System.Void Amg_ingressos_aqui_cadastro_api.Model.MessageReturn::.ctor()
+DA:6,254
+DA:7,127
+DA:8,127
+DA:9,127
+FN:9,System.Void Amg_ingressos_aqui_cadastro_api.Model.MessageReturn::.ctor(System.String)
+FNDA:2,System.Void Amg_ingressos_aqui_cadastro_api.Model.MessageReturn::.ctor(System.String)
+DA:10,2
+DA:11,1
+DA:12,1
+DA:13,1
+FN:13,System.Void Amg_ingressos_aqui_cadastro_api.Model.MessageReturn::.ctor(System.Object)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Model.MessageReturn::.ctor(System.Object)
+DA:14,0
+DA:15,0
+DA:16,0
+DA:17,0
+LF:12
+LH:8
+BRF:0
+BRH:0
+FNF:3
+FNH:2
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Model\ReceiptAccount.cs
+FN:12,System.String Amg_ingressos_aqui_cadastro_api.Model.ReceiptAccount::get_FullName()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.ReceiptAccount::get_FullName()
+DA:13,0
+FN:17,System.String Amg_ingressos_aqui_cadastro_api.Model.ReceiptAccount::get_Bank()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.ReceiptAccount::get_Bank()
 DA:18,0
-FN:22,System.String Amg_ingressos_aqui_cadastro_api.Model.TransactionPayment::get_IdTransaction()
-FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.TransactionPayment::get_IdTransaction()
+FN:22,System.String Amg_ingressos_aqui_cadastro_api.Model.ReceiptAccount::get_BankAgency()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.ReceiptAccount::get_BankAgency()
 DA:23,0
-FN:26,Amg_ingressos_aqui_cadastro_api.Enum.StatusPaymentEnum Amg_ingressos_aqui_cadastro_api.Model.TransactionPayment::get_Status()
-FNDA:0,Amg_ingressos_aqui_cadastro_api.Enum.StatusPaymentEnum Amg_ingressos_aqui_cadastro_api.Model.TransactionPayment::get_Status()
-DA:27,0
-FN:30,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.TransactionPayment::get_TotalValue()
-FNDA:0,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.TransactionPayment::get_TotalValue()
-DA:31,0
-FN:36,System.String Amg_ingressos_aqui_cadastro_api.Model.TransactionPayment::get_IdPaymentMethod()
-FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.TransactionPayment::get_IdPaymentMethod()
-DA:37,0
+FN:27,System.String Amg_ingressos_aqui_cadastro_api.Model.ReceiptAccount::get_BankAccount()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.ReceiptAccount::get_BankAccount()
+DA:28,0
+FN:32,System.String Amg_ingressos_aqui_cadastro_api.Model.ReceiptAccount::get_BankDigit()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.ReceiptAccount::get_BankDigit()
+DA:33,0
 LF:5
 LH:0
 BRF:0
@@ -437,89 +672,139 @@ BRH:0
 FNF:5
 FNH:0
 end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Mappers\TransactionMapper.cs
-FN:12,Amg_ingressos_aqui_cadastro_api.Model.Transaction Amg_ingressos_aqui_cadastro_api.Mappers.TransactionItemMapper::StageTicketDataDtoToTransaction(Amg_ingressos_aqui_cadastro_api.Dtos.StageTicketDataDto)
-FNDA:3,Amg_ingressos_aqui_cadastro_api.Model.Transaction Amg_ingressos_aqui_cadastro_api.Mappers.TransactionItemMapper::StageTicketDataDtoToTransaction(Amg_ingressos_aqui_cadastro_api.Dtos.StageTicketDataDto)
-DA:13,3
-DA:14,3
-DA:15,3
-DA:16,3
-DA:17,3
-DA:18,3
-DA:19,3
-DA:20,3
-DA:21,3
-FN:21,Amg_ingressos_aqui_cadastro_api.Model.Transaction Amg_ingressos_aqui_cadastro_api.Mappers.TransactionItemMapper::StagePersonDataDtoToTransaction(Amg_ingressos_aqui_cadastro_api.Dtos.StagePersonDataDto)
-FNDA:3,Amg_ingressos_aqui_cadastro_api.Model.Transaction Amg_ingressos_aqui_cadastro_api.Mappers.TransactionItemMapper::StagePersonDataDtoToTransaction(Amg_ingressos_aqui_cadastro_api.Dtos.StagePersonDataDto)
-DA:22,3
-DA:23,3
-DA:24,3
-DA:25,3
-DA:26,3
-DA:27,3
-FN:28,Amg_ingressos_aqui_cadastro_api.Model.Transaction Amg_ingressos_aqui_cadastro_api.Mappers.TransactionItemMapper::StagePaymentDataDtoToTransaction(Amg_ingressos_aqui_cadastro_api.Dtos.StagePaymentDataDto)
-FNDA:3,Amg_ingressos_aqui_cadastro_api.Model.Transaction Amg_ingressos_aqui_cadastro_api.Mappers.TransactionItemMapper::StagePaymentDataDtoToTransaction(Amg_ingressos_aqui_cadastro_api.Dtos.StagePaymentDataDto)
-DA:29,3
-DA:30,3
-DA:31,3
-DA:32,3
-DA:33,3
-DA:34,3
-DA:35,3
-LF:22
-LH:22
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Model\Transaction.cs
+FN:14,System.String Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Id()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Id()
+DA:15,0
+FN:20,System.String Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_IdPerson()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_IdPerson()
+DA:21,0
+FN:25,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Tax()
+FNDA:0,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Tax()
+DA:26,0
+FN:30,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_TotalValue()
+FNDA:0,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_TotalValue()
+DA:31,0
+FN:35,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Discount()
+FNDA:0,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_Discount()
+DA:36,0
+FN:40,System.String Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_ReturnUrl()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.Transaction::get_ReturnUrl()
+DA:41,0
+LF:6
+LH:0
+BRF:0
+BRH:0
+FNF:6
+FNH:0
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Model\User.cs
+FN:14,System.String Amg_ingressos_aqui_cadastro_api.Model.User::get_Id()
+FNDA:251,System.String Amg_ingressos_aqui_cadastro_api.Model.User::get_Id()
+DA:15,251
+FN:18,System.String Amg_ingressos_aqui_cadastro_api.Model.User::get_Name()
+FNDA:191,System.String Amg_ingressos_aqui_cadastro_api.Model.User::get_Name()
+DA:19,191
+FN:23,System.String Amg_ingressos_aqui_cadastro_api.Model.User::get_DocumentId()
+FNDA:160,System.String Amg_ingressos_aqui_cadastro_api.Model.User::get_DocumentId()
+DA:24,160
+FN:29,System.Nullable`1<Amg_ingressos_aqui_cadastro_api.Enum.TypeStatusUserEnum> Amg_ingressos_aqui_cadastro_api.Model.User::get_Status()
+FNDA:155,System.Nullable`1<Amg_ingressos_aqui_cadastro_api.Enum.TypeStatusUserEnum> Amg_ingressos_aqui_cadastro_api.Model.User::get_Status()
+DA:30,155
+FN:35,Amg_ingressos_aqui_cadastro_api.Model.Address Amg_ingressos_aqui_cadastro_api.Model.User::get_Address()
+FNDA:441,Amg_ingressos_aqui_cadastro_api.Model.Address Amg_ingressos_aqui_cadastro_api.Model.User::get_Address()
+DA:36,441
+FN:40,Amg_ingressos_aqui_cadastro_api.Model.Contact Amg_ingressos_aqui_cadastro_api.Model.User::get_Contact()
+FNDA:206,Amg_ingressos_aqui_cadastro_api.Model.Contact Amg_ingressos_aqui_cadastro_api.Model.User::get_Contact()
+DA:41,206
+FN:45,Amg_ingressos_aqui_cadastro_api.Model.UserConfirmation Amg_ingressos_aqui_cadastro_api.Model.User::get_UserConfirmation()
+FNDA:150,Amg_ingressos_aqui_cadastro_api.Model.UserConfirmation Amg_ingressos_aqui_cadastro_api.Model.User::get_UserConfirmation()
+DA:46,150
+FN:50,System.String Amg_ingressos_aqui_cadastro_api.Model.User::get_Password()
+FNDA:127,System.String Amg_ingressos_aqui_cadastro_api.Model.User::get_Password()
+DA:51,127
+LF:8
+LH:8
+BRF:0
+BRH:0
+FNF:8
+FNH:8
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Model\UserConfirmation.cs
+FN:10,System.String Amg_ingressos_aqui_cadastro_api.Model.UserConfirmation::get_EmailConfirmationCode()
+FNDA:119,System.String Amg_ingressos_aqui_cadastro_api.Model.UserConfirmation::get_EmailConfirmationCode()
+DA:11,119
+FN:12,System.Nullable`1<System.DateTime> Amg_ingressos_aqui_cadastro_api.Model.UserConfirmation::get_EmailConfirmationExpirationDate()
+FNDA:118,System.Nullable`1<System.DateTime> Amg_ingressos_aqui_cadastro_api.Model.UserConfirmation::get_EmailConfirmationExpirationDate()
+DA:13,118
+FN:18,System.Nullable`1<System.Boolean> Amg_ingressos_aqui_cadastro_api.Model.UserConfirmation::get_PhoneVerified()
+FNDA:225,System.Nullable`1<System.Boolean> Amg_ingressos_aqui_cadastro_api.Model.UserConfirmation::get_PhoneVerified()
+DA:19,225
+LF:3
+LH:3
 BRF:0
 BRH:0
 FNF:3
 FNH:3
 end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Infra\CieloClient.cs
-FN:20,System.Net.Http.HttpClient Amg_ingressos_aqui_cadastro_api.Infra.CieloClient::CreateClient()
-FNDA:0,System.Net.Http.HttpClient Amg_ingressos_aqui_cadastro_api.Infra.CieloClient::CreateClient()
-DA:21,0
-DA:22,0
-DA:23,0
-DA:24,0
-DA:25,0
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Model\Querys\GetTransaction.cs
+FN:13,System.String Amg_ingressos_aqui_cadastro_api.Model.Querys.GetTransaction::get__id()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.Querys.GetTransaction::get__id()
+DA:14,0
+FN:15,System.String Amg_ingressos_aqui_cadastro_api.Model.Querys.GetTransaction::get_IdPerson()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.Querys.GetTransaction::get_IdPerson()
+DA:16,0
+FN:16,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Querys.GetTransaction::get_Tax()
+FNDA:0,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Querys.GetTransaction::get_Tax()
+DA:17,0
+FN:17,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Querys.GetTransaction::get_Discount()
+FNDA:0,System.Decimal Amg_ingressos_aqui_cadastro_api.Model.Querys.GetTransaction::get_Discount()
+DA:18,0
+FN:18,System.Int32 Amg_ingressos_aqui_cadastro_api.Model.Querys.GetTransaction::get_Status()
+FNDA:0,System.Int32 Amg_ingressos_aqui_cadastro_api.Model.Querys.GetTransaction::get_Status()
+DA:19,0
+FN:19,System.Collections.Generic.List`1<Amg_ingressos_aqui_cadastro_api.Model.Querys.TransactionItens> Amg_ingressos_aqui_cadastro_api.Model.Querys.GetTransaction::get_transactionItens()
+FNDA:0,System.Collections.Generic.List`1<Amg_ingressos_aqui_cadastro_api.Model.Querys.TransactionItens> Amg_ingressos_aqui_cadastro_api.Model.Querys.GetTransaction::get_transactionItens()
+DA:20,0
+FN:25,System.String Amg_ingressos_aqui_cadastro_api.Model.Querys.TransactionItens::get__id()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.Querys.TransactionItens::get__id()
 DA:26,0
-DA:27,0
+FN:27,System.String Amg_ingressos_aqui_cadastro_api.Model.Querys.TransactionItens::get_IdTransaction()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.Querys.TransactionItens::get_IdTransaction()
 DA:28,0
+FN:28,System.String Amg_ingressos_aqui_cadastro_api.Model.Querys.TransactionItens::get_IdTicket()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.Querys.TransactionItens::get_IdTicket()
 DA:29,0
+FN:29,System.Boolean Amg_ingressos_aqui_cadastro_api.Model.Querys.TransactionItens::get_HalfPrice()
+FNDA:0,System.Boolean Amg_ingressos_aqui_cadastro_api.Model.Querys.TransactionItens::get_HalfPrice()
 DA:30,0
-DA:32,0
-DA:33,0
-FN:13,System.Void Amg_ingressos_aqui_cadastro_api.Infra.CieloClient::.ctor(Microsoft.Extensions.Options.IOptions`1<Amg_ingressos_aqui_cadastro_api.Infra.CieloSettings>,System.Net.Http.HttpClient)
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Infra.CieloClient::.ctor(Microsoft.Extensions.Options.IOptions`1<Amg_ingressos_aqui_cadastro_api.Infra.CieloSettings>,System.Net.Http.HttpClient)
+FN:30,System.String Amg_ingressos_aqui_cadastro_api.Model.Querys.TransactionItens::get_TicketPrice()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Model.Querys.TransactionItens::get_TicketPrice()
+DA:31,0
+LF:11
+LH:0
+BRF:0
+BRH:0
+FNF:11
+FNH:0
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Mappers\TransactionMapper.cs
+FN:13,Amg_ingressos_aqui_cadastro_api.Model.Transaction Amg_ingressos_aqui_cadastro_api.Mappers.TransactionItemMapper::StageTicketDataDtoToTransaction(Amg_ingressos_aqui_cadastro_api.Dtos.TransactionDto)
+FNDA:0,Amg_ingressos_aqui_cadastro_api.Model.Transaction Amg_ingressos_aqui_cadastro_api.Mappers.TransactionItemMapper::StageTicketDataDtoToTransaction(Amg_ingressos_aqui_cadastro_api.Dtos.TransactionDto)
 DA:14,0
 DA:15,0
 DA:16,0
 DA:17,0
 DA:18,0
-LF:17
+DA:19,0
+LF:6
 LH:0
 BRF:0
 BRH:0
-FNF:2
+FNF:1
 FNH:0
 end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Infra\CieloSettings.cs
-FN:7,System.String Amg_ingressos_aqui_cadastro_api.Infra.CieloSettings::get_MerchantIdHomolog()
-FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Infra.CieloSettings::get_MerchantIdHomolog()
-DA:8,0
-FN:11,System.String Amg_ingressos_aqui_cadastro_api.Infra.CieloSettings::get_MerchantKeyHomolog()
-FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Infra.CieloSettings::get_MerchantKeyHomolog()
-DA:12,0
-FN:15,System.String Amg_ingressos_aqui_cadastro_api.Infra.CieloSettings::get_UrlApiHomolog()
-FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Infra.CieloSettings::get_UrlApiHomolog()
-DA:16,0
-LF:3
-LH:0
-BRF:0
-BRH:0
-FNF:3
-FNH:0
-end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Infra\DbConnection.cs
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Infra\DbConnection.cs
 FN:14,MongoDB.Driver.IMongoCollection`1<T> Amg_ingressos_aqui_cadastro_api.Infra.DbConnection`1::GetConnection(System.String)
 FNDA:0,MongoDB.Driver.IMongoCollection`1<T> Amg_ingressos_aqui_cadastro_api.Infra.DbConnection`1::GetConnection(System.String)
 DA:15,0
@@ -541,7 +826,7 @@ BRH:0
 FNF:2
 FNH:0
 end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Infra\TransactionDatabaseSettings.cs
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Infra\TransactionDatabaseSettings.cs
 FN:7,System.String Amg_ingressos_aqui_cadastro_api.Infra.TransactionDatabaseSettings::get_ConnectionString()
 FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Infra.TransactionDatabaseSettings::get_ConnectionString()
 DA:8,0
@@ -558,347 +843,462 @@ BRH:0
 FNF:3
 FNH:0
 end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Exceptions\GetByIdTransactionException.cs
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Exceptions\DeleteUserException.cs
+FN:4,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.DeleteUserException::.ctor()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.DeleteUserException::.ctor()
+DA:5,0
+DA:6,0
+DA:7,0
+FN:9,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.DeleteUserException::.ctor(System.String)
+FNDA:3,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.DeleteUserException::.ctor(System.String)
+DA:10,3
+DA:11,3
+DA:12,3
+FN:14,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.DeleteUserException::.ctor(System.String,System.Exception)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.DeleteUserException::.ctor(System.String,System.Exception)
+DA:15,0
+DA:16,0
+DA:17,0
+LF:9
+LH:3
+BRF:0
+BRH:0
+FNF:3
+FNH:1
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Exceptions\EmailAlreadyExists.cs
+FN:23,System.Runtime.CompilerServices.TaskAwaiter Amg_ingressos_aqui_cadastro_api.Exceptions.EmailAlreadyExists::GetAwaiter()
+FNDA:0,System.Runtime.CompilerServices.TaskAwaiter Amg_ingressos_aqui_cadastro_api.Exceptions.EmailAlreadyExists::GetAwaiter()
+DA:24,0
+DA:25,0
+DA:26,0
+FN:8,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmailAlreadyExists::.ctor()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmailAlreadyExists::.ctor()
+DA:9,0
+DA:10,0
+DA:11,0
+FN:13,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmailAlreadyExists::.ctor(System.String)
+FNDA:1,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmailAlreadyExists::.ctor(System.String)
+DA:14,1
+DA:15,1
+DA:16,1
+FN:18,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmailAlreadyExists::.ctor(System.String,System.Exception)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmailAlreadyExists::.ctor(System.String,System.Exception)
+DA:19,0
+DA:20,0
+DA:21,0
+LF:12
+LH:3
+BRF:0
+BRH:0
+FNF:4
+FNH:1
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Exceptions\GetAllUserException.cs
+FN:10,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetAllUserException::.ctor()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetAllUserException::.ctor()
+DA:11,0
+DA:12,0
+DA:13,0
+FN:15,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetAllUserException::.ctor(System.String)
+FNDA:3,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetAllUserException::.ctor(System.String)
+DA:16,3
+DA:17,3
+DA:18,3
+FN:20,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetAllUserException::.ctor(System.String,System.Exception)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetAllUserException::.ctor(System.String,System.Exception)
+DA:21,0
+DA:22,0
+DA:23,0
+LF:9
+LH:3
+BRF:0
+BRH:0
+FNF:3
+FNH:1
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Exceptions\GetByIdTransactionException.cs
 FN:5,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetByIdTransactionException::.ctor()
 FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetByIdTransactionException::.ctor()
 DA:6,0
 DA:7,0
 DA:8,0
 FN:10,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetByIdTransactionException::.ctor(System.String)
-FNDA:1,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetByIdTransactionException::.ctor(System.String)
-DA:11,1
-DA:12,1
-DA:13,1
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetByIdTransactionException::.ctor(System.String)
+DA:11,0
+DA:12,0
+DA:13,0
 FN:15,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetByIdTransactionException::.ctor(System.String,System.Exception)
 FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetByIdTransactionException::.ctor(System.String,System.Exception)
 DA:16,0
 DA:17,0
 DA:18,0
 LF:9
-LH:3
-BRF:0
-BRH:0
-FNF:3
-FNH:1
-end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Exceptions\IdMongoException.cs
-FN:5,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.IdMongoException::.ctor()
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.IdMongoException::.ctor()
-DA:6,0
-DA:7,0
-DA:8,0
-FN:10,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.IdMongoException::.ctor(System.String)
-FNDA:12,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.IdMongoException::.ctor(System.String)
-DA:11,12
-DA:12,12
-DA:13,12
-FN:15,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.IdMongoException::.ctor(System.String,System.Exception)
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.IdMongoException::.ctor(System.String,System.Exception)
-DA:16,0
-DA:17,0
-DA:18,0
-LF:9
-LH:3
-BRF:0
-BRH:0
-FNF:3
-FNH:1
-end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Exceptions\PaymentTransactionException.cs
-FN:5,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.PaymentTransactionException::.ctor()
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.PaymentTransactionException::.ctor()
-DA:6,0
-DA:7,0
-DA:8,0
-FN:10,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.PaymentTransactionException::.ctor(System.String)
-FNDA:2,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.PaymentTransactionException::.ctor(System.String)
-DA:11,2
-DA:12,2
-DA:13,2
-FN:15,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.PaymentTransactionException::.ctor(System.String,System.Exception)
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.PaymentTransactionException::.ctor(System.String,System.Exception)
-DA:16,0
-DA:17,0
-DA:18,0
-LF:9
-LH:3
-BRF:0
-BRH:0
-FNF:3
-FNH:1
-end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Exceptions\SaveTransactionException.cs
-FN:5,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.SaveTransactionException::.ctor()
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.SaveTransactionException::.ctor()
-DA:6,0
-DA:7,0
-DA:8,0
-FN:10,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.SaveTransactionException::.ctor(System.String)
-FNDA:2,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.SaveTransactionException::.ctor(System.String)
-DA:11,2
-DA:12,2
-DA:13,2
-FN:15,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.SaveTransactionException::.ctor(System.String,System.Exception)
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.SaveTransactionException::.ctor(System.String,System.Exception)
-DA:16,0
-DA:17,0
-DA:18,0
-LF:9
-LH:3
-BRF:0
-BRH:0
-FNF:3
-FNH:1
-end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Exceptions\UpdateTransactionException.cs
-FN:5,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UpdateTransactionException::.ctor()
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UpdateTransactionException::.ctor()
-DA:6,0
-DA:7,0
-DA:8,0
-FN:10,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UpdateTransactionException::.ctor(System.String)
-FNDA:1,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UpdateTransactionException::.ctor(System.String)
-DA:11,1
-DA:12,1
-DA:13,1
-FN:15,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UpdateTransactionException::.ctor(System.String,System.Exception)
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UpdateTransactionException::.ctor(System.String,System.Exception)
-DA:16,0
-DA:17,0
-DA:18,0
-LF:9
-LH:3
-BRF:0
-BRH:0
-FNF:3
-FNH:1
-end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Dtos\TransactionDto.cs
-FN:15,System.String Amg_ingressos_aqui_cadastro_api.Dtos.TransactionDto::get_Id()
-FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Dtos.TransactionDto::get_Id()
-DA:16,0
-FN:20,System.String Amg_ingressos_aqui_cadastro_api.Dtos.TransactionDto::get_IdCustomer()
-FNDA:34,System.String Amg_ingressos_aqui_cadastro_api.Dtos.TransactionDto::get_IdCustomer()
-DA:21,34
-FN:25,Amg_ingressos_aqui_cadastro_api.Enum.StageTransactionEnum Amg_ingressos_aqui_cadastro_api.Dtos.TransactionDto::get_Stage()
-FNDA:7,Amg_ingressos_aqui_cadastro_api.Enum.StageTransactionEnum Amg_ingressos_aqui_cadastro_api.Dtos.TransactionDto::get_Stage()
-DA:26,7
-FN:30,System.Collections.Generic.List`1<Amg_ingressos_aqui_cadastro_api.Dtos.TransactionItenDto> Amg_ingressos_aqui_cadastro_api.Dtos.TransactionDto::get_TransactionItensDto()
-FNDA:13,System.Collections.Generic.List`1<Amg_ingressos_aqui_cadastro_api.Dtos.TransactionItenDto> Amg_ingressos_aqui_cadastro_api.Dtos.TransactionDto::get_TransactionItensDto()
-DA:31,13
-LF:4
-LH:3
-BRF:0
-BRH:0
-FNF:4
-FNH:3
-end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Dtos\TransactionItenDto.cs
-FN:15,System.String Amg_ingressos_aqui_cadastro_api.Dtos.TransactionItenDto::get_IdLot()
-FNDA:21,System.String Amg_ingressos_aqui_cadastro_api.Dtos.TransactionItenDto::get_IdLot()
-DA:16,21
-FN:20,System.Int32 Amg_ingressos_aqui_cadastro_api.Dtos.TransactionItenDto::get_AmountTicket()
-FNDA:30,System.Int32 Amg_ingressos_aqui_cadastro_api.Dtos.TransactionItenDto::get_AmountTicket()
-DA:21,30
-FN:25,System.Boolean Amg_ingressos_aqui_cadastro_api.Dtos.TransactionItenDto::get_HalfPrice()
-FNDA:22,System.Boolean Amg_ingressos_aqui_cadastro_api.Dtos.TransactionItenDto::get_HalfPrice()
-DA:26,22
-LF:3
-LH:3
-BRF:0
-BRH:0
-FNF:3
-FNH:3
-end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Controllers\HealthCheckController.cs
-FN:22,System.Collections.Generic.IEnumerable`1<Amg_ingressos_aqui_cadastro_api.WeatherForecast> Amg_ingressos_aqui_cadastro_api.Controllers.HealthCheckController::Get()
-FNDA:0,System.Collections.Generic.IEnumerable`1<Amg_ingressos_aqui_cadastro_api.WeatherForecast> Amg_ingressos_aqui_cadastro_api.Controllers.HealthCheckController::Get()
-DA:23,0
-DA:24,0
-DA:25,0
-DA:26,0
-DA:27,0
-DA:28,0
-DA:29,0
-DA:30,0
-DA:31,0
-FN:15,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.HealthCheckController::.ctor(Microsoft.Extensions.Logging.ILogger`1<Amg_ingressos_aqui_cadastro_api.Controllers.HealthCheckController>)
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.HealthCheckController::.ctor(Microsoft.Extensions.Logging.ILogger`1<Amg_ingressos_aqui_cadastro_api.Controllers.HealthCheckController>)
-DA:16,0
-DA:17,0
-DA:18,0
-DA:19,0
-FN:8,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.HealthCheckController::.cctor()
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.HealthCheckController::.cctor()
-DA:9,0
-DA:10,0
-DA:11,0
-DA:12,0
-LF:17
 LH:0
 BRF:0
 BRH:0
 FNF:3
 FNH:0
 end_of_record
-SF:C:\projetos\Amg-ingresso-aqui-cadastro-api\Amg-ingressos-aqui-cadastro-api\Controllers\TransactionController.cs
-FN:15,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController::.ctor(Microsoft.Extensions.Logging.ILogger`1<Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController>,Amg_ingressos_aqui_cadastro_api.Services.Interfaces.ITransactionService)
-FNDA:19,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController::.ctor(Microsoft.Extensions.Logging.ILogger`1<Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController>,Amg_ingressos_aqui_cadastro_api.Services.Interfaces.ITransactionService)
-DA:16,19
-DA:17,19
-DA:18,19
-DA:19,19
-DA:20,19
-DA:21,19
-DA:22,19
-FN:215,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<FinishedTransactionAsync>d__9::MoveNext()
-FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<FinishedTransactionAsync>d__9::MoveNext()
-DA:216,0
-DA:218,0
-DA:219,0
-DA:220,0
-DA:221,0
-DA:222,0
-DA:223,0
-DA:224,0
-DA:227,0
-DA:229,0
-DA:230,0
-DA:231,0
-DA:232,0
-DA:234,0
-BRDA:221,341,0,0
-BRDA:221,341,1,0
-FN:33,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<GetByIdTransactionAsync>d__3::MoveNext()
-FNDA:3,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<GetByIdTransactionAsync>d__3::MoveNext()
-DA:34,3
-DA:36,3
-DA:37,3
-DA:38,2
-DA:39,1
-DA:40,1
-DA:41,1
-DA:44,1
-DA:46,1
-DA:47,1
-DA:48,1
-DA:49,1
-DA:51,3
-BRDA:38,171,0,1
-BRDA:38,171,1,1
-BRDA:38,196,0,1
-BRDA:38,196,1,1
-FN:180,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<PaymentTransactionAsync>d__8::MoveNext()
-FNDA:4,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<PaymentTransactionAsync>d__8::MoveNext()
-DA:181,4
-DA:183,4
-DA:184,4
-DA:185,3
-DA:186,1
-DA:187,1
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Exceptions\GetByIdUserException.cs
+FN:5,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetByIdUserException::.ctor()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetByIdUserException::.ctor()
+DA:6,0
+DA:7,0
+DA:8,0
+FN:10,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetByIdUserException::.ctor(System.String)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetByIdUserException::.ctor(System.String)
+DA:11,0
+DA:12,0
+DA:13,0
+FN:15,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetByIdUserException::.ctor(System.String,System.Exception)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.GetByIdUserException::.ctor(System.String,System.Exception)
+DA:16,0
+DA:17,0
+DA:18,0
+LF:9
+LH:0
+BRF:0
+BRH:0
+FNF:3
+FNH:0
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Exceptions\IdMongoException.cs
+FN:23,System.Runtime.CompilerServices.TaskAwaiter Amg_ingressos_aqui_cadastro_api.Exceptions.IdMongoException::GetAwaiter()
+FNDA:0,System.Runtime.CompilerServices.TaskAwaiter Amg_ingressos_aqui_cadastro_api.Exceptions.IdMongoException::GetAwaiter()
+DA:24,0
+DA:25,0
+DA:26,0
+FN:8,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.IdMongoException::.ctor()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.IdMongoException::.ctor()
+DA:9,0
+DA:10,0
+DA:11,0
+FN:13,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.IdMongoException::.ctor(System.String)
+FNDA:11,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.IdMongoException::.ctor(System.String)
+DA:14,11
+DA:15,11
+DA:16,11
+FN:18,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.IdMongoException::.ctor(System.String,System.Exception)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.IdMongoException::.ctor(System.String,System.Exception)
+DA:19,0
+DA:20,0
+DA:21,0
+LF:12
+LH:3
+BRF:0
+BRH:0
+FNF:4
+FNH:1
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Exceptions\InvalidEmailFormat.cs
+FN:23,System.Runtime.CompilerServices.TaskAwaiter Amg_ingressos_aqui_cadastro_api.Exceptions.InvalidFormatException::GetAwaiter()
+FNDA:0,System.Runtime.CompilerServices.TaskAwaiter Amg_ingressos_aqui_cadastro_api.Exceptions.InvalidFormatException::GetAwaiter()
+DA:24,0
+DA:25,0
+DA:26,0
+FN:8,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.InvalidFormatException::.ctor()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.InvalidFormatException::.ctor()
+DA:9,0
+DA:10,0
+DA:11,0
+FN:13,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.InvalidFormatException::.ctor(System.String)
+FNDA:3,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.InvalidFormatException::.ctor(System.String)
+DA:14,3
+DA:15,3
+DA:16,3
+FN:18,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.InvalidFormatException::.ctor(System.String,System.Exception)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.InvalidFormatException::.ctor(System.String,System.Exception)
+DA:19,0
+DA:20,0
+DA:21,0
+LF:12
+LH:3
+BRF:0
+BRH:0
+FNF:4
+FNH:1
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Exceptions\SaveUserException.cs
+FN:5,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.SaveUserException::.ctor()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.SaveUserException::.ctor()
+DA:6,0
+DA:7,0
+DA:8,0
+FN:10,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.SaveUserException::.ctor(System.String)
+FNDA:2,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.SaveUserException::.ctor(System.String)
+DA:11,2
+DA:12,2
+DA:13,2
+FN:15,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.SaveUserException::.ctor(System.String,System.Exception)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.SaveUserException::.ctor(System.String,System.Exception)
+DA:16,0
+DA:17,0
+DA:18,0
+LF:9
+LH:3
+BRF:0
+BRH:0
+FNF:3
+FNH:1
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Exceptions\UpdateUserException.cs
+FN:5,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UpdateUserException::.ctor()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UpdateUserException::.ctor()
+DA:6,0
+DA:7,0
+DA:8,0
+FN:10,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UpdateUserException::.ctor(System.String)
+FNDA:4,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UpdateUserException::.ctor(System.String)
+DA:11,4
+DA:12,4
+DA:13,4
+FN:15,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UpdateUserException::.ctor(System.String,System.Exception)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UpdateUserException::.ctor(System.String,System.Exception)
+DA:16,0
+DA:17,0
+DA:18,0
+LF:9
+LH:3
+BRF:0
+BRH:0
+FNF:3
+FNH:1
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Exceptions\EmptyFieldsException.cs
+FN:23,System.Runtime.CompilerServices.TaskAwaiter Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::GetAwaiter()
+FNDA:0,System.Runtime.CompilerServices.TaskAwaiter Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::GetAwaiter()
+DA:24,0
+DA:25,0
+DA:26,0
+FN:8,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::.ctor()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::.ctor()
+DA:9,0
+DA:10,0
+DA:11,0
+FN:13,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::.ctor(System.String)
+FNDA:39,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::.ctor(System.String)
+DA:14,39
+DA:15,39
+DA:16,39
+FN:18,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::.ctor(System.String,System.Exception)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.EmptyFieldsException::.ctor(System.String,System.Exception)
+DA:19,0
+DA:20,0
+DA:21,0
+LF:12
+LH:3
+BRF:0
+BRH:0
+FNF:4
+FNH:1
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Exceptions\UserNotFound.cs
+FN:10,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UserNotFound::.ctor()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UserNotFound::.ctor()
+DA:11,0
+DA:12,0
+DA:13,0
+FN:15,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UserNotFound::.ctor(System.String)
+FNDA:9,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UserNotFound::.ctor(System.String)
+DA:16,9
+DA:17,9
+DA:18,9
+FN:20,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UserNotFound::.ctor(System.String,System.Exception)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Exceptions.UserNotFound::.ctor(System.String,System.Exception)
+DA:21,0
+DA:22,0
+DA:23,0
+LF:9
+LH:3
+BRF:0
+BRH:0
+FNF:3
+FNH:1
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Dtos\TransactionDto.cs
+FN:15,System.String Amg_ingressos_aqui_cadastro_api.Dtos.TransactionDto::get_Id()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Dtos.TransactionDto::get_Id()
+DA:16,0
+FN:20,System.String Amg_ingressos_aqui_cadastro_api.Dtos.TransactionDto::get_IdCustomer()
+FNDA:0,System.String Amg_ingressos_aqui_cadastro_api.Dtos.TransactionDto::get_IdCustomer()
+DA:21,0
+LF:2
+LH:0
+BRF:0
+BRH:0
+FNF:2
+FNH:0
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Controllers\HealthCheckController.cs
+FN:10,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.HealthCheckController::.ctor(Microsoft.Extensions.Logging.ILogger`1<Amg_ingressos_aqui_cadastro_api.Controllers.HealthCheckController>)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.HealthCheckController::.ctor(Microsoft.Extensions.Logging.ILogger`1<Amg_ingressos_aqui_cadastro_api.Controllers.HealthCheckController>)
+DA:11,0
+DA:12,0
+DA:13,0
+DA:14,0
+LF:4
+LH:0
+BRF:0
+BRH:0
+FNF:1
+FNH:0
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Controllers\TransactionController.cs
+FN:17,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController::.ctor(Microsoft.Extensions.Logging.ILogger`1<Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController>,Amg_ingressos_aqui_cadastro_api.Services.Interfaces.ITransactionService)
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController::.ctor(Microsoft.Extensions.Logging.ILogger`1<Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController>,Amg_ingressos_aqui_cadastro_api.Services.Interfaces.ITransactionService)
+DA:18,0
+DA:19,0
+DA:20,0
+DA:21,0
+DA:22,0
+DA:23,0
+DA:24,0
+FN:35,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<GetAsync>d__3::MoveNext()
+FNDA:0,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<GetAsync>d__3::MoveNext()
+DA:36,0
+DA:38,0
+DA:39,0
+DA:40,0
+DA:41,0
+DA:42,0
+DA:43,0
+DA:46,0
+DA:48,0
+DA:49,0
+DA:50,0
+DA:51,0
+DA:53,0
+BRDA:40,171,0,0
+BRDA:40,171,1,0
+BRDA:40,196,0,0
+BRDA:40,196,1,0
+LF:20
+LH:0
+BRF:4
+BRH:0
+FNF:2
+FNH:0
+end_of_record
+SF:C:\Users\isabe\Documents\GitHub\Amg-ingressos-aqui-cadastro\Amg-ingressos-aqui-cadastro-api\Controllers\UserController.cs
+FN:23,System.Boolean Amg_ingressos_aqui_cadastro_api.Controllers.UserController::hasRunnedSuccessfully(Amg_ingressos_aqui_cadastro_api.Model.MessageReturn)
+FNDA:15,System.Boolean Amg_ingressos_aqui_cadastro_api.Controllers.UserController::hasRunnedSuccessfully(Amg_ingressos_aqui_cadastro_api.Model.MessageReturn)
+DA:24,15
+DA:25,15
+DA:26,15
+FN:17,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.UserController::.ctor(Microsoft.Extensions.Logging.ILogger`1<Amg_ingressos_aqui_cadastro_api.Controllers.UserController>,Amg_ingressos_aqui_cadastro_api.Services.Interfaces.IUserService)
+FNDA:21,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.UserController::.ctor(Microsoft.Extensions.Logging.ILogger`1<Amg_ingressos_aqui_cadastro_api.Controllers.UserController>,Amg_ingressos_aqui_cadastro_api.Services.Interfaces.IUserService)
+DA:18,21
+DA:19,21
+DA:20,21
+DA:21,21
+DA:22,21
+FN:173,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.UserController/<DeleteUserAsync>d__8::MoveNext()
+FNDA:4,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.UserController/<DeleteUserAsync>d__8::MoveNext()
+DA:174,4
+DA:176,4
+DA:177,4
+DA:178,3
+DA:179,1
+DA:181,2
+DA:183,2
+DA:184,2
+DA:185,2
+DA:186,2
 DA:188,1
-DA:191,2
-DA:192,2
-DA:193,1
-DA:194,1
-DA:195,1
-DA:198,1
-DA:200,1
-DA:201,1
-DA:202,1
-DA:203,1
-DA:205,4
-BRDA:185,183,0,1
-BRDA:185,183,1,2
-BRDA:185,208,0,1
-BRDA:185,208,1,2
-BRDA:192,432,0,1
-BRDA:192,432,1,1
-BRDA:192,457,0,1
-BRDA:192,457,1,1
-FN:62,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<SaveTransactionAsync>d__4::MoveNext()
-FNDA:3,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<SaveTransactionAsync>d__4::MoveNext()
-DA:63,3
-DA:65,3
-DA:66,3
-DA:67,2
-DA:68,1
-DA:69,1
-DA:70,1
-DA:73,1
-DA:75,1
-DA:76,1
-DA:77,1
-DA:78,1
-DA:80,3
-BRDA:67,171,0,1
-BRDA:67,171,1,1
-BRDA:67,196,0,1
-BRDA:67,196,1,1
-FN:151,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<UpdateTransactionPaymentDataAsync>d__7::MoveNext()
-FNDA:3,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<UpdateTransactionPaymentDataAsync>d__7::MoveNext()
-DA:152,3
-DA:154,3
-DA:155,3
-DA:156,3
-DA:157,2
-DA:158,1
-DA:159,1
-DA:160,1
-DA:163,1
-DA:165,1
-DA:166,1
-DA:167,1
-DA:168,1
-DA:170,3
-BRDA:157,188,0,1
-BRDA:157,188,1,1
-BRDA:157,213,0,1
-BRDA:157,213,1,1
-FN:91,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<UpdateTransactionPersonDataAsync>d__5::MoveNext()
-FNDA:3,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<UpdateTransactionPersonDataAsync>d__5::MoveNext()
-DA:92,3
-DA:94,3
-DA:95,3
-DA:96,3
-DA:97,2
-DA:98,1
-DA:99,1
-DA:100,1
-DA:103,1
-DA:105,1
-DA:106,1
-DA:107,1
-DA:108,1
-DA:110,3
-BRDA:97,188,0,1
-BRDA:97,188,1,1
-BRDA:97,213,0,1
-BRDA:97,213,1,1
-FN:121,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<UpdateTransactionTicketsDataAsync>d__6::MoveNext()
-FNDA:3,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.TransactionController/<UpdateTransactionTicketsDataAsync>d__6::MoveNext()
+DA:189,1
+DA:190,1
+DA:191,1
+DA:193,4
+BRDA:178,181,0,1
+BRDA:178,181,1,2
+FN:112,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.UserController/<FindByIdUserAsync>d__6::MoveNext()
+FNDA:5,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.UserController/<FindByIdUserAsync>d__6::MoveNext()
+DA:113,5
+DA:115,5
+DA:116,5
+DA:117,4
+DA:118,1
+DA:120,3
 DA:122,3
+DA:123,3
 DA:124,3
-DA:125,3
-DA:126,3
-DA:127,2
+DA:126,1
+DA:127,1
 DA:128,1
 DA:129,1
-DA:130,1
-DA:133,1
-DA:135,1
-DA:136,1
-DA:137,1
-DA:138,1
-DA:140,3
-BRDA:127,188,0,1
-BRDA:127,188,1,1
-BRDA:127,213,0,1
-BRDA:127,213,1,1
-LF:107
-LH:93
-BRF:30
-BRH:28
-FNF:8
+DA:131,5
+BRDA:117,181,0,1
+BRDA:117,181,1,3
+FN:80,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.UserController/<GetAllUsersAsync>d__5::MoveNext()
+FNDA:3,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.UserController/<GetAllUsersAsync>d__5::MoveNext()
+DA:81,3
+DA:83,3
+DA:84,3
+DA:85,2
+DA:86,1
+DA:88,1
+DA:90,1
+DA:91,1
+DA:92,1
+DA:93,1
+DA:95,1
+DA:96,1
+DA:97,1
+DA:98,1
+DA:100,3
+BRDA:85,175,0,1
+BRDA:85,175,1,1
+FN:39,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.UserController/<SaveUserAsync>d__4::MoveNext()
+FNDA:4,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.UserController/<SaveUserAsync>d__4::MoveNext()
+DA:40,4
+DA:42,4
+DA:43,4
+DA:44,1
+DA:47,2
+DA:49,2
+DA:50,1
+DA:52,1
+DA:54,1
+DA:55,1
+DA:56,1
+DA:57,1
+DA:59,1
+DA:60,1
+DA:61,1
+DA:62,1
+DA:64,1
+DA:65,1
+DA:66,1
+DA:67,1
+DA:69,4
+BRDA:43,175,0,1
+BRDA:43,175,1,2
+BRDA:49,349,0,1
+BRDA:49,349,1,1
+FN:143,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.UserController/<UpdateByIdUserAsync>d__7::MoveNext()
+FNDA:5,System.Void Amg_ingressos_aqui_cadastro_api.Controllers.UserController/<UpdateByIdUserAsync>d__7::MoveNext()
+DA:144,5
+DA:146,5
+DA:147,5
+DA:148,5
+DA:150,4
+DA:151,1
+DA:153,3
+DA:155,3
+DA:156,3
+DA:157,3
+DA:159,1
+DA:160,1
+DA:161,1
+DA:162,1
+DA:164,5
+BRDA:150,199,0,1
+BRDA:150,199,1,3
+LF:88
+LH:88
+BRF:12
+BRH:12
+FNF:7
 FNH:7
 end_of_record
