@@ -25,5 +25,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// Objeto de dados retornado
         /// </summary>
         public object? Data;
+
+        // METHODS
+        public bool hasRunnedSuccessfully() {
+            return string.IsNullOrEmpty(this.Message) && (this.Data is not null);
+        }
     }
 }

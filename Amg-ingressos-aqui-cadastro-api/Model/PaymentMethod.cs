@@ -18,7 +18,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
             this.typePayment = null;
             this.CardNumber = null;
             this.NameOnCard = null;
-            this.ValidateDate = null;
+            this.ExpirationDate = null;
             this.SecureCode = null;
         }
         
@@ -29,15 +29,30 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
             this.typePayment = paymentMethod.typePayment;
             this.CardNumber = paymentMethod.CardNumber;
             this.NameOnCard = paymentMethod.NameOnCard;
-            this.ValidateDate = paymentMethod.ValidateDate;
+            this.ExpirationDate = paymentMethod.ExpirationDate;
             this.SecureCode = paymentMethod.SecureCode;
         }
+        
+        public PaymentMethod(string? id, string? idUser, string? documentId, TypePaymentEnum? typePayment,
+            string? cardNumber, string? nameOnCard, DateTime? expirationDate, string? secureCode) {
+            this.Id = id;
+            this.IdUser = idUser;
+            this.DocumentId = documentId;
+            this.typePayment = typePayment;
+            this.CardNumber = cardNumber;
+            this.NameOnCard = nameOnCard;
+            this.ExpirationDate = expirationDate;
+            this.SecureCode = secureCode;
+        }
+
         /// <summary>
         /// Nome do usuário
         /// </summary>
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
+        [BsonElement("Id")]
+        [JsonPropertyName("Id")]
         
         /// <summary>
         /// Identificador do Usuário a quem o método de pagamento pertence
@@ -67,7 +82,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// <summary>
         /// Data de Validade do Cartão
         /// </summary>
-        public DateTime? ValidateDate { get; set; }
+        public DateTime? ExpirationDate { get; set; }
         
         /// <summary>
         /// Código de Segurança do Cartão

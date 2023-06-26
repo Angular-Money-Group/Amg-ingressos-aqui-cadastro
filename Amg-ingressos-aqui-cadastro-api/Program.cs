@@ -26,12 +26,18 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 //services
 builder.Services.AddScoped<ITransactionService, TransactionService>();
 builder.Services.AddScoped<IUserService, UserService>();
+builder.Services.AddScoped<IReceiptAccountService, ReceiptAccountService>();
+builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 //repository
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository<object>>();
 builder.Services.AddScoped<IUserRepository, UserRepository<object>>();
+builder.Services.AddScoped<IReceiptAccountRepository, ReceiptAccountRepository<object>>();
+builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository<object>>();
 //infra
 builder.Services.AddScoped<IDbConnection<Transaction>, DbConnection<Transaction>>();
 builder.Services.AddScoped<IDbConnection<User>, DbConnection<User>>();
+builder.Services.AddScoped<IDbConnection<ReceiptAccount>, DbConnection<ReceiptAccount>>();
+builder.Services.AddScoped<IDbConnection<PaymentMethod>, DbConnection<PaymentMethod>>();
 
 var app = builder.Build();
 app.UseSwagger();

@@ -4,6 +4,7 @@ using System.Linq;
 using System.Threading.Tasks;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using System.Text.RegularExpressions;
+using Amg_ingressos_aqui_cadastro_api.Model;
 
 namespace Amg_ingressos_aqui_cadastro_api.Utils
 {
@@ -16,9 +17,29 @@ namespace Amg_ingressos_aqui_cadastro_api.Utils
             else if (id.Length < 24)
                 throw new IdMongoException("Id é obrigatório e está menor que 24 digitos.");
         }
+        
+        public static void ValidateIdUserFormat(this string idUser) {
+            try {
+                idUser.ValidateIdMongo();
+            } catch (IdMongoException ex) {
+                throw new InvalidFormatException("Em IdUser: " + ex.Message);
+            }
+        }
+        
+        public static void ValidateDocumentIdFormat(this string documentId) {
+            if (string.IsNullOrEmpty(documentId))
+                throw new EmptyFieldsException("Documento de Identificação é Obrigatório.");
+            var DocumentIdLength = documentId.Length;
+            if (!((DocumentIdLength == 11) || (DocumentIdLength == 13)))
+                throw new InvalidFormatException("Formato de CPF/CNPJ inválido.");
+        }
 
         public static bool ValidateTextFormat(this string str ) {
             return Regex.IsMatch(str, @"^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
+        }
+
+        public static bool ValidateFullNameFormat(this string str ) {
+            return Regex.IsMatch(str, @"^[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+[ ]{1}[a-zA-ZàáâäãåąčćęèéêëėįìíîïłńòóôöõøùúûüųūÿýżźñçčšžÀÁÂÄÃÅĄĆČĖĘÈÉÊËÌÍÎÏĮŁŃÒÓÔÖÕØÙÚÛÜŲŪŸÝŻŹÑßÇŒÆČŠŽ∂ð ,.'-]+$");
         }
 
         public static bool ValidateEmailFormat(this string email ) {
@@ -38,11 +59,23 @@ namespace Amg_ingressos_aqui_cadastro_api.Utils
         }
 
         public static bool ValidateCompanyNameFormat(this string str ) {
-            return !Regex.IsMatch(str, @"^[a-zA-Z ,&$@.'-]+$");
+            return Regex.IsMatch(str, @"^[a-zA-Z ,&$@.'-]+$");
         }
         
-        public static bool ValidateBankAgencyFormat(this string str ) {
-            return !Regex.IsMatch(str, @"^[0-9 -]+$");
+        public static bool ValidateNumbersWithHyphen(this string str ) {
+            return Regex.IsMatch(str, @"^[0-9 -]+$");
+        }
+        
+        public static bool ValidateNumbersAndLetters(this string str ) {
+            return Regex.IsMatch(str, @"^[0-9a-zA-Z]+$");
+        }
+        
+        public static bool ValidateOnlyNumbers(this string str ) {
+            return Regex.IsMatch(str, @"^[0-9]+$");
+        }
+
+        private static bool hasRunnedSuccessfully(this MessageReturn result) {
+            return string.IsNullOrEmpty(result.Message) && (result.Data is not null);
         }
     }
 }

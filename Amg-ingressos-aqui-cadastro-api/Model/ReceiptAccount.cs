@@ -30,11 +30,25 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
             this.BankAccount = receiptAccount.BankAccount;
             this.BankDigit = receiptAccount.BankDigit;
         }
+        
+        public ReceiptAccount(string? id, string? idUser, string? fullName, string? bank, string? bankAgency,
+            string? bankAccount, string? bankDigit) {
+            this.Id = id;
+            this.IdUser = idUser;
+            this.FullName = fullName;
+            this.Bank = bank;
+            this.BankAgency = bankAgency;
+            this.BankAccount = bankAccount;
+            this.BankDigit = bankDigit;
+        }
+
         /// <summary>
         /// Nome do usuário
         /// </summary>
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
+        [BsonElement("Id")]
+        [JsonPropertyName("Id")]
         public string? Id { get; set; }
         
         /// <summary>

@@ -97,15 +97,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         }
 
         public void ValidateDocumentIdAndTypeUserEnumFormat() {
-            if (string.IsNullOrEmpty(this.DocumentId))
-                throw new EmptyFieldsException("Documento de Identificação é Obrigatório.");
+            this.DocumentId.ValidateDocumentIdFormat();
             if (this.Type is null)
                 throw new EmptyFieldsException("Tipo de Usuário é Obrigatório.");
             this.DocumentId = string.Join("", this.DocumentId.ToCharArray().Where(Char.IsDigit));
-            var DocumentIdLength = this.DocumentId.Length;
-            if (!((DocumentIdLength == 11) || (DocumentIdLength == 13))) {
-                throw new InvalidFormatException("Formato de CPF/CNPJ inválido.");
-            }
             if ((this.Type == TypeUserEnum.Admin || this.Type == TypeUserEnum.Customer) && this.DocumentId.Length != 11)
                 throw new InvalidFormatException("Tipo de Usuário não corresponde com Documento de Identificação.");
             if (this.Type == TypeUserEnum.Producer && this.DocumentId.Length != 13)

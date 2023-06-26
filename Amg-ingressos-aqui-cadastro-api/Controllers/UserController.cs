@@ -7,7 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
-    [Route("v1/usuarios")]
+    [Route("v1/users")]
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;
@@ -17,10 +17,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
             _logger = logger;
             _userService = userService;
-        }
-
-        private bool hasRunnedSuccessfully(MessageReturn result) {
-            return string.IsNullOrEmpty(result.Message) && (result.Data is not null);
         }
 
         /// <summary>
@@ -37,7 +33,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             {
                 MessageReturn result = await _userService.SaveAsync(userObject);
                 // userDTOObject.Password = hashPassword;
-                if (hasRunnedSuccessfully(result))
+                if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
                 else
                     throw new SaveUserException(result.Message);
@@ -73,7 +69,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             try
             {
                 var result = await _userService.GetAllUsersAsync();
-                if (hasRunnedSuccessfully(result))
+                if (result.hasRunnedSuccessfully())
                     return Ok(result.Data as List<UserDTO>);
                 else
                     throw new GetAllUserException(result.Message);
@@ -105,7 +101,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             try
             {
                 var result = await _userService.FindByIdAsync(id);
-                if(hasRunnedSuccessfully(result))
+                if(result.hasRunnedSuccessfully())
                     return Ok(result.Data as UserDTO);
                 else
                     throw new UserNotFound(result.Message);
@@ -141,7 +137,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 usuarioUpdated.Id = id;
                 MessageReturn result = await _userService.UpdateByIdAsync(usuarioUpdated);
 
-                if (hasRunnedSuccessfully(result))
+                if (result.hasRunnedSuccessfully())
                     return NoContent();
                 else
                     throw new UpdateUserException(result.Message);
@@ -173,7 +169,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             try
             {
                 var result = await _userService.DeleteAsync(id);
-                if (hasRunnedSuccessfully(result))
+                if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
                 else
                     throw new DeleteUserException(result.Message);
