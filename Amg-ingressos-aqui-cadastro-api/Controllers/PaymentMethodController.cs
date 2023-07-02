@@ -117,15 +117,16 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// Delete metodo de pagamento 
         /// </summary>
         /// <param name="id">Id metodo de pagamento</param>
+        /// <param name="idUser">Id do usuario</param>
         /// <returns>200 metodo de pagamento deletado</returns>
         /// <returns>500 Erro inesperado</returns>
-        [Route("{id}")]
+        [Route("{id}/{idUser}")]
         [HttpDelete]
-        public async Task<IActionResult> DeletePaymentMethodAsync([FromRoute] string id)
+        public async Task<IActionResult> DeletePaymentMethodAsync([FromRoute] string id, [FromRoute] string idUser)
         {
             try
             {
-                var result = await _paymentMethodService.DeleteAsync(id);
+                var result = await _paymentMethodService.DeleteAsync(id, idUser);
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
                 else

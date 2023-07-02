@@ -50,7 +50,7 @@ namespace Prime.UnitTests.Controllers
             // Arrange
             var messageReturn = paymentMethodComplet.Id;
             
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", paymentMethodComplet.IdUser)).Returns(Task.FromResult(true));
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", paymentMethodComplet.IdUser)).Returns(Task.FromResult(FactoryUser.CustomerUser()));
             _paymentMethodRepositoryMock.Setup(x => x.Save<PaymentMethod>(It.IsAny<PaymentMethod>())).Returns(Task.FromResult(messageReturn as object));
 
             // Act
@@ -81,7 +81,7 @@ namespace Prime.UnitTests.Controllers
             // Arrange
             var expectedMessage = MessageLogErrors.savePaymentMethodMessage;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", paymentMethodComplet.IdUser))
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", paymentMethodComplet.IdUser))
                 .Throws(new Exception("Erro ao conectar-se ao banco"));
 
             //Act
@@ -253,13 +253,13 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = "Método de pagamento Deletado.";
 
             //Act
-            _paymentMethodRepositoryMock.Setup(x => x.DoesValueExistsOnField<PaymentMethod>("Id", id))
-            .Returns(Task.FromResult(true));
+            _paymentMethodRepositoryMock.Setup(x => x.FindByField<PaymentMethod>("Id", id))
+            .Returns(Task.FromResult(FactoryPaymentMethod.SimplePaymentMethod()));
 
             _paymentMethodRepositoryMock.Setup(x => x.Delete<object>(id))
             .Returns(Task.FromResult(expectedMessage as object));
             
-            var result = await _paymentMethodController.DeletePaymentMethodAsync(id) as ObjectResult;
+            var result = await _paymentMethodController.DeletePaymentMethodAsync(id, paymentMethodComplet.IdUser) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -275,14 +275,16 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = "Id é obrigatório e está menor que 24 digitos.";
 
             //Act
-            _paymentMethodRepositoryMock.Setup(x => x.DoesValueExistsOnField<PaymentMethod>("Id", id))
-            .Returns(Task.FromResult(true));
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", paymentMethodComplet.IdUser))
+                .Returns(Task.FromResult(FactoryUser.CustomerUser()));
+            _paymentMethodRepositoryMock.Setup(x => x.FindByField<PaymentMethod>("Id", id))
+                .Returns(Task.FromResult(paymentMethodComplet));
 
             _paymentMethodRepositoryMock.Setup(x => x.Delete<object>(id))
             .Returns(Task.FromResult(expectedMessage as object));
 
             
-            var result = await _paymentMethodController.DeletePaymentMethodAsync(id) as ObjectResult;
+            var result = await _paymentMethodController.DeletePaymentMethodAsync(id, paymentMethodComplet.IdUser) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -297,15 +299,8 @@ namespace Prime.UnitTests.Controllers
             
             var expectedMessage = "Id é Obrigatório.";
 
-            //Act
-            _paymentMethodRepositoryMock.Setup(x => x.DoesValueExistsOnField<PaymentMethod>("Id", id))
-            .Returns(Task.FromResult(true));
-
-            _paymentMethodRepositoryMock.Setup(x => x.Delete<object>(id))
-            .Returns(Task.FromResult(expectedMessage as object));
-
-            
-            var result = await _paymentMethodController.DeletePaymentMethodAsync(id) as ObjectResult;
+            //Act            
+            var result = await _paymentMethodController.DeletePaymentMethodAsync(id, paymentMethodComplet.IdUser) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -313,7 +308,7 @@ namespace Prime.UnitTests.Controllers
         }
 
         [Test]
-        public async Task Given_NullMongoId_When_DeletePaymentMethodById_Then_return_internal_error()
+        public async Task Given_Lost_Connection_When_DeletePaymentMethodById_Then_return_internal_error()
         {
             //Arrange
             var id = paymentMethodComplet.Id;
@@ -321,11 +316,11 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = MessageLogErrors.deletePaymentMethodMessage;
 
             //Act
-            _paymentMethodRepositoryMock.Setup(x => x.DoesValueExistsOnField<PaymentMethod>("Id", id))
+            _paymentMethodRepositoryMock.Setup(x => x.FindByField<PaymentMethod>("Id", id))
                 .Throws(new Exception(expectedMessage));
 
             
-            var result = await _paymentMethodController.DeletePaymentMethodAsync(id) as ObjectResult;
+            var result = await _paymentMethodController.DeletePaymentMethodAsync(id, paymentMethodComplet.IdUser) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);

@@ -117,14 +117,16 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// Delete conta de recebimento 
         /// </summary>
         /// <param name="id">Id conta de recebimento</param>
+        /// <param name="idUser">Id do usuario</param>
         /// <returns>200 conta de recebimento deletada</returns>
         /// <returns>500 Erro inesperado</returns>
+        [Route("{id}/{idUser}")]
         [HttpDelete]
-        public async Task<IActionResult> DeleteReceiptAccountAsync([FromRoute] string id)
+        public async Task<IActionResult> DeleteReceiptAccountAsync([FromRoute] string id, [FromRoute] string idUser)
         {
             try
             {
-                var result = await _receiptAccountService.DeleteAsync(id);
+                var result = await _receiptAccountService.DeleteAsync(id, idUser);
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
                 else

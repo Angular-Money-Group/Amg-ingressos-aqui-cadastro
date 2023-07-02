@@ -180,8 +180,12 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             var messageReturn = receiptAccountComplet.Id;
+            var id = receiptAccountComplet.Id;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", receiptAccountComplet.IdUser)).Returns(Task.FromResult(true));
+            _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
+                .Returns(Task.FromResult(this.receiptAccountDTO.makeReceiptAccount()));
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", receiptAccountComplet.IdUser))
+                .Returns(Task.FromResult(FactoryUser.ProducerUser()));
             _receiptAccountRepositoryMock.Setup(x => x.Save<ReceiptAccount>(It.IsAny<ReceiptAccount>())).Returns(Task.FromResult(messageReturn as object));
 
             //Act
@@ -289,10 +293,12 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             var expectedMessage = "Erro ao salvar conta de recebimento";
+            var id = receiptAccountComplet.Id;
 
-            // _receiptAccountRepositoryMock.Setup(x => x.DoesValueExistsOnField<ReceiptAccount>("Id", receiptAccountComplet.Id))
-            //     .Returns(Task.FromResult(false));
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", receiptAccountComplet.IdUser)).Returns(Task.FromResult(true));
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", receiptAccountComplet.IdUser))
+                .Returns(Task.FromResult(FactoryUser.ProducerUser()));
+            _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
+                .Returns(Task.FromResult(this.receiptAccountDTO.makeReceiptAccount()));
             _receiptAccountRepositoryMock.Setup(x => x.Save<ReceiptAccount>(It.IsAny<ReceiptAccount>()))
                 .Throws(new SaveReceiptAccountException(expectedMessage));
 
@@ -308,9 +314,10 @@ namespace Prime.UnitTests.Services
         public void Given_lost_dbConnection_When_save_Then_Return_Internal_Exception()
         {
             //Arrange
+            var id = receiptAccountComplet.Id;
             var expectedMessage = "Erro ao estabelecer conexao com o banco.";
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", receiptAccountComplet.IdUser))
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", receiptAccountComplet.IdUser))
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
@@ -384,13 +391,12 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Usuário Deletado.";
 
             //Act
+            _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
+                .Returns(Task.FromResult(this.receiptAccountDTO.makeReceiptAccount()));
             _receiptAccountRepositoryMock.Setup(x => x.Delete<object>(id))
             .Returns(Task.FromResult(expectedMessage as object));
-
-            _receiptAccountRepositoryMock.Setup(x => x.DoesValueExistsOnField<ReceiptAccount>("Id", id))
-            .Returns(Task.FromResult(true));
             
-            var result = _receiptAccountService.DeleteAsync(id);
+            var result = _receiptAccountService.DeleteAsync(id, receiptAccountComplet.IdUser);
 
             //Assert
             Assert.AreEqual(expectedMessage, result.Result.Data);
@@ -406,7 +412,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Id é obrigatório e está menor que 24 digitos.";
 
             //Act            
-            var result = _receiptAccountService.DeleteAsync(id);
+            var result = _receiptAccountService.DeleteAsync(id, receiptAccountComplet.IdUser);
 
             //Assert
             Assert.AreEqual(expectedMessage, result.Result.Message);
@@ -422,7 +428,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Id é Obrigatório.";
 
             //Act            
-            var result = _receiptAccountService.DeleteAsync(id);
+            var result = _receiptAccountService.DeleteAsync(id, receiptAccountComplet.IdUser);
 
             //Assert
             Assert.AreEqual(expectedMessage, result.Result.Message);
@@ -438,10 +444,10 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Id de conta de recebimento não encontrada.";
 
             //Act
-            _receiptAccountRepositoryMock.Setup(x => x.DoesValueExistsOnField<ReceiptAccount>("Id", id))
-            .Returns(Task.FromResult(false));
+            _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
+            .Throws(new ReceiptAccountNotFound(expectedMessage));
             
-            var result = _receiptAccountService.DeleteAsync(id);
+            var result = _receiptAccountService.DeleteAsync(id, receiptAccountComplet.IdUser);
 
             //Assert
             Assert.AreEqual(expectedMessage, result.Result.Message);
@@ -457,13 +463,13 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Id de conta de recebimento não encontrada.";
 
             //Act
-            _receiptAccountRepositoryMock.Setup(x => x.DoesValueExistsOnField<ReceiptAccount>("Id", id))
-            .Returns(Task.FromResult(true));
+            _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
+                .Returns(Task.FromResult(this.receiptAccountDTO.makeReceiptAccount()));
 
             _receiptAccountRepositoryMock.Setup(x => x.Delete<object>(id))
             .Throws(new DeleteReceiptAccountException(expectedMessage));
             
-            var result = _receiptAccountService.DeleteAsync(id);
+            var result = _receiptAccountService.DeleteAsync(id, receiptAccountComplet.IdUser);
 
             //Assert
             Assert.AreEqual(expectedMessage, result.Result.Message);
@@ -479,14 +485,14 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Erro ao se conectar ao banco.";
 
             //Act
-            _receiptAccountRepositoryMock.Setup(x => x.DoesValueExistsOnField<ReceiptAccount>("Id", id))
+            _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
             .Throws(new Exception(expectedMessage));
 
             
-            var result = _receiptAccountService.DeleteAsync(id);
+            var result = _receiptAccountService.DeleteAsync(id, receiptAccountComplet.IdUser);
 
             // Act and Assert
-            var exception = Assert.ThrowsAsync<Exception>(() =>_receiptAccountService.DeleteAsync(id));
+            var exception = Assert.ThrowsAsync<Exception>(() =>_receiptAccountService.DeleteAsync(id, receiptAccountComplet.IdUser));
             Assert.AreEqual(expectedMessage, exception.Message);
         }
     }

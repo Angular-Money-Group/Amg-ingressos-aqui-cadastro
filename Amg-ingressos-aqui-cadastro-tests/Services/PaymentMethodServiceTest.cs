@@ -181,7 +181,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var messageReturn = paymentMethodComplet.Id;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", paymentMethodComplet.IdUser)).Returns(Task.FromResult(true));
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", paymentMethodComplet.IdUser)).Returns(Task.FromResult(FactoryUser.CustomerUser()));
             _paymentMethodRepositoryMock.Setup(x => x.Save<PaymentMethod>(It.IsAny<PaymentMethod>())).Returns(Task.FromResult(messageReturn as object));
 
             //Act
@@ -305,9 +305,9 @@ namespace Prime.UnitTests.Services
             //Arrange
             var expectedMessage = "Erro ao salvar método de pagamento";
 
-            // _paymentMethodRepositoryMock.Setup(x => x.DoesValueExistsOnField<PaymentMethod>("Id", paymentMethodComplet.Id))
+            // _paymentMethodRepositoryMock.Setup(x => x.FindByField<PaymentMethod>("Id", paymentMethodComplet.Id))
             //     .Returns(Task.FromResult(false));
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", paymentMethodComplet.IdUser)).Returns(Task.FromResult(true));
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", paymentMethodComplet.IdUser)).Returns(Task.FromResult(FactoryUser.CustomerUser()));
             _paymentMethodRepositoryMock.Setup(x => x.Save<PaymentMethod>(It.IsAny<PaymentMethod>()))
                 .Throws(new SavePaymentMethodException(expectedMessage));
 
@@ -325,7 +325,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var expectedMessage = "Erro ao estabelecer conexao com o banco.";
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", paymentMethodComplet.IdUser))
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", paymentMethodComplet.IdUser))
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
@@ -399,13 +399,14 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Usuário Deletado.";
 
             //Act
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", paymentMethodComplet.IdUser))
+                .Returns(Task.FromResult(FactoryUser.CustomerUser()));
             _paymentMethodRepositoryMock.Setup(x => x.Delete<object>(id))
-            .Returns(Task.FromResult(expectedMessage as object));
-
-            _paymentMethodRepositoryMock.Setup(x => x.DoesValueExistsOnField<PaymentMethod>("Id", id))
-            .Returns(Task.FromResult(true));
+                .Returns(Task.FromResult(expectedMessage as object));
+            _paymentMethodRepositoryMock.Setup(x => x.FindByField<PaymentMethod>("Id", id))
+                .Returns(Task.FromResult(FactoryPaymentMethod.SimplePaymentMethod()));
             
-            var result = _paymentMethodService.DeleteAsync(id);
+            var result = _paymentMethodService.DeleteAsync(id, paymentMethodComplet.IdUser);
 
             //Assert
             Assert.AreEqual(expectedMessage, result.Result.Data);
@@ -421,7 +422,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Id é obrigatório e está menor que 24 digitos.";
 
             //Act            
-            var result = _paymentMethodService.DeleteAsync(id);
+            var result = _paymentMethodService.DeleteAsync(id, paymentMethodComplet.IdUser);
 
             //Assert
             Assert.AreEqual(expectedMessage, result.Result.Message);
@@ -437,7 +438,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Id é Obrigatório.";
 
             //Act            
-            var result = _paymentMethodService.DeleteAsync(id);
+            var result = _paymentMethodService.DeleteAsync(id, paymentMethodComplet.IdUser);
 
             //Assert
             Assert.AreEqual(expectedMessage, result.Result.Message);
@@ -453,10 +454,10 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Id de método de pagamento não encontrado.";
 
             //Act
-            _paymentMethodRepositoryMock.Setup(x => x.DoesValueExistsOnField<PaymentMethod>("Id", id))
-            .Returns(Task.FromResult(false));
+            _paymentMethodRepositoryMock.Setup(x => x.FindByField<PaymentMethod>("Id", id))
+            .Throws(new PaymentMethodNotFound(expectedMessage));
             
-            var result = _paymentMethodService.DeleteAsync(id);
+            var result = _paymentMethodService.DeleteAsync(id, paymentMethodComplet.IdUser);
 
             //Assert
             Assert.AreEqual(expectedMessage, result.Result.Message);
@@ -472,13 +473,13 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Id de método de pagamento não encontrado.";
 
             //Act
-            _paymentMethodRepositoryMock.Setup(x => x.DoesValueExistsOnField<PaymentMethod>("Id", id))
-            .Returns(Task.FromResult(true));
+            _paymentMethodRepositoryMock.Setup(x => x.FindByField<PaymentMethod>("Id", id))
+            .Returns(Task.FromResult(FactoryPaymentMethod.SimplePaymentMethod()));
 
             _paymentMethodRepositoryMock.Setup(x => x.Delete<object>(id))
             .Throws(new DeletePaymentMethodException(expectedMessage));
             
-            var result = _paymentMethodService.DeleteAsync(id);
+            var result = _paymentMethodService.DeleteAsync(id, paymentMethodComplet.IdUser);
 
             //Assert
             Assert.AreEqual(expectedMessage, result.Result.Message);
@@ -494,14 +495,14 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Erro ao se conectar ao banco.";
 
             //Act
-            _paymentMethodRepositoryMock.Setup(x => x.DoesValueExistsOnField<PaymentMethod>("Id", id))
+            _paymentMethodRepositoryMock.Setup(x => x.FindByField<PaymentMethod>("Id", id))
             .Throws(new Exception(expectedMessage));
 
             
-            var result = _paymentMethodService.DeleteAsync(id);
+            var result = _paymentMethodService.DeleteAsync(id, paymentMethodComplet.IdUser);
 
             // Act and Assert
-            var exception = Assert.ThrowsAsync<Exception>(() =>_paymentMethodService.DeleteAsync(id));
+            var exception = Assert.ThrowsAsync<Exception>(() =>_paymentMethodService.DeleteAsync(id, paymentMethodComplet.IdUser));
             Assert.AreEqual(expectedMessage, exception.Message);
         }
     }

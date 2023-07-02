@@ -50,6 +50,8 @@ namespace Prime.UnitTests.Controllers
             // Arrange
             var messageReturn = receiptAccountComplet.Id;
             
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", receiptAccountComplet.IdUser))
+                .Returns(Task.FromResult(FactoryUser.ProducerUser()));
             _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", receiptAccountComplet.IdUser)).Returns(Task.FromResult(true));
             _receiptAccountRepositoryMock.Setup(x => x.Save<ReceiptAccount>(It.IsAny<ReceiptAccount>())).Returns(Task.FromResult(messageReturn as object));
 
@@ -81,7 +83,7 @@ namespace Prime.UnitTests.Controllers
             // Arrange
             var expectedMessage = MessageLogErrors.saveReceiptAccountMessage;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", receiptAccountComplet.IdUser))
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", receiptAccountComplet.IdUser))
                 .Throws(new Exception("Erro ao conectar-se ao banco"));
 
             //Act
@@ -253,13 +255,14 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = "Conta de recebimento Deletada.";
 
             //Act
-            _receiptAccountRepositoryMock.Setup(x => x.DoesValueExistsOnField<ReceiptAccount>("Id", id))
-            .Returns(Task.FromResult(true));
-
+            _userRepositoryMock.Setup(x => x.FindByField<User>("Id", receiptAccountComplet.IdUser))
+                .Returns(Task.FromResult(FactoryUser.ProducerUser()));
+            _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
+                .Returns(Task.FromResult(receiptAccountComplet));
             _receiptAccountRepositoryMock.Setup(x => x.Delete<object>(id))
-            .Returns(Task.FromResult(expectedMessage as object));
+                .Returns(Task.FromResult(expectedMessage as object));
             
-            var result = await _receiptAccountController.DeleteReceiptAccountAsync(id) as ObjectResult;
+            var result = await _receiptAccountController.DeleteReceiptAccountAsync(id, receiptAccountComplet.IdUser) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -282,7 +285,7 @@ namespace Prime.UnitTests.Controllers
             .Returns(Task.FromResult(expectedMessage as object));
 
             
-            var result = await _receiptAccountController.DeleteReceiptAccountAsync(id) as ObjectResult;
+            var result = await _receiptAccountController.DeleteReceiptAccountAsync(id, receiptAccountComplet.IdUser) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -305,7 +308,7 @@ namespace Prime.UnitTests.Controllers
             .Returns(Task.FromResult(expectedMessage as object));
 
             
-            var result = await _receiptAccountController.DeleteReceiptAccountAsync(id) as ObjectResult;
+            var result = await _receiptAccountController.DeleteReceiptAccountAsync(id, receiptAccountComplet.IdUser) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -313,7 +316,7 @@ namespace Prime.UnitTests.Controllers
         }
 
         [Test]
-        public async Task Given_NullMongoId_When_DeleteReceiptAccountById_Then_return_internal_error()
+        public async Task Given_Lost_Connection_When_DeleteReceiptAccountById_Then_return_internal_error()
         {
             //Arrange
             var id = receiptAccountComplet.Id;
@@ -321,11 +324,11 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = MessageLogErrors.deleteReceiptAccountMessage;
 
             //Act
-            _receiptAccountRepositoryMock.Setup(x => x.DoesValueExistsOnField<ReceiptAccount>("Id", id))
+            _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
                 .Throws(new Exception(expectedMessage));
 
             
-            var result = await _receiptAccountController.DeleteReceiptAccountAsync(id) as ObjectResult;
+            var result = await _receiptAccountController.DeleteReceiptAccountAsync(id, receiptAccountComplet.IdUser) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);

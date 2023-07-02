@@ -82,7 +82,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 ReceiptAccount receiptAccount = receiptAccountSave.makeReceiptAccountSave();
 
-                _messageReturn = await _userService.FindByIdAsync(TypeUserEnum.Customer, receiptAccountSave.IdUser);
+                _messageReturn = await _userService.FindByIdAsync(TypeUserEnum.Producer, receiptAccountSave.IdUser);
                 if (!_messageReturn.hasRunnedSuccessfully())
                     throw new SavePaymentMethodException("O campo IdUser nao tem nenhum usuario correspondente.");   
                 
@@ -128,14 +128,18 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
         }
 
-        public async Task<MessageReturn> DeleteAsync(string id) {
+        public async Task<MessageReturn> DeleteAsync(string id, string idUser) {
             this._messageReturn = new MessageReturn();
             try
             {
-                id.ValidateIdMongo();
+                idUser.ValidateIdMongo();
                 
-                if (!await DoesIdExists(id))
-                    throw new ReceiptAccountNotFound("Id de conta de recebimento não encontrada.");
+                _messageReturn = await FindByIdAsync(id);
+                if (!_messageReturn.hasRunnedSuccessfully())
+                    throw new DeleteReceiptAccountException(_messageReturn.Message);
+                
+                if ((_messageReturn.Data as ReceiptAccountDTO).IdUser != idUser)
+                    throw new DeleteReceiptAccountException("Id de conta bancaria nao corresponde ao id de usuario.");
 
                 _messageReturn.Data = await _receiptAccountRepository.Delete<ReceiptAccount>(id) as string;
             }
