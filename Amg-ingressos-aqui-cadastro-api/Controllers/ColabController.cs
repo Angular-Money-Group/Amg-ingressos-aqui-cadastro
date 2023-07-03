@@ -34,7 +34,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             try
             {
                 ProducerColabDTO producerColabObject = new ProducerColabDTO(idProducer, colabUserDTO.Id);
-                MessageReturn result = await _producerColabService.SaveAsync(idProducer, colabUserDTO);
+                MessageReturn result = await _producerColabService.RegisterColabAsync(idProducer, colabUserDTO);
                 if (!result.hasRunnedSuccessfully())
                     throw new SaveProducerColabException(result.Message);
 
@@ -66,18 +66,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
             try
             {
-                MessageReturn result = await _producerColabService.FindByIdAsync(idProducerColab);
-                if(!result.hasRunnedSuccessfully())
-                    throw new ProducerColabNotFound(result.Message);
-                ProducerColabDTO producerColabDTO = result.Data as ProducerColabDTO;
-                EventColabDTO eventColabDTO = new EventColabDTO(idEvent, producerColabDTO.IdColab);
-                result = await _eventColabService.SaveAsync(eventColabDTO);
+                EventColabDTO eventColabDTO = new EventColabDTO(idEvent, idColab);
+                MessageReturn result = await _eventColabService.SaveAsync(eventColabDTO);
                 if(!result.hasRunnedSuccessfully())
                     throw new SaveEventColabException(result.Message);
 
-                return Ok(eventColabDTO.Id);
+                return Ok(result.Data);
             }
-            catch (ProducerColabNotFound ex)
+            catch (SaveEventColabException ex)
             {
                 return BadRequest(ex.Message);
             }
@@ -102,7 +98,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
             try
             {
-                var result = await _producerColabService.GetAllColabsFromProducerAsync(idProducer);
+                var result = await _producerColabService.GetAllColabsOfProducerAsync(idProducer);
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data as List<ProducerColabDTO>);
                 else
@@ -134,7 +130,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
             try
             {
-                var result = await _producerColabService.GetAllProducerColabsAsync();
+                // FALTA IMPLEMENTAR A PARTE DE CHECKBOX
+                var result = await _eventColabService.GetAllColabsOfEventAsync(idEvent);
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data as List<ProducerColabDTO>);
                 else
@@ -152,34 +149,34 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             }
         }
 
-        /// <summary>
-        /// Delete metodo de pagamento 
-        /// </summary>
-        /// <param name="id">Id metodo de pagamento</param>
-        /// <returns>200 metodo de pagamento deletado</returns>
-        /// <returns>500 Erro inesperado</returns>
-        [Route("{id}")]
-        [HttpDelete]
-        public async Task<IActionResult> DeleteProducerColabAsync([FromRoute] string id)
-        {
-            try
-            {
-                var result = await _producerColabService.DeleteAsync(id);
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new DeleteProducerColabException(result.Message);
-            }
-            catch (DeleteProducerColabException ex)
-            {
-                _logger.LogInformation(MessageLogErrors.deleteProducerColabMessage, ex);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.deleteProducerColabMessage, ex);
-                return StatusCode(500, MessageLogErrors.deleteProducerColabMessage);
-            }
-        }
+        // /// <summary>
+        // /// Delete metodo de pagamento 
+        // /// </summary>
+        // /// <param name="id">Id metodo de pagamento</param>
+        // /// <returns>200 metodo de pagamento deletado</returns>
+        // /// <returns>500 Erro inesperado</returns>
+        // [Route("{id}")]
+        // [HttpDelete]
+        // public async Task<IActionResult> DeleteProducerColabAsync([FromRoute] string id)
+        // {
+        //     try
+        //     {
+        //         var result = await _producerColabService.DeleteAsync(id);
+        //         if (result.hasRunnedSuccessfully())
+        //             return Ok(result.Data);
+        //         else
+        //             throw new DeleteProducerColabException(result.Message);
+        //     }
+        //     catch (DeleteProducerColabException ex)
+        //     {
+        //         _logger.LogInformation(MessageLogErrors.deleteProducerColabMessage, ex);
+        //         return BadRequest(ex.Message);
+        //     }
+        //     catch (Exception ex)
+        //     {
+        //         _logger.LogError(MessageLogErrors.deleteProducerColabMessage, ex);
+        //         return StatusCode(500, MessageLogErrors.deleteProducerColabMessage);
+        //     }
+        // }
     }
 }

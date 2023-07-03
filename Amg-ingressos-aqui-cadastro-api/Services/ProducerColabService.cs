@@ -84,7 +84,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             this._messageReturn = new MessageReturn();
             try
             {
-                // controlar o fluxo para nao permitir que o colab entre aqui de primeira
                 ProducerColab producerColab = producerColabSaveDTO.makeProducerColabSave();       
                 
                 var id = await _producerColabRepository.Save<ProducerColab>(producerColab);
@@ -121,19 +120,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             this._messageReturn = new MessageReturn();
             try
             {
-                ProducerColabDTO.ValidateIdProducerFormat(idProducer);
                 colab.Type = TypeUserEnum.Colab;
                 User colabUser = colab.makeUserSave();
 
                 _messageReturn = await _userService.FindByIdAsync(TypeUserEnum.Producer, idProducer);
                 if(!_messageReturn.hasRunnedSuccessfully()) {
-                    throw new UserNotFound("Id de Producer não encontrado.");
+                    throw new UserNotFound(_messageReturn.Message);
                 }
-
-                // UserDTO producer = _messageReturn.Data as UserDTO;
-                // if (producer.Type != TypeUserEnum.Producer) {
-                //     throw new GetByIdUserException("O id de usuário não corresponde ao de um Produtor.");
-                // }
                
                 _messageReturn = await _userService.SaveAsync(colab);
                 if(!_messageReturn.hasRunnedSuccessfully()) {
@@ -145,12 +138,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 _messageReturn = await SaveAsync(producerColabDTO);
                 if(!_messageReturn.hasRunnedSuccessfully()) {
-                    string ids = producerColabDTO.IdProducer + '\t' + producerColabDTO.IdColab;
-                    throw new SaveProducerColabException("Nao foi possivel salvar a relacao ColaboradorXProdutor no banco.\n" + ids);
+                    string ids = "[Porducer : Colab] = [" + producerColabDTO.IdProducer + " : " + producerColabDTO.IdColab + "]";
+                    throw new SaveProducerColabException("Nao foi possivel salvar a relacao ColaboradorXProdutor no banco.\n\t" + ids);
                 }
-                
-            // dar rollback caso nao tenha adicionado idColab na tabela colab x producer
-
+            // e caso nao tenha adicionado idColab na tabela colab x producer?
                 _messageReturn.Data = colabUser.Id;
             }
             catch (IdMongoException ex)

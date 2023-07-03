@@ -14,12 +14,17 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
         private readonly IMongoCollection<ProducerColab> _producerColabCollection;
 
         public ProducerColabRepository(IDbConnection<ProducerColab> dbConnection) {
-            this._producerColabCollection = dbConnection.GetConnection("producerXcolab");
+            this._producerColabCollection = dbConnection.GetConnection("producerColab");
         }
         
         public async Task<object> Save<T>(ProducerColab producerColabComplet) {
             try {
                 await this._producerColabCollection.InsertOneAsync(producerColabComplet);
+
+                // Transaction adds complexity that slows down the rate of application development.
+                // Mas garante que os dados sejam inseridos corretamente.
+                // MongoDB customers in the financial services industry have reported they
+                //were able to cut 1,000+ lines of code from their apps by using multi-document transactions.
 
                 if (producerColabComplet.Id is null)
                     throw new SaveProducerColabException("Erro ao salvar colab x producer do colaborador de id: " + producerColabComplet.IdColab);

@@ -10,7 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
-    [Route("v1/users")]
+    [Route("v1/profile")]
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;
