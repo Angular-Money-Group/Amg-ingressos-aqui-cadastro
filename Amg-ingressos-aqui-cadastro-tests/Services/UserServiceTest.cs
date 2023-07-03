@@ -18,8 +18,6 @@ namespace Prime.UnitTests.Services
         private Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
         private User userComplet;
         private UserDTO userDTO;
-        private User userComplet;
-        private UserDTO userDTO;
 
 
         [SetUp]

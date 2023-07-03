@@ -22,31 +22,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             this._userService = userService;
         }
         
-        public async Task<MessageReturn> GetAllProducerColabsAsync()
-        {
-            this._messageReturn = new MessageReturn();
-            try
-            {
-                var result = await _producerColabRepository.GetAllProducerColabs<ProducerColab>();
-
-                List<ProducerColabDTO> list = new List<ProducerColabDTO>();
-                foreach (ProducerColab producerColab in result) {
-                    list.Add(new ProducerColabDTO(producerColab));
-                }
-                _messageReturn.Data = list;
-            }
-            catch (GetAllProducerColabException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-            return _messageReturn;
-        }
-        
         public async Task<MessageReturn> FindByIdAsync(string idProducerColab)
         {
             this._messageReturn = new MessageReturn();

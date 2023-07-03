@@ -208,8 +208,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 if (!await DoesIdExists(user.Id))
                     throw new UserNotFound("Id de usuário não encontrado.");
-
-                _messageReturn.Data = await _userRepository.UpdateUser<User>(user.Id, user);
+                
+                if (userUpdated.Type == TypeUserEnum.Colab)
+                    _messageReturn.Data = await _userRepository.UpdateColab<User>(user.Id, user);
+                else
+                    _messageReturn.Data = await _userRepository.UpdateUser<User>(user.Id, user);
             }
             catch (IdMongoException ex)
             {

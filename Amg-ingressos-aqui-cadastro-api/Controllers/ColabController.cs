@@ -14,10 +14,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         private readonly IProducerColabService _producerColabService;
         private readonly IEventColabService _eventColabService;
 
-        public ProducerColabController(ILogger<ProducerColabController> logger, IProducerColabService producerColabService)
+        public ProducerColabController(ILogger<ProducerColabController> logger, IProducerColabService producerColabService, IEventColabService eventColabService)
         {
             _logger = logger;
             _producerColabService = producerColabService;
+            _eventColabService = eventColabService;
         }
 
         /// <summary>
@@ -32,13 +33,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
             try
             {
-                producerColabObject.IdProducer = id;
-                MessageReturn result = await _producerColabService.SaveAsync(producerColabObject);
-                // producerColabDTOObject.Password = hashPassword;
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
+                ProducerColabDTO producerColabObject = new ProducerColabDTO(idProducer, colabUserDTO.Id);
+                MessageReturn result = await _producerColabService.SaveAsync(idProducer, colabUserDTO);
+                if (!result.hasRunnedSuccessfully())
                     throw new SaveProducerColabException(result.Message);
+
+                return Ok((result.Data as ProducerColabDTO).Id);
             }
             catch (SaveProducerColabException ex)
             {
@@ -49,6 +49,42 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             {
                 _logger.LogError(MessageLogErrors.saveProducerColabMessage, ex);
                 return StatusCode(500, MessageLogErrors.saveProducerColabMessage);
+            }
+        }
+
+        /// <summary>
+        /// Busca metodo de pagamento pelo ID
+        /// </summary>
+        /// <param name="idEvent"> id do metodo de pagamento</param>
+        /// <returns>200 metodo de pagamento da busca</returns>
+        /// <returns>204 Nenhum metodo de pagamento encontrado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpPatch]
+        [Route("{idEvent")]
+        [Produces("application/json")]
+        public async Task<IActionResult> RegisterColabOnEventAsync([FromRoute] string idEvent, [FromRoute] string idColab)
+        {
+            try
+            {
+                MessageReturn result = await _producerColabService.FindByIdAsync(idProducerColab);
+                if(!result.hasRunnedSuccessfully())
+                    throw new ProducerColabNotFound(result.Message);
+                ProducerColabDTO producerColabDTO = result.Data as ProducerColabDTO;
+                EventColabDTO eventColabDTO = new EventColabDTO(idEvent, producerColabDTO.IdColab);
+                result = await _eventColabService.SaveAsync(eventColabDTO);
+                if(!result.hasRunnedSuccessfully())
+                    throw new SaveEventColabException(result.Message);
+
+                return Ok(eventColabDTO.Id);
+            }
+            catch (ProducerColabNotFound ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)    
+            {
+                _logger.LogError(MessageLogErrors.FindByIdProducerColabMessage, ex);
+                return StatusCode(500, MessageLogErrors.FindByIdProducerColabMessage);
             }
         }
 
@@ -66,7 +102,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
             try
             {
-                var result = await _producerColabService.GetAllProducerColabsAsync();
+                var result = await _producerColabService.GetAllColabsFromProducerAsync(idProducer);
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data as List<ProducerColabDTO>);
                 else
@@ -113,37 +149,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             {
                 _logger.LogError(MessageLogErrors.GetAllProducerColabMessage, ex);
                 return StatusCode(500, MessageLogErrors.GetAllProducerColabMessage);
-            }
-        }
-
-        /// <summary>
-        /// Busca metodo de pagamento pelo ID
-        /// </summary>
-        /// <param name="id"> id do metodo de pagamento</param>
-        /// <returns>200 metodo de pagamento da busca</returns>
-        /// <returns>204 Nenhum metodo de pagamento encontrado</returns>
-        /// <returns>500 Erro inesperado</returns>
-        [HttpGet]
-        [Route("{id}")]
-        [Produces("application/json")]
-        public async Task<IActionResult> RegisterColabOnEventAsync([FromRoute] string id)
-        {
-            try
-            {
-                var result = await _producerColabService.FindByIdAsync(id);
-                if(result.hasRunnedSuccessfully())
-                    return Ok(result.Data as ProducerColabDTO);
-                else
-                    throw new ProducerColabNotFound(result.Message);
-            }
-            catch (ProducerColabNotFound ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)    
-            {
-                _logger.LogError(MessageLogErrors.FindByIdProducerColabMessage, ex);
-                return StatusCode(500, MessageLogErrors.FindByIdProducerColabMessage);
             }
         }
 

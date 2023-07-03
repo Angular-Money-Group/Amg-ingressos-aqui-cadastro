@@ -8,6 +8,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
         Task<bool> DoesValueExistsOnField<T>(string fieldName, object value);
         Task<User> FindByField<T>(string fieldName, object value);
         Task<object> UpdateUser<T>(object id, User userComplet);
+        Task<object> UpdateColab<T>(object id, User userModel);
         Task<object> Delete<T>(object id);
         Task<List<User>> GetAllUsers<T>();
     }

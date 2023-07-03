@@ -99,6 +99,37 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 throw ex;
             }
         }
+
+        public async Task<object> UpdateColab<T>(object id, User userModel) {
+            try {
+                var update = Builders<User>.Update
+                   .Set(userMongo => userMongo.Name, userModel.Name)
+                   .Set(userMongo => userMongo.DocumentId, userModel.DocumentId)
+                   .Set(userMongo => userMongo.Contact.Email, userModel.Contact.Email)
+                   .Set(userMongo => userMongo.Password, userModel.Password);
+
+                var filter = Builders<User>.Filter
+                    .Eq(userMongo => userMongo.Id, userModel.Id);
+
+                UpdateResult updateResult = await _userCollection.UpdateOneAsync(filter, update);
+                if (updateResult.IsAcknowledged && updateResult.ModifiedCount > 0)
+                {
+                    // The data was successfully updated
+                    return "Usuário Atualizado.";
+                }
+                else
+                {
+                    throw new UpdateUserException("Erro ao atualizar usuario.");
+                }
+            }
+            catch (UpdateUserException ex) {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         
         public async Task<object> Delete<T>(object id) {
             try
