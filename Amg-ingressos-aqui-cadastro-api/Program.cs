@@ -9,7 +9,9 @@ var builder = WebApplication.CreateBuilder(args);
 
 // Add services to the container.
 
-builder.Services.AddControllers();
+builder.Services.AddControllers()
+    .AddJsonOptions(
+        options => options.JsonSerializerOptions.PropertyNamingPolicy = null);
 // Learn more about configuring Swagger/OpenAPI at https://aka.ms/aspnetcore/swashbuckle
 builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
@@ -23,10 +25,13 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 // injecao de dependencia
 //services
 builder.Services.AddScoped<ITransactionService, TransactionService>();
+builder.Services.AddScoped<IUserService, UserService>();
 //repository
 builder.Services.AddScoped<ITransactionRepository, TransactionRepository<object>>();
+builder.Services.AddScoped<IUserRepository, UserRepository<object>>();
 //infra
 builder.Services.AddScoped<IDbConnection<Transaction>, DbConnection<Transaction>>();
+builder.Services.AddScoped<IDbConnection<User>, DbConnection<User>>();
 
 var app = builder.Build();
 app.UseSwagger();

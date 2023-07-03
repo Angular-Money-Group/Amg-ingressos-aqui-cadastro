@@ -5,12 +5,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
 {
     public interface IUserService
     {
-        Task<MessageReturn> SaveAsync(User userSave);
-        // private Task<bool> DoesIdExists(string idUser);
+        Task<MessageReturn> GetAllUsersAsync();
         Task<MessageReturn> FindByIdAsync(string idUser);
         Task<MessageReturn> FindByEmailAsync(string email);
-        Task<MessageReturn> UpdateByIdAsync(User userUpdated);
+        Task<bool> IsEmailAvailable(string email);
+        Task<MessageReturn> SaveAsync(UserDTO userSave);
+        Task<bool> DoesIdExists(string idUser);
+        Task<MessageReturn> UpdateByIdAsync(UserDTO userUpdated);
         Task<MessageReturn> DeleteAsync(string id);
-        Task<MessageReturn> GetAllUsersAsync();
     }
 }

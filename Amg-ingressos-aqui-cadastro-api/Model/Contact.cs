@@ -1,14 +1,21 @@
-﻿namespace Amg_ingressos_aqui_cadastro_api.Model {
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
+
+namespace Amg_ingressos_aqui_cadastro_api.Model {
     public class Contact
     {
         /// <summary>
         /// E-mail de validação 
         /// </summary> 
-        public string Email { get; set; }
+        [BsonElement("Email")]
+        [JsonPropertyName("Email")]
+        public string? Email { get; set; }
 
         /// <summary>
         /// Número para contato 
         /// </summary>    
-        public string PhoneNumber { get; set; }
+        [BsonElement("PhoneNumber")]
+        [JsonPropertyName("PhoneNumber")]
+        public string? PhoneNumber { get; set; }
     }
 }

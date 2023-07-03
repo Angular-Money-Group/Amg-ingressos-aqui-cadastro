@@ -1,44 +1,63 @@
-﻿namespace Amg_ingressos_aqui_cadastro_api.Model {
+﻿using MongoDB.Bson.Serialization.Attributes;
+using System.Text.Json.Serialization;
+
+namespace Amg_ingressos_aqui_cadastro_api.Model {
     public class Address
     {
         /// <summary>
         /// Cep da residencia 
         /// </summary>
-        public string Cep { get; set; }
+        [BsonElement("Cep")]
+        [JsonPropertyName("Cep")]
+        public string? Cep { get; set; }
 
         /// <summary>
         /// Endereço da residencia 
         /// </summary>
-        public string AddressDescription { get; set; }
+        [BsonElement("AddressDescription")]
+        [JsonPropertyName("AddressDescription")]
+        public string? AddressDescription { get; set; }
 
         /// <summary>
         /// Número da residencia
         /// </summary>
-        public string Number { get; set; }
+        [BsonElement("Number")]
+        [JsonPropertyName("Number")]
+        public string? Number { get; set; }
 
         /// <summary> 
         /// Complemento 
         /// </summary>
-        public string Complement { get; set; }
+        [BsonElement("Complement")]
+        [JsonPropertyName("Complement")]
+        public string? Complement { get; set; }
 
         /// <summary> 
         /// Ponto de referencia 
         /// </summary>
-        public string ReferencePoint { get; set; }
+        [BsonElement("ReferencePoint")]
+        [JsonPropertyName("ReferencePoint")]
+        public string? ReferencePoint { get; set; }
 
         /// <summary>
         /// Bairro de residencia 
         /// </summary>
-        public string Neighborhood { get; set; }
+        [BsonElement("Neighborhood")]
+        [JsonPropertyName("Neighborhood")]
+        public string? Neighborhood { get; set; }
 
         /// <summary> 
         /// Cidade de residencia 
         /// </summary>
-        public string City { get; set; }
+        [BsonElement("City")]
+        [JsonPropertyName("City")]
+        public string? City { get; set; }
 
        /// <summary>
        /// Estado de residencia 
        /// </summary>
-        public string State { get; set; }
+        [BsonElement("State")]
+        [JsonPropertyName("State")]
+        public string? State { get; set; }
     }
 }
