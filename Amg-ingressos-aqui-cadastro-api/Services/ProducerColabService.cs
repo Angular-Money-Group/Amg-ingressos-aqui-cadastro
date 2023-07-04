@@ -128,7 +128,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     throw new UserNotFound(_messageReturn.Message);
                 }
                
-                _messageReturn = await _userService.SaveAsync(colab);
+                _messageReturn = await _userService.SaveColabAsync(colab);
                 if(!_messageReturn.hasRunnedSuccessfully()) {
                     throw new SaveUserException("Nao foi possivel salvar o Colaborador no banco");
                 }

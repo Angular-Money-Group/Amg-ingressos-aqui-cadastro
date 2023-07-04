@@ -73,25 +73,29 @@ namespace Amg_ingressos_aqui_cadastro_api.Utils
         public static bool ValidateOnlyNumbers(this string str ) {
             return Regex.IsMatch(str, @"^[0-9]+$");
         }
-
-        private static bool hasRunnedSuccessfully(this MessageReturn result) {
-            return string.IsNullOrEmpty(result.Message) && (result.Data is not null);
+        
+        public static void ValidateCpfFormat(this string cpf) {
+            if(string.IsNullOrEmpty(cpf))
+                throw new EmptyFieldsException("Documento de CPF é Obrigatório.");
+            cpf = string.Join("", cpf.ToCharArray().Where(Char.IsDigit));
+            if(cpf.Length != 11)
+                throw new EmptyFieldsException("Formato de Documento de CPF inválido.");
         }
         
         public static bool IsNullOrEmpty(this object obj)
-    {
-        if (obj == null)
         {
-            return true;
-        }
+            if (obj == null)
+            {
+                return true;
+            }
 
-        if (obj is string str && string.IsNullOrEmpty(str))
-        {
-            return true;
-        }
+            if (obj is string str && string.IsNullOrEmpty(str))
+            {
+                return true;
+            }
 
-        return false;
-    }
+            return false;
+        }
 
         public static void ValidateObjectEnumType(this System.Enum TEnum, System.Enum classObjectEnum) {
             if (classObjectEnum.IsNullOrEmpty())
