@@ -7,6 +7,7 @@ using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Utils;
 using System;
 using System.Text.RegularExpressions;
+using Amg_ingressos_aqui_cadastro_api.Model.Querys;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
@@ -22,35 +23,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             this._userService = userService;
         }
         
-        public async Task<MessageReturn> FindByIdAsync(string idProducerColab)
-        {
-            this._messageReturn = new MessageReturn();
-            try
-            {
-                idProducerColab.ValidateIdMongo();
-
-                ProducerColab producerColab = await _producerColabRepository.FindByField<ProducerColab>("Id", idProducerColab);
-                _messageReturn.Data = new ProducerColabDTO(producerColab);
-
-            }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (ProducerColabNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
-            return _messageReturn;
-        }
-        
         public async Task<MessageReturn> GetAllColabsOfProducerAsync(string idProducer)
         {
             this._messageReturn = new MessageReturn();
@@ -58,8 +30,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 idProducer.ValidateIdMongo();
 
-                ProducerColab producerColab = await _producerColabRepository.FindByField<ProducerColab>("IdProducer", idProducer);
-                _messageReturn.Data = new ProducerColabDTO(producerColab);
+                List<ProducerColab> producerColabs = await _producerColabRepository.FindAllColabsOfProducer<ProducerColab>(idProducer);
+                List<GetColabsProducer> colabsOfProducer = new List<GetColabsProducer>();
+                
+                foreach (ProducerColab producerColab in producerColabs) {
+                    UserDTO colab = (await _userService.FindByIdAsync(TypeUserEnum.Colab, producerColab.IdColab)).Data as UserDTO;
+                    colabsOfProducer.Add(new GetColabsProducer(colab));
+                }
+                _messageReturn.Data = colabsOfProducer;
 
             }
             catch (IdMongoException ex)
@@ -130,7 +108,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                
                 _messageReturn = await _userService.SaveColabAsync(colab);
                 if(!_messageReturn.hasRunnedSuccessfully()) {
-                    throw new SaveUserException("Nao foi possivel salvar o Colaborador no banco");
+                    throw new SaveUserException(_messageReturn.Message);
                 }
 
                 colabUser.Id = _messageReturn.Data as string;
@@ -172,7 +150,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             catch (SaveUserException ex)
             {
                 _messageReturn.Data = null;
-                _messageReturn.Message = "Erro ao salvar colaborador no banco";
+                _messageReturn.Message = "Nao foi possivel salvar o Colaborador no banco:\n\t" + ex.Message;
             }
             catch (Exception ex)
             {

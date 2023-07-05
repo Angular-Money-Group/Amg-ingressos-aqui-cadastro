@@ -5,7 +5,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
 {
     public interface IProducerColabService
     {
-        Task<MessageReturn> FindByIdAsync(string idProducerColab);
         Task<MessageReturn> GetAllColabsOfProducerAsync(string IdProducer);
         Task<MessageReturn> SaveAsync(ProducerColabDTO producerColabSaveDTO);
         Task<MessageReturn> RegisterColabAsync(string idProducer, UserDTO colab);

@@ -2,6 +2,7 @@ using Amg_ingressos_aqui_cadastro_api.Consts;
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
+using Amg_ingressos_aqui_cadastro_api.Model.Querys;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
@@ -98,9 +99,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
             try
             {
-                var result = await _producerColabService.GetAllColabsOfProducerAsync(idProducer);
+                MessageReturn result = await _producerColabService.GetAllColabsOfProducerAsync(idProducer);
                 if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data as List<ProducerColabDTO>);
+                    return Ok(result.Data as List<GetColabsProducer>);
                 else
                     throw new GetAllProducerColabException(result.Message);
             }
