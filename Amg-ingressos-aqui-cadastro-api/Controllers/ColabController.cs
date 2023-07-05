@@ -25,10 +25,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <summary>
         /// Grava metodo de pagamento
         /// </summary>
-        /// <param name="id">id do usuario cujo metodo de pagamento sera Gravado</param>
+        /// <param name="idProducer">id do usuario cujo metodo de pagamento sera Gravado</param>
         /// <returns>200 metodo de pagamento criado</returns>
         /// <returns>500 Erro inesperado</returns>
-        [Route("{id}")]
+        [Route("registerColab/{idProducer}")]
         [HttpPatch]
         public async Task<IActionResult> RegisterProducerColabAsync([FromRoute] string idProducer, [FromBody] UserDTO colabUserDTO)
         {
@@ -56,12 +56,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <summary>
         /// Busca metodo de pagamento pelo ID
         /// </summary>
-        /// <param name="idEvent"> id do metodo de pagamento</param>
+        /// <param name="idEvent"> id do evento a registrar o colaborador</param>
+        /// <param name="idColab"> id do colaborador</param>
         /// <returns>200 metodo de pagamento da busca</returns>
         /// <returns>204 Nenhum metodo de pagamento encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPatch]
-        [Route("{idEvent")]
+        [Route("applyColabOnEvent/{idEvent}/{idColab}")]
         [Produces("application/json")]
         public async Task<IActionResult> RegisterColabOnEventAsync([FromRoute] string idEvent, [FromRoute] string idColab)
         {
@@ -86,7 +87,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         }
 
         /// <summary>
-        /// Busca todos os metodos de pagamento
+        /// Busca todos os colaboradores do produtor
         /// </summary>
         /// <param name="idProducer">id do produtor que deseja ver seus colaboradores</param>
         /// <returns>200 Lista de todos metodos de pagamento</returns>
@@ -118,7 +119,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         }
 
         /// <summary>
-        /// Busca todos os metodos de pagamento
+        /// Busca todos os colaboradores marcando os que estao no evento
         /// </summary>
         /// <param name="idProducer">id do producer</param>
         /// <param name="idEvent">id do evento selecionado na seção de colaboradores</param>
