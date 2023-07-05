@@ -7,6 +7,7 @@ using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Utils;
 using System;
 using System.Text.RegularExpressions;
+using Amg_ingressos_aqui_cadastro_api.Model.Querys;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
@@ -22,18 +23,25 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             this._userService = userService;
         }
         
-        public async Task<MessageReturn> GetAllColabsOfEventAsync(string idEvent)
+        public async Task<MessageReturn> CheckAllColabsOfEventAsync(string idEvent, List<string> idColabsOfProducer)
         {
+            //fazer do postgres para o mongo
             this._messageReturn = new MessageReturn();
             try
             {
-                var result = await _eventColabRepository.GetAllEventColabs<EventColab>();
+                var result = await _eventColabRepository.FindAllColabsOfEvent<EventColab>(idEvent);
 
-                List<EventColabDTO> list = new List<EventColabDTO>();
-                foreach (EventColab eventColab in result) {
-                    list.Add(new EventColabDTO(eventColab));
+                List<string> idColabsOfEvent = await _eventColabRepository.FindAllColabsOfEvent<EventColab>(idEvent);
+                List<GetColabsEvent> colabsEvent = new List<GetColabsEvent>();
+                
+                foreach (string idColab in idColabsOfProducer) {
+                    UserDTO colab = (await _userService.FindByIdAsync(TypeUserEnum.Colab, idColab)).Data as UserDTO;
+                    if(idColabsOfEvent.Contains(idColab))
+                        colabsEvent.Add(new GetColabsEvent(colab, true));
+                    else
+                        colabsEvent.Add(new GetColabsEvent(colab, false));
                 }
-                _messageReturn.Data = list;
+                _messageReturn.Data = colabsEvent;
             }
             catch (GetAllEventColabException ex)
             {

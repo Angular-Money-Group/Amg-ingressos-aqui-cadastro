@@ -120,23 +120,31 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <summary>
         /// Busca todos os metodos de pagamento
         /// </summary>
+        /// <param name="idProducer">id do producer</param>
         /// <param name="idEvent">id do evento selecionado na seção de colaboradores</param>
         /// <returns>200 Lista de todos metodos de pagamento</returns>
         /// <returns>204 Nenhum metodo de pagamento encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
-        [Route("{idEvent}")]
+        [Route("{idProducer}/{idEvent}")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetAllColabsFromEventAsync([FromRoute] string idEvent)
+        public async Task<IActionResult> GetAllColabsFromEventAsync([FromRoute] string idProducer, [FromRoute] string idEvent)
         {
             try
             {
                 // FALTA IMPLEMENTAR A PARTE DE CHECKBOX
-                var result = await _eventColabService.GetAllColabsOfEventAsync(idEvent);
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data as List<ProducerColabDTO>);
-                else
+                MessageReturn result = await _producerColabService.GetIdColabsOfProducerAsync(idProducer);
+                if (!result.hasRunnedSuccessfully())
                     throw new GetAllProducerColabException(result.Message);
+
+                result = await _eventColabService.CheckAllColabsOfEventAsync(idEvent, (result.Data as List<string>));
+                if (!result.hasRunnedSuccessfully())
+                    throw new GetAllProducerColabException(result.Message);
+
+                List<GetColabsEvent> orderedList = (result.Data as List<GetColabsEvent>)
+                        .OrderBy(obj => obj.IsOnEvent).ToList();
+
+                return Ok(result.Data as List<GetColabsEvent>);
             }
             catch (GetAllProducerColabException ex)
             {

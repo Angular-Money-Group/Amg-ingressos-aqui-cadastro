@@ -73,15 +73,20 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
         }
 
-        public async Task<List<ProducerColab>> FindAllColabsOfProducer<T>(string idProducer) {
+        public async Task<List<string>> FindAllColabsOfProducer<T>(string idProducer) {
             try {
 
                 var filter = Builders<ProducerColab>.Filter.Eq("IdProducer", idProducer);
                 List<ProducerColab> producerColabs = await _producerColabCollection.Find(filter).ToListAsync();
-                if (producerColabs is not null)
-                    return producerColabs;
+                List<string> idColabs = new List<string>();
+                if (producerColabs is not null){
+                    foreach (ProducerColab producerColab in producerColabs) {
+                        idColabs.Add(producerColab.IdColab);
+                    }
+                    return idColabs;
+                }
                 else
-                    throw new ProducerColabNotFound(" não foram encontrados colaboradores para este produtor.");
+                    throw new ProducerColabNotFound("Este produtor ainda não cadastrou nenhum colaborador...");
             }
             catch (ProducerColabNotFound ex) {
                 throw ex;

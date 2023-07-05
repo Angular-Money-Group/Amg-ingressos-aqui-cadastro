@@ -30,14 +30,46 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 idProducer.ValidateIdMongo();
 
-                List<ProducerColab> producerColabs = await _producerColabRepository.FindAllColabsOfProducer<ProducerColab>(idProducer);
+                List<string> idColabsOfProducer = await _producerColabRepository.FindAllColabsOfProducer<ProducerColab>(idProducer);
                 List<GetColabsProducer> colabsOfProducer = new List<GetColabsProducer>();
-                
-                foreach (ProducerColab producerColab in producerColabs) {
-                    UserDTO colab = (await _userService.FindByIdAsync(TypeUserEnum.Colab, producerColab.IdColab)).Data as UserDTO;
-                    colabsOfProducer.Add(new GetColabsProducer(colab));
+                if (idColabsOfProducer is not null) {
+                    foreach (string idColab in idColabsOfProducer) {
+                        UserDTO colab = (await _userService.FindByIdAsync(TypeUserEnum.Colab, idColab)).Data as UserDTO;
+                        colabsOfProducer.Add(new GetColabsProducer(colab));
+                    }
                 }
                 _messageReturn.Data = colabsOfProducer;
+
+            }
+            catch (IdMongoException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (ProducerColabNotFound ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return _messageReturn;
+        }
+        
+        public async Task<MessageReturn> GetIdColabsOfProducerAsync(string idProducer)
+        {
+            this._messageReturn = new MessageReturn();
+            try
+            {
+                idProducer.ValidateIdMongo();
+
+                List<string> idColabsOfProducer = await _producerColabRepository.FindAllColabsOfProducer<ProducerColab>(idProducer);
+                if (idColabsOfProducer is null)
+                    throw new ProducerColabNotFound("Nenhum colaborador encontrado.");
+                _messageReturn.Data = idColabsOfProducer;
 
             }
             catch (IdMongoException ex)
