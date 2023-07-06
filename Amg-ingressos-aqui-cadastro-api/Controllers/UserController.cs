@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
+    [ApiController]
     [Route("v1/profile")]
     public class UserController : ControllerBase
     {
