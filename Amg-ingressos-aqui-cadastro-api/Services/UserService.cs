@@ -82,6 +82,41 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
         
+        public async Task<MessageReturn> FindByDocumentIdAsync(System.Enum TEnum, string documentId)
+        {
+            this._messageReturn = new MessageReturn();
+            try
+            {
+                documentId.ValidateCpfFormat();
+
+                //validate user type
+                User user = await _userRepository.FindByField<User>("DocumentId", documentId);  
+                UserDTO userDTO = new UserDTO(TEnum, user);
+                _messageReturn.Data = userDTO;
+            
+
+            } catch (InvalidUserTypeException ex) {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (IdMongoException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (UserNotFound ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return _messageReturn;
+        }
+        
         public async Task<MessageReturn> FindByEmailAsync(System.Enum TEnum, string email)
         {
             this._messageReturn = new MessageReturn();
@@ -148,10 +183,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {                
                 User user = userSave.makeUserSave();
-                
+                if(userSave.Type == TypeUserEnum.Colab) 
+                    throw new InvalidUserTypeException("Tentativa de cadastrar colaborador pela rota errada.");
+
                 if (!await IsDocumentIdAvailable(user.DocumentId))
                     throw new DocumentIdAlreadyExists("Documento de Identificação já cadastrado.");
-                
                 if (!await IsEmailAvailable(user.Contact.Email))
                     throw new EmailAlreadyExists("Email Indisponível.");
                 
@@ -181,6 +217,53 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 _messageReturn.Data = null;
                 _messageReturn.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return _messageReturn;
+        }
+        
+        public async Task<MessageReturn> SaveColabAsync(UserDTO colabSave) {
+            this._messageReturn = new MessageReturn();
+            string id = string.Empty;
+            try
+            {                               
+                User user = colabSave.makeUserSave();
+                _messageReturn = await FindByDocumentIdAsync(TypeUserEnum.Colab, user.DocumentId);
+                if (_messageReturn.hasRunnedSuccessfully())
+                    id = (_messageReturn.Data as UserDTO).Id;
+                else {
+                    _messageReturn = await FindByEmailAsync(TypeUserEnum.Colab, user.Contact.Email);
+                    if (_messageReturn.hasRunnedSuccessfully())
+                        id = (_messageReturn.Data as UserDTO).Id;
+                    else
+                        _messageReturn = new MessageReturn();
+                        id = await _userRepository.Save<User>(user) as string;
+                }
+                _messageReturn.Data = id;
+            }
+            catch (EmptyFieldsException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (InvalidUserTypeException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (InvalidFormatException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (SaveUserException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = "Colab: " + ex.Message;
             }
             catch (Exception ex)
             {

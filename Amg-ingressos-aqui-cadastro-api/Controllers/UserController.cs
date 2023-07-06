@@ -66,7 +66,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>204 Nenhum usuario encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
-        [Route("getAllUsers")]
+        [Route("/")]
         [Produces("application/json")]
         public async Task<IActionResult> GetAllUsersAsync()
         {
@@ -134,9 +134,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>204 Nenhum usuario encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPut]
-        [Route("updateUserById")]
+        [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateByIdUserAsync(string id, [FromBody] UserDTO usuarioUpdated)
+        public async Task<IActionResult> UpdateByIdUserAsync([FromRoute] string id, [FromBody] UserDTO usuarioUpdated)
         {
             try
             {
@@ -172,7 +172,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario deletado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpDelete]
-        public async Task<IActionResult> DeleteUserAsync(string id)
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteUserAsync([FromRoute] string id)
         {
             try
             {

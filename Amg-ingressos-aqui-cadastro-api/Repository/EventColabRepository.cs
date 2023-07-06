@@ -87,17 +87,20 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
         }
 
-        public async Task<List<EventColab>> GetAllEventColabs<T>() {
+        public async Task<List<string>> FindAllColabsOfEvent<T>(string idEvent) {
             try
             {
-                List<EventColab> result = await _eventColabCollection.Find(_ => true).ToListAsync();
-                if (!result.Any())
-                    throw new GetAllEventColabException("Nenhum eventXcolab encontrado");
-
-                return result;
+                var filter = Builders<EventColab>.Filter.Eq("IdEvent", idEvent);
+                List<EventColab> eventColabs = await _eventColabCollection.Find(filter).ToListAsync();
+                List<string> idColabs = new List<string>();
+                if (eventColabs is not null) {
+                    foreach (EventColab eventColab in eventColabs) {
+                        idColabs.Add(eventColab.IdColab);
+                    }
+                }
+                return idColabs;
             }
-            catch (GetAllEventColabException ex)
-            {
+            catch (EventColabNotFound ex) {
                 throw ex;
             }
             catch (Exception ex)

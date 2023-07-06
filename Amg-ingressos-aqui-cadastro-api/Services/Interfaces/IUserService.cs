@@ -10,6 +10,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
         Task<MessageReturn> FindByEmailAsync(System.Enum TEnum, string email);
         Task<bool> IsEmailAvailable(string email);
         Task<MessageReturn> SaveAsync(UserDTO userSave);
+        Task<MessageReturn> SaveColabAsync(UserDTO colabSave);
         Task<bool> DoesIdExists(string idUser);
         Task<MessageReturn> UpdateByIdAsync(UserDTO userUpdated);
         Task<MessageReturn> DeleteAsync(string id);

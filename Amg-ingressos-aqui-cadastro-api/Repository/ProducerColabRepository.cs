@@ -72,6 +72,30 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 throw ex;
             }
         }
+
+        public async Task<List<string>> FindAllColabsOfProducer<T>(string idProducer) {
+            try {
+
+                var filter = Builders<ProducerColab>.Filter.Eq("IdProducer", idProducer);
+                List<ProducerColab> producerColabs = await _producerColabCollection.Find(filter).ToListAsync();
+                List<string> idColabs = new List<string>();
+                if (producerColabs is not null){
+                    foreach (ProducerColab producerColab in producerColabs) {
+                        idColabs.Add(producerColab.IdColab);
+                    }
+                    return idColabs;
+                }
+                else
+                    throw new ProducerColabNotFound("Este produtor ainda não cadastrou nenhum colaborador...");
+            }
+            catch (ProducerColabNotFound ex) {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
         
         public async Task<object> Delete<T>(object id) {
             try
@@ -83,25 +107,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                     throw new DeleteProducerColabException("producerXcolab não encontrado.");
             }
             catch (DeleteProducerColabException ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public async Task<List<ProducerColab>> GetAllProducerColabs<T>() {
-            try
-            {
-                List<ProducerColab> result = await _producerColabCollection.Find(_ => true).ToListAsync();
-                if (!result.Any())
-                    throw new GetAllProducerColabException("Nenhum producerXcolab encontrado");
-
-                return result;
-            }
-            catch (GetAllProducerColabException ex)
             {
                 throw ex;
             }

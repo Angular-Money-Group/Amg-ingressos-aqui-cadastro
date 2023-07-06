@@ -45,7 +45,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         }
 
         /// <summary>
-        /// Nome do usuário
+        /// Id do usuário
         /// </summary>
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
@@ -77,7 +77,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         public TypeStatusEnum? Status { get; set; }
 
         /// <summary>
-        /// Endereço do usuário
+        /// Tipo do usuário
         /// </summary>
         [Required]
         [BsonElement("Type")]

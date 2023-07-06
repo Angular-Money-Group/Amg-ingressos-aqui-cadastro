@@ -27,14 +27,20 @@ builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IReceiptAccountService, ReceiptAccountService>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+builder.Services.AddScoped<IProducerColabService, ProducerColabService>();
+builder.Services.AddScoped<IEventColabService, EventColabService>();
 //repository
 builder.Services.AddScoped<IUserRepository, UserRepository<object>>();
 builder.Services.AddScoped<IReceiptAccountRepository, ReceiptAccountRepository<object>>();
 builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository<object>>();
+builder.Services.AddScoped<IProducerColabRepository, ProducerColabRepository<object>>();
+builder.Services.AddScoped<IEventColabRepository, EventColabRepository<object>>();
 //infra
 builder.Services.AddScoped<IDbConnection<User>, DbConnection<User>>();
 builder.Services.AddScoped<IDbConnection<ReceiptAccount>, DbConnection<ReceiptAccount>>();
 builder.Services.AddScoped<IDbConnection<PaymentMethod>, DbConnection<PaymentMethod>>();
+builder.Services.AddScoped<IDbConnection<ProducerColab>, DbConnection<ProducerColab>>();
+builder.Services.AddScoped<IDbConnection<EventColab>, DbConnection<EventColab>>();
 
 var app = builder.Build();
 app.UseSwagger();

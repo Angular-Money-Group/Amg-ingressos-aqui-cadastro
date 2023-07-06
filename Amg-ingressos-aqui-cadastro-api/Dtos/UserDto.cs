@@ -185,11 +185,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         }
 
         public void ValidateCpfFormat() {
-            if(string.IsNullOrEmpty(this.DocumentId))
-                throw new EmptyFieldsException("Documento de CPF é Obrigatório.");
-            this.DocumentId = string.Join("", this.DocumentId.ToCharArray().Where(Char.IsDigit));
-            if(this.DocumentId.Length != 11)
-                throw new EmptyFieldsException("Formato de Documento de CPF inválido.");
+            this.DocumentId.ValidateCpfFormat();
         }
 
         public void ValidateCnpjFormat() {
