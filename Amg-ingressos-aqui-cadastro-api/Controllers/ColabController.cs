@@ -25,17 +25,17 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <summary>
         /// Grava metodo de pagamento
         /// </summary>
-        /// <param name="idProducer">id do usuario cujo metodo de pagamento sera Gravado</param>
+        /// <param name="id">id do usuario cujo metodo de pagamento sera Gravado</param>
         /// <returns>200 metodo de pagamento criado</returns>
         /// <returns>500 Erro inesperado</returns>
-        [Route("registerColab/{idProducer}")]
+        [Route("{id}")]
         [HttpPatch]
-        public async Task<IActionResult> RegisterProducerColabAsync([FromRoute] string idProducer, [FromBody] UserDTO colabUserDTO)
+        public async Task<IActionResult> RegisterProducerColabAsync([FromRoute] string id, [FromBody] UserDTO colabUserDTO)
         {
             try
             {
-                ProducerColabDTO producerColabObject = new ProducerColabDTO(idProducer, colabUserDTO.Id);
-                MessageReturn result = await _producerColabService.RegisterColabAsync(idProducer, colabUserDTO);
+                ProducerColabDTO producerColabObject = new ProducerColabDTO(id, colabUserDTO.Id);
+                MessageReturn result = await _producerColabService.RegisterColabAsync(id, colabUserDTO);
                 if (!result.hasRunnedSuccessfully())
                     throw new SaveProducerColabException(result.Message);
 
@@ -56,13 +56,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <summary>
         /// Busca metodo de pagamento pelo ID
         /// </summary>
-        /// <param name="idEvent"> id do evento a registrar o colaborador</param>
-        /// <param name="idColab"> id do colaborador</param>
+        /// <param name="idEvent"> id do metodo de pagamento</param>
         /// <returns>200 metodo de pagamento da busca</returns>
         /// <returns>204 Nenhum metodo de pagamento encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPatch]
-        [Route("applyColabOnEvent/{idEvent}/{idColab}")]
+        [Route("{idEvent}/{idColab}")]
         [Produces("application/json")]
         public async Task<IActionResult> RegisterColabOnEventAsync([FromRoute] string idEvent, [FromRoute] string idColab)
         {
@@ -87,7 +86,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         }
 
         /// <summary>
-        /// Busca todos os colaboradores do produtor
+        /// Busca todos os metodos de pagamento
         /// </summary>
         /// <param name="idProducer">id do produtor que deseja ver seus colaboradores</param>
         /// <returns>200 Lista de todos metodos de pagamento</returns>
@@ -119,7 +118,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         }
 
         /// <summary>
-        /// Busca todos os colaboradores marcando os que estao no evento
+        /// Busca todos os metodos de pagamento
         /// </summary>
         /// <param name="idProducer">id do producer</param>
         /// <param name="idEvent">id do evento selecionado na seção de colaboradores</param>

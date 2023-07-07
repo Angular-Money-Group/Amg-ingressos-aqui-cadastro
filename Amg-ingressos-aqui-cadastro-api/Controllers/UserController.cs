@@ -10,6 +10,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
+    [ApiController]
     [Route("v1/profile")]
     public class UserController : ControllerBase
     {
@@ -66,7 +67,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>204 Nenhum usuario encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
-        [Route("/")]
+        [Route("getAllUsers")]
         [Produces("application/json")]
         public async Task<IActionResult> GetAllUsersAsync()
         {
@@ -134,9 +135,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>204 Nenhum usuario encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPut]
-        [Route("{id}")]
+        [Route("updateUserById")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateByIdUserAsync([FromRoute] string id, [FromBody] UserDTO usuarioUpdated)
+        public async Task<IActionResult> UpdateByIdUserAsync(string id, [FromBody] UserDTO usuarioUpdated)
         {
             try
             {
@@ -172,8 +173,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario deletado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpDelete]
-        [Route("{id}")]
-        public async Task<IActionResult> DeleteUserAsync([FromRoute] string id)
+        public async Task<IActionResult> DeleteUserAsync(string id)
         {
             try
             {

@@ -183,13 +183,17 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {                
                 User user = userSave.makeUserSave();
-                if(userSave.Type == TypeUserEnum.Colab) 
-                    throw new InvalidUserTypeException("Tentativa de cadastrar colaborador pela rota errada.");
+                //if(userSave.Type == TypeUserEnum.Colab) 
+                //    throw new InvalidUserTypeException("Tentativa de cadastrar colaborador pela rota errada.");
 
                 if (!await IsDocumentIdAvailable(user.DocumentId))
                     throw new DocumentIdAlreadyExists("Documento de Identificação já cadastrado.");
                 if (!await IsEmailAvailable(user.Contact.Email))
                     throw new EmailAlreadyExists("Email Indisponível.");
+                
+                var key = "b14ca5898a4e4133bbce2ea2315a2023";
+                user.Password = AesOperation.EncryptString(key, user.Password);
+                //var decryptedString = AesOperation.DecryptString(key, encryptedString);
                 
                 var id = await _userRepository.Save<User>(user);
                 _messageReturn.Data = id;
