@@ -34,7 +34,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 List<GetColabsProducer> colabsOfProducer = new List<GetColabsProducer>();
                 if (idColabsOfProducer is not null) {
                     foreach (string idColab in idColabsOfProducer) {
-                        UserDTO colab = (await _userService.FindByIdAsync(TypeUserEnum.Colab, idColab)).Data as UserDTO;
+                        UserDTO colab = (await _userService.FindByIdAsync(idColab)).Data as UserDTO;
                         colabsOfProducer.Add(new GetColabsProducer(colab));
                     }
                 }
@@ -133,7 +133,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 colab.Type = TypeUserEnum.Colab;
                 User colabUser = colab.makeUserSave();
 
-                _messageReturn = await _userService.FindByIdAsync(TypeUserEnum.Producer, idProducer);
+                _messageReturn = await _userService.FindByIdAsync(idProducer);
                 if(!_messageReturn.hasRunnedSuccessfully()) {
                     throw new UserNotFound(_messageReturn.Message);
                 }

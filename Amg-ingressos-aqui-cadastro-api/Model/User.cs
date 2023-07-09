@@ -49,8 +49,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </summary>
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        [BsonElement("Id")]
-        [JsonPropertyName("Id")]
         public string? Id { get; set; }
         /// <summary>
         /// name
@@ -71,7 +69,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// <sumary>
         /// Status
         /// </sumary>
-        [Required]
         [BsonElement("Status")]
         [JsonPropertyName("Status")]
         public TypeStatusEnum? Status { get; set; }
@@ -87,7 +84,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// <summary>
         /// Endereço do usuário
         /// </summary>
-        [Required]
         [BsonElement("Address")]
         [JsonPropertyName("Address")]
         public Address? Address { get; set; }

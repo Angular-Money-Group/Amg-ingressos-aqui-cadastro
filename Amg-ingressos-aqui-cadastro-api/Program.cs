@@ -17,22 +17,23 @@ builder.Services.AddHttpClient();
 // Add services to the container.
 builder.Services.Configure<TransactionDatabaseSettings>(
     builder.Configuration.GetSection("CadastroDatabase"));
-    
-builder.Services.AddAutoMapper(AppDomain.CurrentDomain.GetAssemblies());
 
 // injecao de dependencia
 //services
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IReceiptAccountService, ReceiptAccountService>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
+builder.Services.AddScoped<IEmailService, EmailService>();
 //repository
 builder.Services.AddScoped<IUserRepository, UserRepository<object>>();
 builder.Services.AddScoped<IReceiptAccountRepository, ReceiptAccountRepository<object>>();
 builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository<object>>();
+builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 //infra
 builder.Services.AddScoped<IDbConnection<User>, DbConnection<User>>();
 builder.Services.AddScoped<IDbConnection<ReceiptAccount>, DbConnection<ReceiptAccount>>();
 builder.Services.AddScoped<IDbConnection<PaymentMethod>, DbConnection<PaymentMethod>>();
+builder.Services.AddScoped<IDbConnection<Email>, DbConnection<Email>>();
 
 builder.Services.AddCors(options =>
 {

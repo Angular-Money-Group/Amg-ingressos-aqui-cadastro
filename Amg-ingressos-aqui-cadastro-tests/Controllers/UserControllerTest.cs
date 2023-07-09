@@ -22,6 +22,7 @@ namespace Prime.UnitTests.Controllers
         private UserController _userController;
         private UserService _userService;
         private Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
+        private Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
         private Mock<ILogger<UserController>> _loggerMock = new Mock<ILogger<UserController>>();
         private User userComplet;
         private UserDTO userDTO;
@@ -30,7 +31,7 @@ namespace Prime.UnitTests.Controllers
         [SetUp]
         public void SetUp()
         {
-            this._userService = new UserService(_userRepositoryMock.Object);
+            this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object);
             this._userController = new UserController(_loggerMock.Object, this._userService);
             this.userComplet = FactoryUser.SimpleUser();
             this.userDTO = new UserDTO(this.userComplet);
@@ -118,14 +119,14 @@ namespace Prime.UnitTests.Controllers
         /**************/
 
         [Test]
-        public async Task Given_Users_When_GetAllUsersAsync_Then_return_list_objects_events()
+        public async Task Given_Users_When_GetAllAsync_Then_return_list_objects_events()
         {
             //Arrange
             var expectedResult = FactoryUser.ListSimpleUser();
-            _userRepositoryMock.Setup(x => x.GetAllUsers<User>()).Returns(Task.FromResult(expectedResult as List<User>));
+            _userRepositoryMock.Setup(x => x.GetAll<User>(string.Empty)).Returns(Task.FromResult(expectedResult as List<User>));
 
             //Act
-            var result = await _userController.GetAllUsersAsync() as ObjectResult;
+            var result = await _userController.GetAllAsync(string.Empty) as ObjectResult;
             var list = result.Value as IEnumerable<UserDTO>;
             
             //Assert
@@ -136,15 +137,15 @@ namespace Prime.UnitTests.Controllers
         }
 
         [Test]
-        public async Task Given_None_Users_When_GetAllUsersAsync_Then_return_NoContent()
+        public async Task Given_None_Users_When_GetAllAsync_Then_return_NoContent()
         {
             //Arrange
             var expectedResult = new NoContentResult();
-            _userRepositoryMock.Setup(x => x.GetAllUsers<User>())
+            _userRepositoryMock.Setup(x => x.GetAll<User>(string.Empty))
                 .Throws(new GetAllUserException("Usuários não encontrados"));
 
             //Act
-            var result = await _userController.GetAllUsersAsync();
+            var result = await _userController.GetAllAsync(string.Empty);
 
             //Assert
             Assert.IsInstanceOf<NoContentResult>(result);
@@ -152,15 +153,15 @@ namespace Prime.UnitTests.Controllers
         }
 
         [Test]
-        public async Task Given_Users_When_GetAllUsersAsync_has_internal_error_Then_return_status_code_500_Async()
+        public async Task Given_Users_When_GetAllAsync_has_internal_error_Then_return_status_code_500_Async()
         {
             //Arrange
             var expectedMessage = MessageLogErrors.GetAllUserMessage;
-            _userRepositoryMock.Setup(x => x.GetAllUsers<User>())
+            _userRepositoryMock.Setup(x => x.GetAll<User>(string.Empty))
                 .Throws(new Exception("Erro ao conectar-se ao banco"));
 
             //Act
-            var result = await _userController.GetAllUsersAsync() as ObjectResult;
+            var result = await _userController.GetAllAsync(string.Empty) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -173,7 +174,7 @@ namespace Prime.UnitTests.Controllers
         /*****************/
 
         [Test]
-        public async Task Given_iduser_When_FindByIdUserAsync_Then_return_Ok()
+        public async Task Given_iduser_When_FindByIdAsync_Then_return_Ok()
         {
             //Arrange
             var id = this.userDTO.Id;
@@ -182,7 +183,7 @@ namespace Prime.UnitTests.Controllers
                 .Returns(Task.FromResult(this.userComplet));
 
             //Act
-            var result = await _userController.FindByIdUserAsync("Admin", id) as ObjectResult;
+            var result = await _userController.FindByIdAsync(id) as ObjectResult;
 
             //Assert
             Assert.IsInstanceOf<UserDTO>(result?.Value);
@@ -190,7 +191,7 @@ namespace Prime.UnitTests.Controllers
         }
 
         [Test]
-        public async Task Given_iduser_When_FindByIdUserAsync_Then_return_Miss_UserId()
+        public async Task Given_iduser_When_FindByIdAsync_Then_return_Miss_UserId()
         {
             //Arrange
             //aqui pra testar a propriedade do modelo
@@ -199,7 +200,7 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = "Id é Obrigatório.";
 
             //Act
-            var result = await _userController.FindByIdUserAsync("Admin", userComplet.Id) as ObjectResult;
+            var result = await _userController.FindByIdAsync(userComplet.Id) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -207,7 +208,7 @@ namespace Prime.UnitTests.Controllers
         }
 
         [Test]
-        public async Task Given_iduser_When_FindByIdUserAsync_Then_return_InvalidFormat_UserId()
+        public async Task Given_iduser_When_FindByIdAsync_Then_return_InvalidFormat_UserId()
         {
             //Arrange
             //aqui pra testar a propriedade do modelo
@@ -216,7 +217,7 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = "Id é obrigatório e está menor que 24 digitos.";
 
             //Act
-            var result = await _userController.FindByIdUserAsync("Admin", userComplet.Id) as ObjectResult;
+            var result = await _userController.FindByIdAsync(userComplet.Id) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -224,7 +225,7 @@ namespace Prime.UnitTests.Controllers
         }
 
         [Test]
-        public async Task Given_iduser_When_FindByIdUserAsync_Then_return_Miss_UserId_in_Db()
+        public async Task Given_iduser_When_FindByIdAsync_Then_return_Miss_UserId_in_Db()
         {
             //Arrange
             var idUser = "6442dcb6523d52533aeb1ae4";
@@ -233,7 +234,7 @@ namespace Prime.UnitTests.Controllers
                 .Throws(new UserNotFound(expectedMessage));
 
             //Act
-            var result = await _userController.FindByIdUserAsync("Admin", idUser) as ObjectResult;
+            var result = await _userController.FindByIdAsync(idUser) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -241,7 +242,7 @@ namespace Prime.UnitTests.Controllers
         }
 
         [Test]
-        public async Task Given_iduser_When_FindByIdUserAsync_Then_return_internal_error()
+        public async Task Given_iduser_When_FindByIdAsync_Then_return_internal_error()
         {
             //Arrange
             var idUser = userComplet.Id;
@@ -252,7 +253,7 @@ namespace Prime.UnitTests.Controllers
 
 
             //Act
-            var result = await _userController.FindByIdUserAsync("Admin", idUser) as ObjectResult;
+            var result = await _userController.FindByIdAsync(idUser) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -265,7 +266,7 @@ namespace Prime.UnitTests.Controllers
         /********************/
 
         [Test]
-        public async Task Given_iduser_When_UpdateByIdUserAsync_Then_return_Ok()
+        public async Task Given_iduser_When_UpdateAsync_Then_return_Ok()
         {
             //Arrange
             var id = this.userDTO.Id;
@@ -281,7 +282,7 @@ namespace Prime.UnitTests.Controllers
                                 .Returns(Task.FromResult(expectedResult as object));
 
             //Act
-            var result = await _userController.UpdateByIdUserAsync(id, userUpdated);
+            var result = await _userController.UpdateAsync(id, userUpdated);
 
             //Assert
             Assert.IsInstanceOf<NoContentResult>(result);
@@ -304,7 +305,7 @@ namespace Prime.UnitTests.Controllers
             _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
             .Returns(Task.FromResult(true));
             
-            var result = await _userController.UpdateByIdUserAsync(id, userUpdated) as ObjectResult;
+            var result = await _userController.UpdateAsync(id, userUpdated) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -313,7 +314,7 @@ namespace Prime.UnitTests.Controllers
 
 
         [Test]
-        public async Task Given_iduser_When_UpdateByIdUserAsync_Then_return_internal_error()
+        public async Task Given_iduser_When_UpdateAsync_Then_return_internal_error()
         {
             //Arrange
             var id = this.userComplet.Id;
@@ -327,7 +328,7 @@ namespace Prime.UnitTests.Controllers
                 .Throws(new Exception(expectedMessage));
 
             //Act
-            var result = await _userController.UpdateByIdUserAsync(id, this.userDTO) as ObjectResult;
+            var result = await _userController.UpdateAsync(id, this.userDTO) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -335,7 +336,7 @@ namespace Prime.UnitTests.Controllers
         }
 
         [Test]
-        public async Task Given_non_existent_iduser_When_UpdateByIdUserAsync_Then_return_UserNotFound()
+        public async Task Given_non_existent_iduser_When_UpdateAsync_Then_return_UserNotFound()
         {
             //Arrange
             var id = this.userComplet.Id;
@@ -348,7 +349,7 @@ namespace Prime.UnitTests.Controllers
             .Returns(Task.FromResult(false));
 
             //Act
-            var result = await _userController.UpdateByIdUserAsync(id, this.userDTO) as ObjectResult;
+            var result = await _userController.UpdateAsync(id, this.userDTO) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -367,7 +368,7 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = "Id é Obrigatório.";
 
             //Act
-            var result = await _userController.UpdateByIdUserAsync(id, this.userDTO) as ObjectResult;
+            var result = await _userController.UpdateAsync(id, this.userDTO) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -380,7 +381,7 @@ namespace Prime.UnitTests.Controllers
         /**************/
 
         [Test]
-        public async Task Given_iduser_When_DeleteUserAsync_ById_Then_return_Ok()
+        public async Task Given_iduser_When_DeleteAsync_ById_Then_return_Ok()
         {
             //Arrange
             var id = this.userComplet.Id;
@@ -394,7 +395,7 @@ namespace Prime.UnitTests.Controllers
             _userRepositoryMock.Setup(x => x.Delete<object>(id))
             .Returns(Task.FromResult(expectedMessage as object));
             
-            var result = await _userController.DeleteUserAsync(id) as ObjectResult;
+            var result = await _userController.DeleteAsync(id) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -402,7 +403,7 @@ namespace Prime.UnitTests.Controllers
         }
 
         [Test]
-        public async Task Given_NotMongoId_When_DeleteUserAsync_ById_Then_return_IdMongoException()
+        public async Task Given_NotMongoId_When_DeleteAsync_ById_Then_return_IdMongoException()
         {
             //Arrange
             var id = "123";
@@ -417,7 +418,7 @@ namespace Prime.UnitTests.Controllers
             .Returns(Task.FromResult(expectedMessage as object));
 
             
-            var result = await _userController.DeleteUserAsync(id) as ObjectResult;
+            var result = await _userController.DeleteAsync(id) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -440,7 +441,7 @@ namespace Prime.UnitTests.Controllers
             .Returns(Task.FromResult(expectedMessage as object));
 
             
-            var result = await _userController.DeleteUserAsync(id) as ObjectResult;
+            var result = await _userController.DeleteAsync(id) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
@@ -460,7 +461,7 @@ namespace Prime.UnitTests.Controllers
                 .Throws(new Exception(expectedMessage));
 
             
-            var result = await _userController.DeleteUserAsync(id) as ObjectResult;
+            var result = await _userController.DeleteAsync(id) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);

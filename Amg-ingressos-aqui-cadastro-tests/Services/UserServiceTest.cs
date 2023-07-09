@@ -16,6 +16,7 @@ namespace Prime.UnitTests.Services
     {
         private UserService _userService;
         private Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
+        private Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
         private User userComplet;
         private UserDTO userDTO;
 
@@ -23,7 +24,7 @@ namespace Prime.UnitTests.Services
         [SetUp]
         public void SetUp()
         {
-            this._userService = new UserService(_userRepositoryMock.Object);
+            this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object);
             this.userComplet = FactoryUser.SimpleUser();
             this.userDTO = new UserDTO(this.userComplet);
         }
@@ -34,15 +35,15 @@ namespace Prime.UnitTests.Services
         /**************/
 
         [Test]
-        public void Given_Events_When_GetAllUsers_Then_Return_list_objects_users()
+        public void Given_Events_When_GetAll_Then_Return_list_objects_users()
         {
             //Arrange
             var messageReturn = FactoryUser.ListSimpleUser();
-            _userRepositoryMock.Setup(x => x.GetAllUsers<User>())
+            _userRepositoryMock.Setup(x => x.GetAll<User>(string.Empty))
                 .Returns(Task.FromResult<List<User>>(messageReturn));
 
             //Act
-            var result = _userService.GetAllUsersAsync();
+            var result = _userService.GetAllAsync(null);
             var list = result.Result.Data as IEnumerable<UserDTO>;
 
             //Assert
@@ -57,11 +58,11 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             var expectedMessage = "Usuários não encontrados";
-            _userRepositoryMock.Setup(x => x.GetAllUsers<object>())
+            _userRepositoryMock.Setup(x => x.GetAll<object>(string.Empty))
                 .Throws(new GetAllUserException(expectedMessage));
 
             //Act
-            var resultTask = _userService.GetAllUsersAsync();
+            var resultTask = _userService.GetAllAsync(string.Empty);
 
             //Assert
             Assert.AreEqual(expectedMessage, resultTask.Result.Message);
@@ -73,11 +74,11 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             var expectedMessage = "Erro de conexao";
-            _userRepositoryMock.Setup(x => x.GetAllUsers<object>())
+            _userRepositoryMock.Setup(x => x.GetAll<object>(string.Empty))
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
-            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.GetAllUsersAsync());
+            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.GetAllAsync(string.Empty));
             Assert.AreEqual(expectedMessage, exception.Message);
         }
 
@@ -95,7 +96,7 @@ namespace Prime.UnitTests.Services
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", id)).Returns(Task.FromResult(this.userDTO.makeUser()));
 
             //Act
-            var result = _userService.FindByIdAsync(TypeUserEnum.Admin, id);
+            var result = _userService.FindByIdAsync(id);
 
             //Assert
             Assert.IsInstanceOf<UserDTO>(result.Result.Data);
@@ -112,7 +113,7 @@ namespace Prime.UnitTests.Services
             var messageExpected = "Id é obrigatório e está menor que 24 digitos.";
 
             //Act
-            var result = _userService.FindByIdAsync(TypeUserEnum.Admin, userComplet.Id);
+            var result = _userService.FindByIdAsync(userComplet.Id);
 
             //Assert
             Assert.AreEqual(messageExpected, result.Result.Message);
@@ -129,7 +130,7 @@ namespace Prime.UnitTests.Services
             var messageExpected = "Id é Obrigatório.";
 
             //Act
-            var result = _userService.FindByIdAsync(TypeUserEnum.Admin, userComplet.Id);
+            var result = _userService.FindByIdAsync(userComplet.Id);
 
             //Assert
             Assert.AreEqual(messageExpected, result.Result.Message);
@@ -146,7 +147,7 @@ namespace Prime.UnitTests.Services
                 .Throws(new UserNotFound(messageReturn));
 
             //Act
-            var result = _userService.FindByIdAsync(TypeUserEnum.Admin, idUser);
+            var result = _userService.FindByIdAsync(idUser);
             //Assert
             Assert.AreEqual(messageReturn, result.Result.Message);
             Assert.IsNull(result.Result.Data);
@@ -163,7 +164,7 @@ namespace Prime.UnitTests.Services
                 .Throws(new Exception(expectedMessage));            
 
             // Act and Assert
-            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.FindByIdAsync(TypeUserEnum.Admin, idUser));
+            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.FindByIdAsync(idUser));
             Assert.AreEqual(expectedMessage, exception.Message);
         }
 

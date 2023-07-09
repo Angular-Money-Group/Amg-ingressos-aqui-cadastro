@@ -82,7 +82,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 PaymentMethod paymentMethod = paymentMethodSave.makePaymentMethodSave();
 
-                _messageReturn = await _userService.FindByIdAsync(TypeUserEnum.Customer, paymentMethodSave.IdUser);
+                _messageReturn = await _userService.FindByIdAsync(paymentMethodSave.IdUser);
                 if (!_messageReturn.hasRunnedSuccessfully())
                     throw new SavePaymentMethodException("O campo IdUser nao tem nenhum usuario correspondente.");   
                 
