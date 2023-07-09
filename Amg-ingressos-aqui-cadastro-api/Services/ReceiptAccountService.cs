@@ -82,7 +82,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 ReceiptAccount receiptAccount = receiptAccountSave.makeReceiptAccountSave();
 
-                _messageReturn = await _userService.FindByIdAsync(TypeUserEnum.Producer, receiptAccountSave.IdUser);
+                _messageReturn = await _userService.FindByIdAsync(receiptAccountSave.IdUser);
                 if (!_messageReturn.hasRunnedSuccessfully())
                     throw new SavePaymentMethodException("O campo IdUser nao tem nenhum usuario correspondente.");   
                 

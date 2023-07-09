@@ -35,7 +35,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 List<GetColabsEvent> colabsEvent = new List<GetColabsEvent>();
                 
                 foreach (string idColab in idColabsOfProducer) {
-                    UserDTO colab = (await _userService.FindByIdAsync(TypeUserEnum.Colab, idColab)).Data as UserDTO;
+                    UserDTO colab = (await _userService.FindByIdAsync(idColab)).Data as UserDTO;
                     if(idColabsOfEvent.Contains(idColab))
                         colabsEvent.Add(new GetColabsEvent(colab, true));
                     else

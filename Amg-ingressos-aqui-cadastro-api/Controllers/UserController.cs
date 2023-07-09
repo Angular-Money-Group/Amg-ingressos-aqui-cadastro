@@ -1,17 +1,14 @@
 using Amg_ingressos_aqui_cadastro_api.Consts;
 using Amg_ingressos_aqui_cadastro_api.Dtos;
-using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
-using System;
-using System.Runtime.CompilerServices;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
     [ApiController]
-    [Route("v1/profile")]
+    [Route("v1/user")]
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;
@@ -30,7 +27,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        [Route("createUser")]
         public async Task<IActionResult> SaveUserAsync([FromBody] UserDTO userObject)
         {
             try
@@ -46,7 +42,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             catch (EmailAlreadyExists ex)
             {
                 _logger.LogInformation(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + userObject.Contact.Email);
-                return Ok();
+                return BadRequest(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + userObject.Contact.Email);
             }
             catch (SaveUserException ex)
             {
@@ -67,15 +63,15 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>204 Nenhum usuario encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
-        [Route("getAllUsers")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetAllUsersAsync()
+        public async Task<IActionResult> GetAllAsync(string email=null)
         {
             try
             {
-                var result = await _userService.GetAllUsersAsync();
+                var result = await _userService.GetAllAsync(email);
+
                 if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data as List<UserDTO>);
+                    return Ok(result.Data);
                 else
                     throw new GetAllUserException(result.Message);
             }
@@ -100,15 +96,15 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>204 Nenhum usuario encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
-        [Route("{type}/{id}")]
+        [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> FindByIdUserAsync([FromRoute] string type, [FromRoute] string id)
+        public async Task<IActionResult> FindByIdAsync([FromRoute] string id)
         {
             try
             {
-                System.Enum.TryParse(type, out TypeUserEnum enumValue);
+                //System.Enum.TryParse(type, out TypeUserEnum enumValue);
 
-                var result = await _userService.FindByIdAsync(enumValue ,id);
+                var result = await _userService.FindByIdAsync(id);
                 if(result.hasRunnedSuccessfully()) {
                     return Ok(result.Data as UserDTO);
                 }
@@ -135,9 +131,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>204 Nenhum usuario encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPut]
-        [Route("updateUserById")]
+        [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateByIdUserAsync(string id, [FromBody] UserDTO usuarioUpdated)
+        public async Task<IActionResult> UpdateAsync([FromRoute]string id, [FromBody] UserDTO usuarioUpdated)
         {
             try
             {
@@ -173,7 +169,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario deletado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpDelete]
-        public async Task<IActionResult> DeleteUserAsync(string id)
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute]string id)
         {
             try
             {

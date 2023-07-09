@@ -5,32 +5,32 @@ using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Utils;
-using System;
-using System.Text.RegularExpressions;
-using MongoDB.Bson;
-using MongoDB.Driver;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
     public class UserService : IUserService
     {
         private IUserRepository _userRepository;
+        private IEmailService _emailService;
         private MessageReturn? _messageReturn;
 
-        public UserService(IUserRepository userRepository)
+        public UserService(IUserRepository userRepository, IEmailService emailService)
         {
-            this._userRepository = userRepository;
+            _userRepository = userRepository;
+            _emailService = emailService;
         }
         
-        public async Task<MessageReturn> GetAllUsersAsync()
+        public async Task<MessageReturn> GetAllAsync(string email)
         {
             this._messageReturn = new MessageReturn();
             try
             {
-                var result = await _userRepository.GetAllUsers<User>();
+                var result = await _userRepository.GetAll<User>(email);
 
                 List<UserDTO> list = new List<UserDTO>();
+                var key = "b14ca5898a4e4133bbce2ea2315a2023";
                 foreach (User user in result) {
+                    user.Password = AesOperation.DecryptString(key,user.Password);
                     list.Add(new UserDTO(user));
                 }
                 _messageReturn.Data = list;
@@ -47,7 +47,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
         
-        public async Task<MessageReturn> FindByIdAsync(System.Enum TEnum, string idUser)
+        public async Task<MessageReturn> FindByIdAsync(string idUser)
         {
             this._messageReturn = new MessageReturn();
             try
@@ -56,7 +56,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 //validate user type
                 User user = await _userRepository.FindByField<User>("Id", idUser);  
-                UserDTO userDTO = new UserDTO(TEnum, user);
+                UserDTO userDTO = new UserDTO(user);
                 _messageReturn.Data = userDTO;
             
 
@@ -194,8 +194,18 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var key = "b14ca5898a4e4133bbce2ea2315a2023";
                 user.Password = AesOperation.EncryptString(key, user.Password);
                 //var decryptedString = AesOperation.DecryptString(key, encryptedString);
-                
+                var email = new Email
+                {
+                    Body = _emailService.GenerateBody(),
+                    Subject = "Ingressos",
+                    Sender = "suporte@ingressosaqui.com",
+                    To = user.Contact.Email,
+                    DataCadastro = DateTime.Now
+                };
                 var id = await _userRepository.Save<User>(user);
+                _emailService.SaveAsync(email);
+                _emailService.Send(email.id);
+
                 _messageReturn.Data = id;
             }
             catch (EmptyFieldsException ex)
@@ -296,10 +306,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 if (!await DoesIdExists(user.Id))
                     throw new UserNotFound("Id de usuário não encontrado.");
                 
-                if (userUpdated.Type == TypeUserEnum.Colab)
-                    _messageReturn.Data = await _userRepository.UpdateColab<User>(user.Id, user);
-                else
-                    _messageReturn.Data = await _userRepository.UpdateUser<User>(user.Id, user);
+                var key = "b14ca5898a4e4133bbce2ea2315a2023";
+                user.Password = AesOperation.EncryptString(key,user.Password);
+
+                _messageReturn.Data = await _userRepository.UpdateUser<User>(user.Id, user);
             }
             catch (IdMongoException ex)
             {

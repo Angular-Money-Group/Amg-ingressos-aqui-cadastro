@@ -1,11 +1,8 @@
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
-using System.Diagnostics.CodeAnalysis;
 using Amg_ingressos_aqui_cadastro_api.Infra;
-using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Threading.Tasks;
 
 namespace Amg_ingressos_aqui_cadastro_api.Repository
 {
@@ -74,38 +71,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                    .Set(userMongo => userMongo.Name, userModel.Name)
                    .Set(userMongo => userMongo.DocumentId, userModel.DocumentId)
                    .Set(userMongo => userMongo.Address, userModel.Address)
-                   .Set(userMongo => userMongo.Contact.PhoneNumber, userModel.Contact.PhoneNumber)
-                   .Set(userMongo => userMongo.Password, userModel.Password);
-
-                var filter = Builders<User>.Filter
-                    .Eq(userMongo => userMongo.Id, userModel.Id);
-
-                UpdateResult updateResult = await _userCollection.UpdateOneAsync(filter, update);
-                if (updateResult.IsAcknowledged && updateResult.ModifiedCount > 0)
-                {
-                    // The data was successfully updated
-                    return "Usuário Atualizado.";
-                }
-                else
-                {
-                    throw new UpdateUserException("Erro ao atualizar usuario.");
-                }
-            }
-            catch (UpdateUserException ex) {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-        }
-
-        public async Task<object> UpdateColab<T>(object id, User userModel) {
-            try {
-                var update = Builders<User>.Update
-                   .Set(userMongo => userMongo.Name, userModel.Name)
-                   .Set(userMongo => userMongo.DocumentId, userModel.DocumentId)
-                   .Set(userMongo => userMongo.Contact.Email, userModel.Contact.Email)
+                   .Set(userMongo => userMongo.Contact, userModel.Contact)
+                   .Set(userMongo => userMongo.UserConfirmation, userModel.UserConfirmation)
                    .Set(userMongo => userMongo.Password, userModel.Password);
 
                 var filter = Builders<User>.Filter
@@ -150,14 +117,27 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
         }
 
-        public async Task<List<User>> GetAllUsers<T>() {
+        public async Task<List<User>> GetAll<T>(string email) {
             try
             {
-                List<User> result = await _userCollection.Find(_ => true).ToListAsync();
+                var builder = Builders<User>.Filter;
+                var filter = builder.Empty;
+
+                if (!string.IsNullOrWhiteSpace(email))
+                    filter &= builder.Eq(x => x.Contact.Email, email);
+
+                var result = await _userCollection.Find(filter).ToListAsync();
+
                 if (!result.Any())
                     throw new GetAllUserException("Usuários não encontrados");
 
                 return result;
+
+                //List<User> result = await _userCollection.Find(_ => true).ToListAsync();
+                //if (!result.Any())
+                    //throw new GetAllUserException("Usuários não encontrados");
+
+                //return result;
             }
             catch (GetAllUserException ex)
             {

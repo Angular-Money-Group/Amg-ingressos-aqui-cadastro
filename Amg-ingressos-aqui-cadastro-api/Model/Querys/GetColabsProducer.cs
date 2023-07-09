@@ -9,7 +9,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model.Querys
     public class GetColabsProducer
     {
         public GetColabsProducer(UserDTO colab) {
-            colab.ValidateColabFormat();
+            //colab.ValidateColabFormat();
             this.Id = colab.Id;
             this.Name = colab.Name;
             this.CPF = colab.DocumentId;
