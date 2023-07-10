@@ -26,15 +26,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <param name="id">id do usuario cujo metodo de pagamento sera Gravado</param>
         /// <returns>200 metodo de pagamento criado</returns>
         /// <returns>500 Erro inesperado</returns>
-        [Route("{id}")]
-        [HttpPatch]
-        public async Task<IActionResult> SavePaymentMethodAsync([FromRoute] string id, [FromBody] PaymentMethodDTO paymentMethodObject)
+        [HttpPost]
+        public async Task<IActionResult> SavePaymentMethodAsync([FromBody] PaymentMethodDTO paymentMethodObject)
         {
             try
             {
-                paymentMethodObject.IdUser = id;
                 MessageReturn result = await _paymentMethodService.SaveAsync(paymentMethodObject);
-                // paymentMethodDTOObject.Password = hashPassword;
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
                 else

@@ -48,11 +48,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// <summary>
         /// Nome do usuário
         /// </summary>
+        [BsonElement("Id")]
+        [JsonPropertyName("Id")]
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         public string? Id { get; set; }
-        [BsonElement("Id")]
-        [JsonPropertyName("Id")]
         
         /// <summary>
         /// Identificador do Usuário a quem o método de pagamento pertence
