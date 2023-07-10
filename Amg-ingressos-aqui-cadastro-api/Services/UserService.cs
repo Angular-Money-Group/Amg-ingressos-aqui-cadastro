@@ -46,6 +46,33 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             return _messageReturn;
         }
+
+        public async Task<MessageReturn> IfPasswordMatchReturnUser(string type, string email, string password)
+        {
+            try
+            {
+                this._messageReturn = await GetAsync(email, type);
+                if (!this._messageReturn.hasRunnedSuccessfully())
+                    throw new InvalidLoginCredentials("Email e/ou senha incorretos");
+                foreach (UserDTO user in (this._messageReturn.Data as List<UserDTO>)) {
+                    if (user.Password.Equals(password)){
+                        this._messageReturn.Data = user;
+                        return this._messageReturn;
+                    }
+                }
+                throw new InvalidLoginCredentials("Email e/ou senha incorretos");
+            }
+            catch (InvalidLoginCredentials ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return _messageReturn;
+        }
         
         public async Task<MessageReturn> FindByIdAsync(string idUser)
         {

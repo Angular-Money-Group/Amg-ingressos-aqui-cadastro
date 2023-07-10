@@ -35,7 +35,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 MessageReturn result = await _userService.SaveAsync(user);
                 // userDTOObject.Password = hashPassword;
                 if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
+                    return Ok(result.Data as string);
                 else
                     throw new SaveUserException(result.Message);
             }
@@ -191,6 +191,38 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 return StatusCode(500, MessageLogErrors.deleteUserMessage);
             }
         }
-    
+
+        /// <summary>
+        /// Checa senha do Usuario atraves do email
+        /// </summary>
+        /// <param name="email"> email do usuario</param>
+        /// <param name="pwd"> senha do usuario</param>
+        /// <returns>200 usuario da busca</returns>
+        /// <returns>204 Senha e Email nao correspondem</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpGet]
+        [Route("email/{email}/pwd/{pwd}")]
+        [Produces("application/json")]
+        public async Task<IActionResult> CheckPasswordAsync([FromRoute] string email, [FromRoute] string pwd, [FromQuery] string type = null)
+        {
+            try
+            {
+                var result = await _userService.IfPasswordMatchReturnUser(type, email, pwd);
+                if(result.hasRunnedSuccessfully()) {
+                    return Ok(result.Data as UserDTO);
+                }
+                else
+                    throw new UserNotFound(result.Message);
+            }
+            catch (UserNotFound ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)    
+            {
+                _logger.LogError(MessageLogErrors.FindByIdUserMessage, ex);
+                return StatusCode(500, MessageLogErrors.FindByIdUserMessage);
+            }
+        }    
     }
 }
