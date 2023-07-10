@@ -24,16 +24,21 @@ builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IReceiptAccountService, ReceiptAccountService>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<IAssociateService, AssociateService>();
 //repository
 builder.Services.AddScoped<IUserRepository, UserRepository<object>>();
 builder.Services.AddScoped<IReceiptAccountRepository, ReceiptAccountRepository<object>>();
 builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository<object>>();
 builder.Services.AddScoped<IEmailRepository, EmailRepository>();
+builder.Services.AddScoped<IAssociateColabOrganizerRepository, AssociateColabOrganizerRepository>();
+builder.Services.AddScoped<IAssociateColabEventRepository, AssociateColabEventRepository>();
 //infra
 builder.Services.AddScoped<IDbConnection<User>, DbConnection<User>>();
 builder.Services.AddScoped<IDbConnection<ReceiptAccount>, DbConnection<ReceiptAccount>>();
 builder.Services.AddScoped<IDbConnection<PaymentMethod>, DbConnection<PaymentMethod>>();
 builder.Services.AddScoped<IDbConnection<Email>, DbConnection<Email>>();
+builder.Services.AddScoped<IDbConnection<AssociateColabOrganizer>, DbConnection<AssociateColabOrganizer>>();
+builder.Services.AddScoped<IDbConnection<AssociateColabEvent>, DbConnection<AssociateColabEvent>>();
 
 builder.Services.AddCors(options =>
 {

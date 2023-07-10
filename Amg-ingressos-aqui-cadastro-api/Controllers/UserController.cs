@@ -23,16 +23,16 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <summary>
         /// Grava usuario
         /// </summary>
-        /// <param name="userObject">Corpo usuario a ser Gravado</param>
+        /// <param name="user">Corpo usuario a ser Gravado</param>
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        public async Task<IActionResult> SaveUserAsync([FromBody] UserDTO userObject)
+        public async Task<IActionResult> SaveUserAsync([FromBody] UserDTO user)
         {
             try
             {
                 // userObject.Password = hashPassword;
-                MessageReturn result = await _userService.SaveAsync(userObject);
+                MessageReturn result = await _userService.SaveAsync(user);
                 // userDTOObject.Password = hashPassword;
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
@@ -41,8 +41,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             }
             catch (EmailAlreadyExists ex)
             {
-                _logger.LogInformation(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + userObject.Contact.Email);
-                return BadRequest(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + userObject.Contact.Email);
+                _logger.LogInformation(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
+                return BadRequest(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
             }
             catch (SaveUserException ex)
             {
@@ -64,11 +64,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
         [Produces("application/json")]
-        public async Task<IActionResult> GetAllAsync(string email=null)
+        public async Task<IActionResult> GetAsync([FromQuery]string email = null,[FromQuery]string type = null)
         {
             try
             {
-                var result = await _userService.GetAllAsync(email);
+                var result = await _userService.GetAsync(email,type);
 
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
@@ -191,5 +191,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 return StatusCode(500, MessageLogErrors.deleteUserMessage);
             }
         }
+    
     }
 }

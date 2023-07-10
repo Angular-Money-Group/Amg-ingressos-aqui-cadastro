@@ -9,6 +9,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
         Task<User> FindByField<T>(string fieldName, object value);
         Task<object> UpdateUser<T>(object id, User userComplet);
         Task<object> Delete<T>(object id);
-        Task<List<User>> GetAll<T>(string email);
+        Task<List<User>> Get<T>(string email, string type);
     }
 }
