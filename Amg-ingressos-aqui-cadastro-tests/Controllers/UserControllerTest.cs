@@ -119,14 +119,14 @@ namespace Prime.UnitTests.Controllers
         /**************/
 
         [Test]
-        public async Task Given_Users_When_GetAllAsync_Then_return_list_objects_events()
+        public async Task Given_Users_When_GetAsync_Then_return_list_objects_events()
         {
             //Arrange
             var expectedResult = FactoryUser.ListSimpleUser();
-            _userRepositoryMock.Setup(x => x.GetAll<User>(string.Empty)).Returns(Task.FromResult(expectedResult as List<User>));
+            _userRepositoryMock.Setup(x => x.Get<User>(string.Empty,string.Empty)).Returns(Task.FromResult(expectedResult as List<User>));
 
             //Act
-            var result = await _userController.GetAllAsync(string.Empty) as ObjectResult;
+            var result = await _userController.GetAsync(string.Empty,string.Empty) as ObjectResult;
             var list = result.Value as IEnumerable<UserDTO>;
             
             //Assert
@@ -137,15 +137,15 @@ namespace Prime.UnitTests.Controllers
         }
 
         [Test]
-        public async Task Given_None_Users_When_GetAllAsync_Then_return_NoContent()
+        public async Task Given_None_Users_When_GetAsync_Then_return_NoContent()
         {
             //Arrange
             var expectedResult = new NoContentResult();
-            _userRepositoryMock.Setup(x => x.GetAll<User>(string.Empty))
+            _userRepositoryMock.Setup(x => x.Get<User>(string.Empty,string.Empty))
                 .Throws(new GetAllUserException("Usuários não encontrados"));
 
             //Act
-            var result = await _userController.GetAllAsync(string.Empty);
+            var result = await _userController.GetAsync(string.Empty,string.Empty);
 
             //Assert
             Assert.IsInstanceOf<NoContentResult>(result);
@@ -153,15 +153,15 @@ namespace Prime.UnitTests.Controllers
         }
 
         [Test]
-        public async Task Given_Users_When_GetAllAsync_has_internal_error_Then_return_status_code_500_Async()
+        public async Task Given_Users_When_GetAsync_has_internal_error_Then_return_status_code_500_Async()
         {
             //Arrange
             var expectedMessage = MessageLogErrors.GetAllUserMessage;
-            _userRepositoryMock.Setup(x => x.GetAll<User>(string.Empty))
+            _userRepositoryMock.Setup(x => x.Get<User>(string.Empty,string.Empty))
                 .Throws(new Exception("Erro ao conectar-se ao banco"));
 
             //Act
-            var result = await _userController.GetAllAsync(string.Empty) as ObjectResult;
+            var result = await _userController.GetAsync(string.Empty,string.Empty) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);

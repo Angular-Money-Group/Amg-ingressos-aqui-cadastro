@@ -3,6 +3,8 @@ using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Infra;
 using MongoDB.Driver;
+using Amg_ingressos_aqui_cadastro_api.Enum;
+using System;
 
 namespace Amg_ingressos_aqui_cadastro_api.Repository
 {
@@ -117,7 +119,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
         }
 
-        public async Task<List<User>> GetAll<T>(string email) {
+        public async Task<List<User>> Get<T>(string email, string type) {
             try
             {
                 var builder = Builders<User>.Filter;
@@ -125,6 +127,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
 
                 if (!string.IsNullOrWhiteSpace(email))
                     filter &= builder.Eq(x => x.Contact.Email, email);
+                if (!string.IsNullOrWhiteSpace(type))
+                    filter &= builder.Eq(x => x.Type,System.Enum.Parse<TypeUserEnum>(type));
 
                 var result = await _userCollection.Find(filter).ToListAsync();
 

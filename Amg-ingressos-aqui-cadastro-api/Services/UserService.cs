@@ -20,12 +20,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             _emailService = emailService;
         }
         
-        public async Task<MessageReturn> GetAllAsync(string email)
+        public async Task<MessageReturn> GetAsync(string email, string type)
         {
             this._messageReturn = new MessageReturn();
             try
             {
-                var result = await _userRepository.GetAll<User>(email);
+                var result = await _userRepository.Get<User>(email, type);
 
                 List<UserDTO> list = new List<UserDTO>();
                 var key = "b14ca5898a4e4133bbce2ea2315a2023";

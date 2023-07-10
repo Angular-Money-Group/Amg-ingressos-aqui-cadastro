@@ -35,15 +35,15 @@ namespace Prime.UnitTests.Services
         /**************/
 
         [Test]
-        public void Given_Events_When_GetAll_Then_Return_list_objects_users()
+        public void Given_Events_When_Get_Then_Return_list_objects_users()
         {
             //Arrange
             var messageReturn = FactoryUser.ListSimpleUser();
-            _userRepositoryMock.Setup(x => x.GetAll<User>(string.Empty))
+            _userRepositoryMock.Setup(x => x.Get<User>(string.Empty,string.Empty))
                 .Returns(Task.FromResult<List<User>>(messageReturn));
 
             //Act
-            var result = _userService.GetAllAsync(null);
+            var result = _userService.GetAsync(string.Empty,string.Empty);
             var list = result.Result.Data as IEnumerable<UserDTO>;
 
             //Assert
@@ -54,15 +54,15 @@ namespace Prime.UnitTests.Services
         }
 
         [Test]
-        public void Given_NoEvents_When_GetAllEvents_Then_Return_Null_and_ErrorMessage()
+        public void Given_NoEvents_When_GetEvents_Then_Return_Null_and_ErrorMessage()
         {
             //Arrange
             var expectedMessage = "Usuários não encontrados";
-            _userRepositoryMock.Setup(x => x.GetAll<object>(string.Empty))
+            _userRepositoryMock.Setup(x => x.Get<object>(string.Empty,string.Empty))
                 .Throws(new GetAllUserException(expectedMessage));
 
             //Act
-            var resultTask = _userService.GetAllAsync(string.Empty);
+            var resultTask = _userService.GetAsync(string.Empty,string.Empty);
 
             //Assert
             Assert.AreEqual(expectedMessage, resultTask.Result.Message);
@@ -70,15 +70,15 @@ namespace Prime.UnitTests.Services
         }
 
         [Test]
-        public void Given_LostConnection_When_GetAllEvents_Then_Return_internal_error()
+        public void Given_LostConnection_When_GetEvents_Then_Return_internal_error()
         {
             //Arrange
             var expectedMessage = "Erro de conexao";
-            _userRepositoryMock.Setup(x => x.GetAll<object>(string.Empty))
+            _userRepositoryMock.Setup(x => x.Get<object>(string.Empty,string.Empty))
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
-            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.GetAllAsync(string.Empty));
+            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.GetAsync(string.Empty,string.Empty));
             Assert.AreEqual(expectedMessage, exception.Message);
         }
 
