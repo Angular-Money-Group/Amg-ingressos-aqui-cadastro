@@ -108,5 +108,25 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 throw ex;
             }
         }
+
+        public async Task<EventColab> FindEventColab<T>(string idEvent, string idColab) {
+            try {
+
+                var filter = Builders<EventColab>.Filter.Eq("IdEvent", idEvent) &
+                            Builders<EventColab>.Filter.Eq("IdColab", idColab);
+                var eventColab = await _eventColabCollection.Find(filter).FirstOrDefaultAsync();
+                if (eventColab is not null)
+                    return eventColab;
+                else
+                    throw new EventColabNotFound("Nenhum resultado foi encontrado para EventColab");
+            }
+            catch (EventColabNotFound ex) {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }

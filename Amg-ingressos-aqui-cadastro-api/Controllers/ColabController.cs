@@ -8,7 +8,7 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
-    [Route("v1/producerColab")]
+    [Route("v1/colab")]
     public class ProducerColabController : ControllerBase
     {
         private readonly ILogger<ProducerColabController> _logger;
@@ -118,7 +118,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         }
 
         /// <summary>
-        /// Busca todos os metodos de pagamento
+        /// Busca todos os colaboradores de um evento
         /// </summary>
         /// <param name="idProducer">id do producer</param>
         /// <param name="idEvent">id do evento selecionado na seção de colaboradores</param>
@@ -155,6 +155,40 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             {
                 _logger.LogError(MessageLogErrors.GetAllProducerColabMessage, ex);
                 return StatusCode(500, MessageLogErrors.GetAllProducerColabMessage);
+            }
+        }
+
+        /// <summary>
+        /// Busca todos os metodos de pagamento
+        /// </summary>
+        /// <param name="idEvent">id do evento</param>
+        /// <param name="email"> email do usuario</param>
+        /// <param name="pwd"> senha do usuario</param>
+        /// <returns>200 Lista de todos metodos de pagamento</returns>
+        /// <returns>204 Nenhum metodo de pagamento encontrado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpGet]
+        [Route("event/{idEvent}/email/{email}/pwd/{pwd}")]
+        [Produces("application/json")]
+        public async Task<IActionResult> LoginColab([FromRoute] string idEvent, [FromRoute] string email, [FromRoute] string pwd, [FromQuery] string type = null)
+        {
+            try
+            {
+                var result = await _eventColabService.IfEventPasswordMatchReturnUser(idEvent, type, email, pwd);
+                if(result.hasRunnedSuccessfully()) {
+                    return Ok(result.Data as UserDTO);
+                }
+                else
+                    throw new InvalidLoginCredentials(result.Message);
+            }
+            catch (InvalidLoginCredentials ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)    
+            {
+                _logger.LogError(MessageLogErrors.CheckPassword, ex);
+                return StatusCode(500, MessageLogErrors.CheckPassword);
             }
         }
     }

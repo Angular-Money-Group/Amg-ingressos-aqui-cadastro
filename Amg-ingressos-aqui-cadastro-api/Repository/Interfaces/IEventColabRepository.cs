@@ -9,5 +9,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
         Task<EventColab> FindByField<T>(string fieldName, object value);
         Task<object> Delete<T>(object id);
         Task<List<string>> FindAllColabsOfEvent<T>(string idEvent);
+        Task<EventColab> FindEventColab<T>(string idEvent, string idColab);
     }
 }

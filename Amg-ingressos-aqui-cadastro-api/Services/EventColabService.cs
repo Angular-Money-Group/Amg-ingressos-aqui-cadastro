@@ -136,5 +136,60 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             return _messageReturn;
         }
+
+        public async Task<MessageReturn> FindEventColabAsync(string idEvent, string idColab) {
+            this._messageReturn = new MessageReturn();
+            try {
+                EventColabDTO.ValidateIdEventFormat(idEvent);
+                EventColabDTO.ValidateIdColabFormat(idColab);
+
+                EventColab eventColab = await _eventColabRepository.FindEventColab<EventColab>(idEvent, idColab);
+                _messageReturn.Data = eventColab;
+            }
+            catch (IdMongoException ex) {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (EventColabNotFound ex) {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return _messageReturn;
+        }
+
+        public async Task<MessageReturn> IfEventPasswordMatchReturnUser(string idEvent, string typeUser, string email, string password)
+        {
+            try
+            {
+                this._messageReturn = await _userService.GetAsync(email, typeUser);
+                if (!this._messageReturn.hasRunnedSuccessfully())
+                    throw new InvalidLoginCredentials("Email e/ou senha incorretos");
+                foreach (UserDTO user in (this._messageReturn.Data as List<UserDTO>)) {
+                    if (user.Password.Equals(password)){
+                        this._messageReturn = await FindEventColabAsync(idEvent, user.Id);
+                        if (this._messageReturn.hasRunnedSuccessfully())
+                        {
+                            this._messageReturn.Data = user;
+                            return this._messageReturn;
+                        }
+                    }
+                }
+                throw new InvalidLoginCredentials("Email e/ou senha incorretos");
+            }
+            catch (InvalidLoginCredentials ex)
+            {
+                this._messageReturn.Data = null;
+                this._messageReturn.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return this._messageReturn;
+        }
     }
 }
