@@ -97,6 +97,26 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
         }
         
+        public async Task<ProducerColab> FindProducerColab<T>(string idProducer, string idColab) {
+            try {
+
+                var filter = Builders<ProducerColab>.Filter.Eq("IdProducer", idProducer) &
+                            Builders<ProducerColab>.Filter.Eq("IdColab", idColab);
+                var producerColab = await _producerColabCollection.Find(filter).FirstOrDefaultAsync();
+                if (producerColab is not null)
+                    return producerColab;
+                else
+                    throw new ProducerColabNotFound("Nenhum resultado foi encontrado para ProducerColab");
+            }
+            catch (ProducerColabNotFound ex) {
+                throw ex;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+        
         public async Task<object> Delete<T>(object id) {
             try
             {

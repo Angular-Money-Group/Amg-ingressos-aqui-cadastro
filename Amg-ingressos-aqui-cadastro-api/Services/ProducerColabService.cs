@@ -234,5 +234,51 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             return _messageReturn;
         }
+
+        public async Task<MessageReturn> FindProducerColabAsync(string idProducer, string idColab) {
+            this._messageReturn = new MessageReturn();
+            try {
+                ProducerColabDTO.ValidateIdProducerFormat(idProducer);
+                ProducerColabDTO.ValidateIdColabFormat(idColab);
+
+                ProducerColab producerColab = await _producerColabRepository. FindProducerColab<ProducerColab>(idProducer, idColab);
+                _messageReturn.Data = producerColab;
+            }
+            catch (IdMongoException ex) {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (ProducerColabNotFound ex) {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return _messageReturn;
+        }
+
+        public async Task<MessageReturn> DeleteAsync(string idProducer, string idColab) {
+            this._messageReturn = new MessageReturn();
+            try
+            {
+                _messageReturn = await FindProducerColabAsync(idProducer, idColab);
+                if (!_messageReturn.hasRunnedSuccessfully())
+                    throw new DeleteProducerColabException(_messageReturn.Message);
+                ProducerColab producerColabToDelete = _messageReturn.Data as ProducerColab;
+                _messageReturn.Data = await _producerColabRepository.Delete<ProducerColab>(producerColabToDelete.Id) as string;
+            }
+            catch (DeleteProducerColabException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return _messageReturn;
+        }
     }
 }

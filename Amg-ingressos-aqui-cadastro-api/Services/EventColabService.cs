@@ -137,6 +137,28 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
+        public async Task<MessageReturn> DeleteAsync(string idEvent, string idColab) {
+            this._messageReturn = new MessageReturn();
+            try
+            {
+                _messageReturn = await FindEventColabAsync(idEvent, idColab);
+                if (!_messageReturn.hasRunnedSuccessfully())
+                    throw new DeleteEventColabException(_messageReturn.Message);
+                EventColab eventColabToDelete = _messageReturn.Data as EventColab;
+                _messageReturn.Data = await _eventColabRepository.Delete<EventColab>(eventColabToDelete.Id) as string;
+            }
+            catch (DeleteEventColabException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return _messageReturn;
+        }
+
         public async Task<MessageReturn> FindEventColabAsync(string idEvent, string idColab) {
             this._messageReturn = new MessageReturn();
             try {

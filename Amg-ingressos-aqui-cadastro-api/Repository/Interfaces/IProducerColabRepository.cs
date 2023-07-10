@@ -8,6 +8,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
         Task<bool> DoesValueExistsOnField<T>(string fieldName, object value);
         Task<ProducerColab> FindByField<T>(string fieldName, object value);
         Task<List<string>> FindAllColabsOfProducer<T>(string idProducer);
+        Task<ProducerColab> FindProducerColab<T>(string idProducer, string idColab);
         Task<object> Delete<T>(object id);
     }
 }

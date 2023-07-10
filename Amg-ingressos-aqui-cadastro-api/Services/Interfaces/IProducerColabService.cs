@@ -11,5 +11,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
         Task<MessageReturn> RegisterColabAsync(string idProducer, UserDTO colab);
         Task<bool> DoesIdExists(string idProducerColab);
         Task<MessageReturn> DeleteAsync(string id);
+        Task<MessageReturn> DeleteAsync(string idProducer, string idColab);
     }
 }

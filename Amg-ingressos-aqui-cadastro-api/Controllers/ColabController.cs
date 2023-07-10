@@ -86,7 +86,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         }
 
         /// <summary>
-        /// Busca todos os metodos de pagamento
+        /// Busca todos os colaboradores de um produtor
         /// </summary>
         /// <param name="idProducer">id do produtor que deseja ver seus colaboradores</param>
         /// <returns>200 Lista de todos metodos de pagamento</returns>
@@ -159,7 +159,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         }
 
         /// <summary>
-        /// Busca todos os metodos de pagamento
+        /// Checa se a senha do colaborador corresponde ao seu email e se esta cadastrado no evento
         /// </summary>
         /// <param name="idEvent">id do evento</param>
         /// <param name="email"> email do usuario</param>
@@ -189,6 +189,70 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             {
                 _logger.LogError(MessageLogErrors.CheckPassword, ex);
                 return StatusCode(500, MessageLogErrors.CheckPassword);
+            }
+        }
+
+        /// <summary>
+        /// Desvincula produtor a colaborador
+        /// </summary>
+        /// <param name="idProducer">Id do Produtor</param>
+        /// <param name="idColab">Id do colaborador</param>
+        /// <returns>200 metodo de pagamento deletado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [Route("{idProducer}/{idColab}")]
+        [HttpDelete]
+        public async Task<IActionResult> DeleteProducerColabAsync([FromRoute] string idProducer, [FromRoute] string idColab)
+        {
+            try
+            {
+                var result = await _producerColabService.DeleteAsync(idProducer, idColab);
+                if (result.hasRunnedSuccessfully())
+                    return Ok(result.Data);
+                else
+                    throw new DeleteProducerColabException(result.Message);
+            }
+            catch (DeleteProducerColabException ex)
+            {
+                _logger.LogInformation(MessageLogErrors.deleteProducerColabMessage, ex);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MessageLogErrors.deleteProducerColabMessage, ex);
+                return StatusCode(500, MessageLogErrors.deleteProducerColabMessage);
+            }
+        }
+
+        /// <summary>
+        /// Busca metodo de pagamento pelo ID
+        /// </summary>
+        /// <param name="idEvent"> id do evento a registrar o colaborador</param>
+        /// <param name="idColab"> id do colaborador</param>
+        /// <returns>200 metodo de pagamento da busca</returns>
+        /// <returns>204 Nenhum metodo de pagamento encontrado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpDelete]
+        [Route("removeColabFromEvent/{idEvent}/{idColab}")]
+        [Produces("application/json")]
+        public async Task<IActionResult> RemoveColabFromEventAsync([FromRoute] string idEvent, [FromRoute] string idColab)
+        {
+            try
+            {
+                var result = await _eventColabService.DeleteAsync(idEvent, idColab);
+                if (result.hasRunnedSuccessfully())
+                    return Ok(result.Data);
+                else
+                    throw new DeleteEventColabException(result.Message);
+            }
+            catch (DeleteEventColabException ex)
+            {
+                _logger.LogInformation(MessageLogErrors.deleteEventColabMessage, ex);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MessageLogErrors.deleteEventColabMessage, ex);
+                return StatusCode(500, MessageLogErrors.deleteEventColabMessage);
             }
         }
     }
