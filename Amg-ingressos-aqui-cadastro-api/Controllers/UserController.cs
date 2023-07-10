@@ -220,8 +220,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             }
             catch (Exception ex)    
             {
-                _logger.LogError(MessageLogErrors.FindByIdUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.FindByIdUserMessage);
+                _logger.LogError(MessageLogErrors.CheckPassword, ex);
+                return StatusCode(500, MessageLogErrors.CheckPassword);
             }
         }    
     }

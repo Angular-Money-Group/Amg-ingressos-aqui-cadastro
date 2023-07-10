@@ -15,6 +15,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Consts
         public const string deleteUserMessage = "DeleteUserAsync : Erro inesperado ao deletar um usuario";
         public const string updateUserMessage = "UpdateUserAsync : Erro inesperado ao atualizar um usuario";
         public const string tryToRegisterExistentEmail = "SaveUserAsync : Tentativa de Cadastrar um Email ja cadastrado.";
+        public const string invalidLoginCredentials = "CheckPasswordAsync: Email e/ou senha incorretos";
+        public const string CheckPassword = "CheckPasswordAsync: Erro inesperado ao checar credenciais de login";
         // ReceiptAccount
         public const string FindByIdReceiptAccountMessage = "FindByIdReceiptAccountAsync : Erro inesperado ao buscar uma conta bancaria por id";
         public const string GetAllReceiptAccountMessage = "GetAllReceiptAccountsAsync : Erro inesperado ao buscar contas bancarias";
