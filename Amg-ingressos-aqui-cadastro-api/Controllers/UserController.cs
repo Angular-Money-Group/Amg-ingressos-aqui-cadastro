@@ -212,9 +212,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                     return Ok(result.Data as UserDTO);
                 }
                 else
-                    throw new UserNotFound(result.Message);
+                    throw new InvalidLoginCredentials(result.Message);
             }
-            catch (UserNotFound ex)
+            catch (InvalidLoginCredentials ex)
             {
                 return BadRequest(ex.Message);
             }
