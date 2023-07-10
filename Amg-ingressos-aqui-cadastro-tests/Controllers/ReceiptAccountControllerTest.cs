@@ -57,7 +57,7 @@ namespace Prime.UnitTests.Controllers
             _receiptAccountRepositoryMock.Setup(x => x.Save<ReceiptAccount>(It.IsAny<ReceiptAccount>())).Returns(Task.FromResult(messageReturn as object));
 
             // Act
-            var result = (await _receiptAccountController.SaveReceiptAccountAsync(this.receiptAccountDTO.IdUser, this.receiptAccountDTO) as ObjectResult);
+            var result = (await _receiptAccountController.SaveReceiptAccountAsync(this.receiptAccountDTO) as ObjectResult);
             
             Assert.AreEqual(messageReturn, result?.Value);
             Assert.AreEqual(200, result?.StatusCode);
@@ -71,7 +71,7 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = new MessageReturn() { Data = string.Empty, Message = "Nome é Obrigatório." };
 
             //Act
-            var result = (await _receiptAccountController.SaveReceiptAccountAsync(this.receiptAccountDTO.IdUser, this.receiptAccountDTO) as ObjectResult);
+            var result = (await _receiptAccountController.SaveReceiptAccountAsync(this.receiptAccountDTO) as ObjectResult);
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result?.Value);
@@ -88,7 +88,7 @@ namespace Prime.UnitTests.Controllers
                 .Throws(new Exception("Erro ao conectar-se ao banco"));
 
             //Act
-            var result = (await _receiptAccountController.SaveReceiptAccountAsync(this.receiptAccountDTO.IdUser, this.receiptAccountDTO) as ObjectResult);
+            var result = (await _receiptAccountController.SaveReceiptAccountAsync(this.receiptAccountDTO) as ObjectResult);
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);

@@ -23,12 +23,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <summary>
         /// Grava conta de recebimento
         /// </summary>
-        /// <param name="id">id do usuario cuja conta de recebimento sera Gravada</param>
         /// <returns>200 conta de recebimento criada</returns>
         /// <returns>500 Erro inesperado</returns>
-        [Route("{id}")]
-        [HttpPatch]
-        public async Task<IActionResult> SaveReceiptAccountAsync([FromRoute] string id, [FromBody] ReceiptAccountDTO receiptAccountObject)
+        [HttpPost]
+        public async Task<IActionResult> SaveReceiptAccountAsync([FromBody] ReceiptAccountDTO receiptAccountObject)
         {
             try
             {

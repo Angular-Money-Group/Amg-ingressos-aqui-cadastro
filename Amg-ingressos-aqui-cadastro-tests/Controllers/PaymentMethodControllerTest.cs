@@ -55,7 +55,7 @@ namespace Prime.UnitTests.Controllers
             _paymentMethodRepositoryMock.Setup(x => x.Save<PaymentMethod>(It.IsAny<PaymentMethod>())).Returns(Task.FromResult(messageReturn as object));
 
             // Act
-            var result = (await _paymentMethodController.SavePaymentMethodAsync(this.paymentMethodDTO.IdUser, this.paymentMethodDTO) as ObjectResult);
+            var result = (await _paymentMethodController.SavePaymentMethodAsync(this.paymentMethodDTO) as ObjectResult);
             
             Assert.AreEqual(messageReturn, result?.Value);
             Assert.AreEqual(200, result?.StatusCode);
@@ -69,7 +69,7 @@ namespace Prime.UnitTests.Controllers
             var expectedMessage = new MessageReturn() { Data = string.Empty, Message = "Documento de Identificação é Obrigatório." };
 
             //Act
-            var result = (await _paymentMethodController.SavePaymentMethodAsync(this.paymentMethodDTO.IdUser, this.paymentMethodDTO) as ObjectResult);
+            var result = (await _paymentMethodController.SavePaymentMethodAsync(this.paymentMethodDTO) as ObjectResult);
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result?.Value);
@@ -86,7 +86,7 @@ namespace Prime.UnitTests.Controllers
                 .Throws(new Exception("Erro ao conectar-se ao banco"));
 
             //Act
-            var result = (await _paymentMethodController.SavePaymentMethodAsync(this.paymentMethodDTO.IdUser, this.paymentMethodDTO) as ObjectResult);
+            var result = (await _paymentMethodController.SavePaymentMethodAsync(this.paymentMethodDTO) as ObjectResult);
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);
