@@ -182,9 +182,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             this._messageReturn = new MessageReturn();
             try
             {                
-                User user = userSave.makeUserSave();
-                //if(userSave.Type == TypeUserEnum.Colab) 
-                //    throw new InvalidUserTypeException("Tentativa de cadastrar colaborador pela rota errada.");
+                User user = userSave.makeUserSave();;
 
                 if (!await IsDocumentIdAvailable(user.DocumentId))
                     throw new DocumentIdAlreadyExists("Documento de Identificação já cadastrado.");

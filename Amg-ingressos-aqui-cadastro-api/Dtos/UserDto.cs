@@ -58,14 +58,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         {
             if (this.Id is not null)
                 this.Id = null;
+
             this.Status = TypeStatusEnum.Active;
 
             this.ValidateBasicUserFormat();
             switch (this.Type)
             {
-                //case TypeUserEnum.Colab:
-                //    this.ValidateColabFormat();
-                //    break;
                 case TypeUserEnum.Admin:
                     this.ValidateAdminFormat();
                     break;
@@ -105,9 +103,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
 
             this.ValidateNameFormat();
             this.validatePasswordFormat();
-            this.ValidateAdressFormat();
+            // this.ValidateAdressFormat();
             this.validateConctact();
-            this.validateUserConfirmation();
+            // this.validateUserConfirmation();
         }
         public void ValidateAdminFormat()
         {
@@ -214,7 +212,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         {
             if (this.Address is not null)
             {
-                //throw new EmptyFieldsException("Endereço é Obrigatório.");
 
                 if (string.IsNullOrEmpty(this.Address.Cep))
                     throw new EmptyFieldsException("Em Endereço, CEP é Obrigatório.");
@@ -237,15 +234,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
                 if (!this.Address.Neighborhood.ValidateTextFormat())
                     throw new InvalidFormatException("Em Endereço, formato de Bairro inválido.");
 
-                if (string.IsNullOrEmpty(this.Address.Complement))
-                    throw new EmptyFieldsException("Em Endereço, Complemento é Obrigatório.");
-                if (!this.Address.Complement.ValidateTextFormat())
-                    throw new InvalidFormatException("Em Endereço, formato de Complemento inválido.");
-
-                // Aceita Ponto de Referência vazio, já que não está na aplicação.
-                if (!string.IsNullOrEmpty(this.Address.ReferencePoint) && !(this.Address.ReferencePoint.ValidateTextFormat()))
-                    throw new InvalidFormatException("Em Endereço Formato de Ponto de Referência inválido.");
-
                 if (string.IsNullOrEmpty(this.Address.City))
                     throw new EmptyFieldsException("Em endereço, Cidade é Obrigatório.");
                 if (!this.Address.City.ValidateTextFormat())
@@ -263,7 +251,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             if (this.Contact is null)
                 throw new EmptyFieldsException("Contato é Obrigatório.");
             ValidateEmailFormat(this.Contact.Email);
-            ValidatePhoneNumberFormat(this.Contact.PhoneNumber);
+            // ValidatePhoneNumberFormat(this.Contact.PhoneNumber);
         }
 
         public void validateUserConfirmation()
