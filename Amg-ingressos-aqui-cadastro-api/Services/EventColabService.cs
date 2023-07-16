@@ -26,7 +26,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         public async Task<MessageReturn> CheckAllColabsOfEventAsync(string idEvent, List<string> idColabsOfProducer)
         {
             //fazer do postgres para o mongo
-            this._messageReturn = new MessageReturn();
+            /*this._messageReturn = new MessageReturn();
             try
             {
                 var result = await _eventColabRepository.FindAllColabsOfEvent<EventColab>(idEvent);
@@ -51,7 +51,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             catch (Exception ex)
             {
                 throw ex;
-            }
+            }*/
             return _messageReturn;
         }
         

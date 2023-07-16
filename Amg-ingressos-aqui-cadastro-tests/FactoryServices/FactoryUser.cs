@@ -85,7 +85,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
                 Name = "isabella",
                 DocumentId = "05292425234",
                 Status = 0,
-                Type = TypeUserEnum.Producer,
+                Type = TypeUserEnum.Organizer,
                 Address = new Address()
                 {
                     AddressDescription = "Parque Sabiázinho",
@@ -120,7 +120,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
                 Name = "isabella",
                 DocumentId = "05292425234",
                 Status = 0,
-                Type = TypeUserEnum.Colab,
+                Type = TypeUserEnum.Collaborator,
                 Contact = new Contact()
                 {
                     Email = "isabel1a@gmail.com",

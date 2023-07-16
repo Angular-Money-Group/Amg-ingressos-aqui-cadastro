@@ -11,7 +11,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </summary>
         [Required]
         [BsonElement("EmailConfirmationCode")]
-        [JsonPropertyName("EmailConfirmationCode")]
+        [JsonPropertyName("emailConfirmationCode")]
         public string? EmailConfirmationCode { get; set; }
         
         /// <summary>
@@ -19,7 +19,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </summary>
         [Required]
         [BsonElement("EmailConfirmationExpirationDate")]
-        [JsonPropertyName("EmailConfirmationExpirationDate")]
+        [JsonPropertyName("emailConfirmationExpirationDate")]
         public DateTime? EmailConfirmationExpirationDate { get; set; }
 
         /// <summary> 
@@ -27,7 +27,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </summary>
         [Required]
         [BsonElement("EmailVerified")]
-        [JsonPropertyName("EmailVerified")]
+        [JsonPropertyName("emailVerified")]
         public bool? EmailVerified { get; set; } = false;
 
         /// <summary> 
@@ -35,7 +35,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </summary>
         [Required]
         [BsonElement("PhoneVerified")]
-        [JsonPropertyName("PhoneVerified")]
+        [JsonPropertyName("phoneVerified")]
         public bool? PhoneVerified { get; set; } = false;
     }
 }

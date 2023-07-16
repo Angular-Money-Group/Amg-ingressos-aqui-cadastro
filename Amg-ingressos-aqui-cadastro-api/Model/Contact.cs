@@ -8,14 +8,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// E-mail de validação 
         /// </summary> 
         [BsonElement("Email")]
-        [JsonPropertyName("Email")]
+        [JsonPropertyName("email")]
         public string? Email { get; set; }
 
         /// <summary>
         /// Número para contato 
         /// </summary>    
         [BsonElement("PhoneNumber")]
-        [JsonPropertyName("PhoneNumber")]
+        [JsonPropertyName("phoneNumber")]
         public string? PhoneNumber { get; set; }
     }
 }

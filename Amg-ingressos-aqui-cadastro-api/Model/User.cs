@@ -55,7 +55,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </summary>
         [Required]
         [BsonElement("Name")]
-        [JsonPropertyName("Name")]
+        [JsonPropertyName("name")]
         public string? Name { get; set; }
 
         /// <sumary>
@@ -63,14 +63,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </sumary>
         [Required]
         [BsonElement("DocumentId")]
-        [JsonPropertyName("DocumentId")]
+        [JsonPropertyName("documentId")]
         public string? DocumentId { get; set; }
 
         /// <sumary>
         /// Status
         /// </sumary>
         [BsonElement("Status")]
-        [JsonPropertyName("Status")]
+        [JsonPropertyName("status")]
         public TypeStatusEnum? Status { get; set; }
 
         /// <summary>
@@ -78,14 +78,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </summary>
         [Required]
         [BsonElement("Type")]
-        [JsonPropertyName("Type")]
+        [JsonPropertyName("type")]
         public TypeUserEnum? Type { get; set; }
 
         /// <summary>
         /// Endereço do usuário
         /// </summary>
         [BsonElement("Address")]
-        [JsonPropertyName("Address")]
+        [JsonPropertyName("address")]
         public Address? Address { get; set; }
 
         /// <summary>
@@ -93,14 +93,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </summary>
         [Required]
         [BsonElement("Contact")]
-        [JsonPropertyName("Contact")]
+        [JsonPropertyName("contact")]
         public Contact? Contact { get; set; }
 
         /// <summary>
         /// Confirmação do usuário
         /// </summary>
         [BsonElement("UserConfirmation")]
-        [JsonPropertyName("UserConfirmation")]
+        [JsonPropertyName("userConfirmation")]
         public UserConfirmation? UserConfirmation { get; set; }
 
         /// <summary>
@@ -108,7 +108,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </summary>
         [Required]
         [BsonElement("Password")]
-        [JsonPropertyName("Password")]
+        [JsonPropertyName("password")]
         public string? Password { get; set; }
     }
 }

@@ -3,7 +3,7 @@
     {
         Admin = 0, 
         Customer = 1,
-        Producer = 2,
-        Colab = 3
+        Organizer = 2,
+        Collaborator = 3
     }
 }
