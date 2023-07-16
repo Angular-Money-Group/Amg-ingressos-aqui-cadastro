@@ -9,5 +9,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
     public interface IAssociateColabEventRepository
     {
         Task<Object> AssociateColabEventAsync(AssociateColabEvent associateColab);
+        Task<object> FindAllColabsOfEvent<T>(string idEvent);
     }
 }

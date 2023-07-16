@@ -8,56 +8,56 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// Cep da residencia 
         /// </summary>
         [BsonElement("Cep")]
-        [JsonPropertyName("Cep")]
+        [JsonPropertyName("cep")]
         public string? Cep { get; set; }
 
         /// <summary>
         /// Endereço da residencia 
         /// </summary>
         [BsonElement("AddressDescription")]
-        [JsonPropertyName("AddressDescription")]
+        [JsonPropertyName("addressDescription")]
         public string? AddressDescription { get; set; }
 
         /// <summary>
         /// Número da residencia
         /// </summary>
         [BsonElement("Number")]
-        [JsonPropertyName("Number")]
+        [JsonPropertyName("number")]
         public string? Number { get; set; }
 
         /// <summary> 
         /// Complemento 
         /// </summary>
         [BsonElement("Complement")]
-        [JsonPropertyName("Complement")]
+        [JsonPropertyName("complement")]
         public string? Complement { get; set; }
 
         /// <summary> 
         /// Ponto de referencia 
         /// </summary>
         [BsonElement("ReferencePoint")]
-        [JsonPropertyName("ReferencePoint")]
+        [JsonPropertyName("referencePoint")]
         public string? ReferencePoint { get; set; }
 
         /// <summary>
         /// Bairro de residencia 
         /// </summary>
         [BsonElement("Neighborhood")]
-        [JsonPropertyName("Neighborhood")]
+        [JsonPropertyName("neighborhood")]
         public string? Neighborhood { get; set; }
 
         /// <summary> 
         /// Cidade de residencia 
         /// </summary>
         [BsonElement("City")]
-        [JsonPropertyName("City")]
+        [JsonPropertyName("city")]
         public string? City { get; set; }
 
        /// <summary>
        /// Estado de residencia 
        /// </summary>
         [BsonElement("State")]
-        [JsonPropertyName("State")]
+        [JsonPropertyName("state")]
         public string? State { get; set; }
     }
 }

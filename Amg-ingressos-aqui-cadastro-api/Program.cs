@@ -25,6 +25,8 @@ builder.Services.AddScoped<IReceiptAccountService, ReceiptAccountService>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAssociateService, AssociateService>();
+builder.Services.AddScoped<IAssociateService, AssociateService>();
+builder.Services.AddScoped<ICollaboratorService, CollaboratorService>();
 //repository
 builder.Services.AddScoped<IUserRepository, UserRepository<object>>();
 builder.Services.AddScoped<IReceiptAccountRepository, ReceiptAccountRepository<object>>();
@@ -32,6 +34,8 @@ builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository<obj
 builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<IAssociateColabOrganizerRepository, AssociateColabOrganizerRepository>();
 builder.Services.AddScoped<IAssociateColabEventRepository, AssociateColabEventRepository>();
+
+
 //infra
 builder.Services.AddScoped<IDbConnection<User>, DbConnection<User>>();
 builder.Services.AddScoped<IDbConnection<ReceiptAccount>, DbConnection<ReceiptAccount>>();

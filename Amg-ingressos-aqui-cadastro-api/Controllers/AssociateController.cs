@@ -27,12 +27,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        [Route("/organizer/{idUserOrganizer}/colaborator/{idUserColaborator}")]
-        public async Task<IActionResult> AssociateColabWithOrganizerAsync([FromRoute] string idUserOrganizer,[FromRoute] string idUserColaborator)
+        [Route("/organizer/{idUserOrganizer}/collaborator/{idUserCollaborator}")]
+        public async Task<IActionResult> AssociateColabWithOrganizerAsync([FromRoute] string idUserOrganizer,[FromRoute] string idUserCollaborator)
         {
             try
             {
-                MessageReturn result = await _associateService.AssociateColabOrganizerAsync(idUserOrganizer, idUserColaborator);
+                MessageReturn result = await _associateService.AssociateColabOrganizerAsync(idUserOrganizer, idUserCollaborator);
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
                 else
@@ -63,7 +63,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        [Route("/event/colaborator/")]
+        [Route("/event/collaborator/")]
         public async Task<IActionResult> AssociateColabWithEventAsync([FromBody] AssociateColabEvent colabEvent)
         {
             try
@@ -91,6 +91,5 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 return StatusCode(500, MessageLogErrors.saveUserMessage);
             }
         }
-        
     }
 }

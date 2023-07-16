@@ -244,11 +244,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {                               
                 User user = colabSave.makeUserSave();
-                _messageReturn = await FindByDocumentIdAsync(TypeUserEnum.Colab, user.DocumentId);
+                _messageReturn = await FindByDocumentIdAsync(TypeUserEnum.Collaborator, user.DocumentId);
                 if (_messageReturn.hasRunnedSuccessfully())
                     id = (_messageReturn.Data as UserDTO).Id;
                 else {
-                    _messageReturn = await FindByEmailAsync(TypeUserEnum.Colab, user.Contact.Email);
+                    _messageReturn = await FindByEmailAsync(TypeUserEnum.Collaborator, user.Contact.Email);
                     if (_messageReturn.hasRunnedSuccessfully())
                         id = (_messageReturn.Data as UserDTO).Id;
                     else

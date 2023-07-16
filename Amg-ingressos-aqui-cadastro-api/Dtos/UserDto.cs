@@ -67,7 +67,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
                 case TypeUserEnum.Admin:
                     this.ValidateAdminFormat();
                     break;
-                case TypeUserEnum.Producer:
+                case TypeUserEnum.Organizer:
                     this.ValidateProducerFormat();
                     break;
                 case TypeUserEnum.Customer:
@@ -88,7 +88,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
                 case TypeUserEnum.Admin:
                     this.ValidateAdminFormat();
                     break;
-                case TypeUserEnum.Producer:
+                case TypeUserEnum.Organizer:
                     this.ValidateProducerFormat();
                     break;
                 case TypeUserEnum.Customer:
@@ -119,7 +119,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         }
         public void ValidateProducerFormat()
         {
-            ValidateUserType(TypeUserEnum.Producer, this.Type);
+            ValidateUserType(TypeUserEnum.Organizer, this.Type);
             this.ValidateCnpjFormat();
         }
 

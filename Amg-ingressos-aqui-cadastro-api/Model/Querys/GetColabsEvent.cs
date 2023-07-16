@@ -8,11 +8,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Model.Querys
 {
     public class GetColabsEvent
     {
-        public GetColabsEvent(UserDTO colab, bool isOnEvent) {
-            this.Id = colab.Id;
-            this.Name = colab.Name;
-            this.CPF = colab.DocumentId;
-            this.Email = colab.Contact.Email;
+        public GetColabsEvent(string id, string name, string documentId, string email, bool isOnEvent) {
+            this.Id = id;
+            this.Name = name;
+            this.CPF = documentId;
+            this.Email = email;
             this.IsOnEvent = isOnEvent;
         }
 

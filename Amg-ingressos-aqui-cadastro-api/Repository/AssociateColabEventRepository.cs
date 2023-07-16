@@ -15,7 +15,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
         private readonly IMongoCollection<AssociateColabEvent> _associateCollection;
         public AssociateColabEventRepository(IDbConnection<AssociateColabEvent> dbconnectionIten)
         {
-            _associateCollection = dbconnectionIten.GetConnection("event_colaborator");
+            _associateCollection = dbconnectionIten.GetConnection("event_collaborator");
         }
         public async Task<Object> AssociateColabEventAsync(AssociateColabEvent associateColab)
         {
@@ -27,6 +27,21 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             catch (Exception ex)
             {
                 throw;
+            }
+        }
+
+        public async Task<object> FindAllColabsOfEvent<T>(string idEvent)
+        {
+           try {
+
+                var filter = Builders<AssociateColabEvent>.Filter.Eq("idEvent", idEvent);
+                var eventCollaborator = await _associateCollection.Find(filter)
+                                                .ToListAsync();
+                return eventCollaborator;
+                    
+            }
+            catch (Exception ex) {
+                throw ex;
             }
         }
     }
