@@ -182,7 +182,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             this._messageReturn = new MessageReturn();
             try
             {                
-                User user = userSave.makeUserSave();;
+                User user = userSave.makeUserSave();
 
                 if (!await IsDocumentIdAvailable(user.DocumentId))
                     throw new DocumentIdAlreadyExists("Documento de Identificação já cadastrado.");
