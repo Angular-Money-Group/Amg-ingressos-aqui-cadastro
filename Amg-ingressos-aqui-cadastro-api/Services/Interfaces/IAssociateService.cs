@@ -10,5 +10,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
     {
         Task<MessageReturn> AssociateColabOrganizerAsync(string idUserOrganizer, string idUserColaborator);
         Task<MessageReturn> AssociateColabEventAsync(AssociateColabEvent colabEvent);
+        Task<MessageReturn> DeleteAssociateColabOrganizerAsync(string idAssociate);
+        Task<MessageReturn> DeleteAssociateColabEventAsync(string idAssociate);
+
     }
 }

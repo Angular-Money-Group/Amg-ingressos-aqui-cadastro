@@ -34,7 +34,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                                     .Result.Data;
                 var listAssociate = (List<AssociateColabOrganizer>)_organizerRepository.
                                                     FindAllColabsOfProducer<AssociateColabOrganizer>(idProducer).Result;
-                var listColab = listAssociate.Select(x => x.idUserColaborator);
+                var listColab = listAssociate.Select(x => x.IdUserColaborator);
                 var result = listUser.Where(i=> listColab.Contains(i.Id))
                                 .Select(x=> new GetColabsProducerDto(
                                     email: x.Contact.Email,
@@ -73,7 +73,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                                     .Result.Data;
                 var listAssociate = (List<AssociateColabEvent>)_eventRepository.
                                                     FindAllColabsOfEvent<AssociateColabEvent>(idEvent).Result;
-                var listColab = listAssociate.Select(x => x.idUserColaborator);
+                var listColab = listAssociate.Select(x => x.IdUserColaborator);
                 var result = listUser.Where(i=> listColab.Contains(i.Id))
                                 .Select(x=> new GetColabsProducerDto(
                                     email: x.Contact.Email,

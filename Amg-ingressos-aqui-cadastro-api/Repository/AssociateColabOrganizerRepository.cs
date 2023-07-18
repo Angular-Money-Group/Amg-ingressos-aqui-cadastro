@@ -26,7 +26,22 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
             catch (Exception ex)
             {
-                throw;
+                throw ex;
+            }
+        }
+
+        public async Task<object> DeleteAssociateColabAsync(string idAssociate){
+            try
+            {
+                var result = await _associateCollection.DeleteOneAsync(x => x.Id == idAssociate);
+                if (result.DeletedCount >= 1)
+                    return "Desassociado";
+                else
+                    throw new Exception("erro ao desassociar colaborador");
+            }
+            catch (Exception ex)
+            {
+                throw ex;
             }
         }
 
@@ -37,8 +52,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 var producerColabs = await _associateCollection.Find(filter)
                                                 .ToListAsync() ?? 
                                                 throw new ProducerColabNotFound("Este produtor ainda não cadastrou nenhum colaborador...");
-                return producerColabs;
-                    
+                return producerColabs; 
             }
             catch (ProducerColabNotFound ex) {
                 throw ex;
