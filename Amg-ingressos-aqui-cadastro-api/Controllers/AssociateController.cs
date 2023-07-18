@@ -1,14 +1,13 @@
 using Amg_ingressos_aqui_cadastro_api.Consts;
-using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
-using Amg_ingressos_aqui_cadastro_api.Model.Querys;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
     [Route("v1/associate")]
+    [Produces("application/json")]
     public class AssociateController : ControllerBase
     {
         private readonly ILogger<AssociateController> _logger;
@@ -79,6 +78,74 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 throw ex;
                 //_logger.LogInformation(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
                 //return BadRequest(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
+            }
+            catch (SaveUserException ex)
+            {
+                _logger.LogInformation(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
+                return StatusCode(500, MessageLogErrors.saveUserMessage);
+            }
+        }
+
+        /// <summary>
+        /// Grava usuario
+        /// </summary>
+        /// <param name="idAssociate">id de associação entre organizador e colaborador</param>
+        /// <returns>200 usuario criado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpDelete]
+        [Route("/organizer/collaborator/{idAssociate}")]
+        public async Task<IActionResult> DeleteAssociateColabOrganizerAsync([FromRoute] string idAssociate)
+        {
+            try
+            {
+                MessageReturn result = await _associateService.DeleteAssociateColabOrganizerAsync(idAssociate);
+                if (result.hasRunnedSuccessfully())
+                    return Ok(result.Data);
+                else
+                    throw new SaveUserException(result.Message);
+            }
+            catch (EmailAlreadyExists ex)
+            {
+                throw ex;
+            }
+            catch (SaveUserException ex)
+            {
+                _logger.LogInformation(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
+                return StatusCode(500, MessageLogErrors.saveUserMessage);
+            }
+        }
+
+        /// <summary>
+        /// Grava usuario
+        /// </summary>
+        /// <param name="idAssociate">id de associação entre colaborador e evento</param>
+        /// <returns>200 usuario criado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpDelete]
+        [Route("/event/collaborator/{idAssociate}")]
+        public async Task<IActionResult> DeleteAssociateColabEventAsync([FromRoute] string idAssociate)
+        {
+            try
+            {
+                MessageReturn result = await _associateService.DeleteAssociateColabEventAsync(idAssociate);
+                if (result.hasRunnedSuccessfully())
+                    return Ok(result.Data);
+                else
+                    throw new SaveUserException(result.Message);
+            }
+            catch (EmailAlreadyExists ex)
+            {
+                throw ex;
             }
             catch (SaveUserException ex)
             {

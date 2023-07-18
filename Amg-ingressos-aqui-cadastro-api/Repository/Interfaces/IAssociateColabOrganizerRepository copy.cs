@@ -8,7 +8,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
 {
     public interface IAssociateColabOrganizerRepository
     {
-        Task<Object> AssociateColabAsync(AssociateColabOrganizer associateColab);
+        Task<object> AssociateColabAsync(AssociateColabOrganizer associateCollaborator);
+        Task<object> DeleteAssociateColabAsync(string idAssociate);
         Task<object> FindAllColabsOfProducer<T>(string idProducer);
     }
 }
