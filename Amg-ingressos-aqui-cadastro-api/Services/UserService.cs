@@ -207,10 +207,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     To = user.Contact.Email,
                     DataCadastro = DateTime.Now
                 };
+                
                 _logger.LogInformation("Save User");
                 var id = await _userRepository.Save<User>(user);
+
                 _logger.LogInformation("Save Email");
                 _emailService.SaveAsync(email);
+
                 _logger.LogInformation("Send Email");
                 _emailService.Send(email.id);
 

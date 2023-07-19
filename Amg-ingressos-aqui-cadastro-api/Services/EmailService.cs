@@ -6,6 +6,7 @@ using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using static System.Net.Mime.MediaTypeNames;
 using Microsoft.Net.Http.Headers;
+using System.Reflection;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
@@ -70,11 +71,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public string GenerateBody()
         {
+            var path  = Environment.CurrentDirectory+"/Template/index.html";
+            
             _logger.LogInformation("Init GenerateBody- Email Service");
             try
             {
                 _logger.LogInformation("Read Index - Email Service");
-                var html = System.IO.File.ReadAllText(@"Template/index.html");
+                var html = System.IO.File.ReadAllText(@path);
                 var body = html;
                 _logger.LogInformation("Finished Index - Email Service");
                 return body;
