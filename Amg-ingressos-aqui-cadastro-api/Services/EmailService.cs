@@ -5,6 +5,7 @@ using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using static System.Net.Mime.MediaTypeNames;
+using Microsoft.Net.Http.Headers;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
@@ -38,6 +39,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             var json = new StringContent(JsonSerializer.Serialize(new {emailID = idEmail}),
              Encoding.UTF8, Application.Json); // using static System.Net.Mime.MediaTypeNames;
+            _HttpClient.DefaultRequestHeaders.Add(
+                HeaderNames.Accept, "application/json");
+            _HttpClient.DefaultRequestHeaders.Add(
+                HeaderNames.ContentType , "application/json");
+            _HttpClient.Timeout = TimeSpan.FromMinutes(10);
             var url = "https://api.ingressosaqui.com/";
             var uri = "v1/email/";
 
