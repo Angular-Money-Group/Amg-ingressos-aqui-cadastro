@@ -9,8 +9,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class AssociateColabOrganizer
     {
+        [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string? Id;
+        [BsonElement("_id")]
+        public string? Id { get; set; }
         public string IdUserOrganizer { get; set; }
         public string IdUserColaborator { get; set; }
     }
