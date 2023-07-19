@@ -9,6 +9,7 @@ using Amg_ingressos_aqui_cadastro_api.Infra;
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace Prime.UnitTests.Services
 {
@@ -17,6 +18,7 @@ namespace Prime.UnitTests.Services
         private UserService _userService;
         private Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
         private Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
+        private Mock<ILogger<UserService>> _loggerMockUserService = new Mock<ILogger<UserService>>();
         private PaymentMethodService _paymentMethodService;
         private Mock<IPaymentMethodRepository> _paymentMethodRepositoryMock = new Mock<IPaymentMethodRepository>();
         private PaymentMethod paymentMethodComplet;
@@ -26,7 +28,7 @@ namespace Prime.UnitTests.Services
         [SetUp]
         public void SetUp()
         {
-            this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object);
+            this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object,_loggerMockUserService.Object);
             this._paymentMethodService = new PaymentMethodService(_paymentMethodRepositoryMock.Object, _userService);
             this.paymentMethodComplet = FactoryPaymentMethod.SimplePaymentMethod();
             this.paymentMethodDTO = new PaymentMethodDTO(this.paymentMethodComplet);

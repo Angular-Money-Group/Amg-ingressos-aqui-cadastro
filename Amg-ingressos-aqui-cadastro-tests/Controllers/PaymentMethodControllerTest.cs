@@ -23,6 +23,7 @@ namespace Prime.UnitTests.Controllers
         private Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
         private PaymentMethodController _paymentMethodController;
         private PaymentMethodService _paymentMethodService;
+        private Mock<ILogger<UserService>> _loggerMockUserService = new Mock<ILogger<UserService>>();
         private Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
         private Mock<IPaymentMethodRepository> _paymentMethodRepositoryMock = new Mock<IPaymentMethodRepository>();
         private Mock<ILogger<PaymentMethodController>> _loggerMock = new Mock<ILogger<PaymentMethodController>>();
@@ -33,7 +34,7 @@ namespace Prime.UnitTests.Controllers
         [SetUp]
         public void SetUp()
         {
-            this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object);
+            this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object,_loggerMockUserService.Object);
             this._paymentMethodService = new PaymentMethodService(_paymentMethodRepositoryMock.Object, _userService);
             this._paymentMethodController = new PaymentMethodController(_loggerMock.Object, this._paymentMethodService);
             this.paymentMethodComplet = FactoryPaymentMethod.SimplePaymentMethod();

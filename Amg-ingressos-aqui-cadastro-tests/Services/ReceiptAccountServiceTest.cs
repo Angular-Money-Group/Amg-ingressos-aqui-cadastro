@@ -9,6 +9,7 @@ using Amg_ingressos_aqui_cadastro_api.Infra;
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
+using Microsoft.Extensions.Logging;
 
 namespace Prime.UnitTests.Services
 {
@@ -17,6 +18,7 @@ namespace Prime.UnitTests.Services
         private UserService _userService;
         private Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
         private Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
+        private Mock<ILogger<UserService>> _loggerMockUserService = new Mock<ILogger<UserService>>();
         private ReceiptAccountService _receiptAccountService;
         private Mock<IReceiptAccountRepository> _receiptAccountRepositoryMock = new Mock<IReceiptAccountRepository>();
         private ReceiptAccount receiptAccountComplet;
@@ -26,7 +28,7 @@ namespace Prime.UnitTests.Services
         [SetUp]
         public void SetUp()
         {
-            this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object);
+            this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object,_loggerMockUserService.Object);
             this._receiptAccountService = new ReceiptAccountService(_receiptAccountRepositoryMock.Object, _userService);
             this.receiptAccountComplet = FactoryReceiptAccount.SimpleReceiptAccount();
             this.receiptAccountDTO = new ReceiptAccountDTO(this.receiptAccountComplet);
