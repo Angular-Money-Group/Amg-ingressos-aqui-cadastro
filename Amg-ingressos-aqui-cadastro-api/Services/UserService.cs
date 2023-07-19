@@ -247,7 +247,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error 500",ex);
+                _logger.LogError("Error 500"+ex.Message,ex);
                 throw ex;
             }
             

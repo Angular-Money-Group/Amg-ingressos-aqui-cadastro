@@ -70,14 +70,18 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public string GenerateBody()
         {
+            _logger.LogInformation("Init GenerateBody- Email Service");
             try
             {
+                _logger.LogInformation("Read Index - Email Service");
                 var html = System.IO.File.ReadAllText(@"Template/index.html");
                 var body = html;
+                _logger.LogInformation("Finished Index - Email Service");
                 return body;
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error GenerateBody- Email Service");
                 throw ex;
             }
         }
