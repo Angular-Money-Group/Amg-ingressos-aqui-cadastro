@@ -13,11 +13,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         private IUserRepository _userRepository;
         private IEmailService _emailService;
         private MessageReturn? _messageReturn;
+        private ILogger<UserService> _logger;
 
-        public UserService(IUserRepository userRepository, IEmailService emailService)
+        public UserService(IUserRepository userRepository, IEmailService emailService, ILogger<UserService> logger)
         {
             _userRepository = userRepository;
             _emailService = emailService;
+            _logger = logger;
         }
         
         public async Task<MessageReturn> GetAsync(string email, string type)
@@ -179,19 +181,24 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         }
         
         public async Task<MessageReturn> SaveAsync(UserDTO userSave) {
+            _logger.LogInformation("Init SaveAsync");
             this._messageReturn = new MessageReturn();
             try
-            {                
+            {
+                _logger.LogInformation("Instance User");
                 User user = userSave.makeUserSave();
 
+                _logger.LogInformation("Validate keys");
                 if (!await IsDocumentIdAvailable(user.DocumentId))
                     throw new DocumentIdAlreadyExists("Documento de Identificação já cadastrado.");
                 if (!await IsEmailAvailable(user.Contact.Email))
                     throw new EmailAlreadyExists("Email Indisponível.");
                 
+                _logger.LogInformation("Encrypt password");
                 var key = "b14ca5898a4e4133bbce2ea2315a2023";
                 user.Password = AesOperation.EncryptString(key, user.Password);
-                //var decryptedString = AesOperation.DecryptString(key, encryptedString);
+
+                _logger.LogInformation("Instance Email");
                 var email = new Email
                 {
                     Body = _emailService.GenerateBody(),
@@ -200,42 +207,53 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     To = user.Contact.Email,
                     DataCadastro = DateTime.Now
                 };
+                _logger.LogInformation("Save User");
                 var id = await _userRepository.Save<User>(user);
+                _logger.LogInformation("Save Email");
                 _emailService.SaveAsync(email);
+                _logger.LogInformation("Send Email");
                 _emailService.Send(email.id);
 
                 _messageReturn.Data = id;
             }
             catch (EmptyFieldsException ex)
             {
+                _logger.LogError("Empty Fields",ex);
                 _messageReturn.Data = null;
                 _messageReturn.Message = ex.Message;
             }
             catch (InvalidFormatException ex)
             {
+                _logger.LogError("Invalid Format",ex);
                 _messageReturn.Data = null;
                 _messageReturn.Message = ex.Message;
             }
             catch (DocumentIdAlreadyExists ex)
             {
+                _logger.LogError("DocumentId Already Exists",ex);
                 _messageReturn.Data = null;
                 _messageReturn.Message = ex.Message;
             }
             catch (EmailAlreadyExists ex)
             {
+                _logger.LogError("Email Already Exists",ex);
                 throw;
             }
             catch (SaveUserException ex)
             {
+                _logger.LogError("Error in db",ex);
                 _messageReturn.Data = null;
                 _messageReturn.Message = ex.Message;
             }
             catch (Exception ex)
             {
+                _logger.LogError("Error 500",ex);
                 throw ex;
             }
-
+            
+            _logger.LogInformation("Finished", _messageReturn.Data);
             return _messageReturn;
+            
         }
         
         public async Task<MessageReturn> SaveColabAsync(UserDTO colabSave) {
