@@ -9,6 +9,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
     [ApiController]
     [Route("v1/user")]
+    [Produces("application/json")]
     public class UserController : ControllerBase
     {
         private readonly ILogger<UserController> _logger;

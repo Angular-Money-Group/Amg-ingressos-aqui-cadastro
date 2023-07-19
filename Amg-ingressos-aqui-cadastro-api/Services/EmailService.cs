@@ -71,7 +71,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public string GenerateBody()
         {
-            var path  = Environment.CurrentDirectory+"/Template/index.html";
+            var path  = Environment.CurrentDirectory +"/Template/index.html";
             
             _logger.LogInformation("Init GenerateBody- Email Service");
             try
