@@ -24,6 +24,7 @@ namespace Prime.UnitTests.Controllers
         private Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
         private Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
         private Mock<ILogger<UserController>> _loggerMock = new Mock<ILogger<UserController>>();
+        private Mock<ILogger<UserService>> _loggerMockUserService = new Mock<ILogger<UserService>>();
         private User userComplet;
         private UserDTO userDTO;
 
@@ -31,7 +32,7 @@ namespace Prime.UnitTests.Controllers
         [SetUp]
         public void SetUp()
         {
-            this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object);
+            this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object,_loggerMockUserService.Object);
             this._userController = new UserController(_loggerMock.Object, this._userService);
             this.userComplet = FactoryUser.SimpleUser();
             this.userDTO = new UserDTO(this.userComplet);

@@ -24,6 +24,7 @@ namespace Prime.UnitTests.Controllers
         private ReceiptAccountController _receiptAccountController;
         private ReceiptAccountService _receiptAccountService;
         private Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
+        private Mock<ILogger<UserService>> _loggerMockUserService = new Mock<ILogger<UserService>>();
         private Mock<IReceiptAccountRepository> _receiptAccountRepositoryMock = new Mock<IReceiptAccountRepository>();
         private Mock<ILogger<ReceiptAccountController>> _loggerMock = new Mock<ILogger<ReceiptAccountController>>();
         private ReceiptAccount receiptAccountComplet;
@@ -33,7 +34,7 @@ namespace Prime.UnitTests.Controllers
         [SetUp]
         public void SetUp()
         {
-            this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object);
+            this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object,_loggerMockUserService.Object);
             this._receiptAccountService = new ReceiptAccountService(_receiptAccountRepositoryMock.Object, _userService);
             this._receiptAccountController = new ReceiptAccountController(_loggerMock.Object, this._receiptAccountService);
             this.receiptAccountComplet = FactoryReceiptAccount.SimpleReceiptAccount();
