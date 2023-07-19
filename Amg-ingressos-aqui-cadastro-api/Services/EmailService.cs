@@ -41,10 +41,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
              Encoding.UTF8, Application.Json); // using static System.Net.Mime.MediaTypeNames;
             _HttpClient.DefaultRequestHeaders.Add(
                 HeaderNames.Accept, "application/json");
-            _HttpClient.DefaultRequestHeaders.Add(
-                HeaderNames.ContentType , "application/json");
             _HttpClient.Timeout = TimeSpan.FromMinutes(10);
-            var url = "https://api.ingressosaqui.com/";
+            var url = "http://api.ingressosaqui.com:3006/";
             var uri = "v1/email/";
 
             _HttpClient.PostAsync(url + uri, json).Wait();
