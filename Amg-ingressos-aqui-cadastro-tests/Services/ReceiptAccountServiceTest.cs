@@ -24,6 +24,8 @@ namespace Prime.UnitTests.Services
         private ReceiptAccount receiptAccountComplet;
         private ReceiptAccountDTO receiptAccountDTO;
 
+        private List<ReceiptAccount> listReceiptAccountComplet;
+        private List<ReceiptAccount> receiptAccountListDTO;
 
         [SetUp]
         public void SetUp()
@@ -32,6 +34,8 @@ namespace Prime.UnitTests.Services
             this._receiptAccountService = new ReceiptAccountService(_receiptAccountRepositoryMock.Object, _userService);
             this.receiptAccountComplet = FactoryReceiptAccount.SimpleReceiptAccount();
             this.receiptAccountDTO = new ReceiptAccountDTO(this.receiptAccountComplet);
+                        this.listReceiptAccountComplet = FactoryReceiptAccount.ListSimpleReceiptAccount();
+            this.receiptAccountListDTO = new List<ReceiptAccount>(this.listReceiptAccountComplet);
         }
 
 
@@ -98,7 +102,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.receiptAccountDTO.Id;
 
-            _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id)).Returns(Task.FromResult(this.receiptAccountDTO.makeReceiptAccount()));
+            _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id)).Returns(Task.FromResult(this.listReceiptAccountComplet));
 
             //Act
             var result = _receiptAccountService.FindByIdAsync(id);
@@ -186,7 +190,7 @@ namespace Prime.UnitTests.Services
             var id = receiptAccountComplet.Id;
 
             _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
-                .Returns(Task.FromResult(this.receiptAccountDTO.makeReceiptAccount()));
+                .Returns(Task.FromResult(this.listReceiptAccountComplet));
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", receiptAccountComplet.IdUser))
                 .Returns(Task.FromResult(FactoryUser.ProducerUser()));
             _receiptAccountRepositoryMock.Setup(x => x.Save<ReceiptAccount>(It.IsAny<ReceiptAccount>())).Returns(Task.FromResult(messageReturn as object));
@@ -301,7 +305,7 @@ namespace Prime.UnitTests.Services
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", receiptAccountComplet.IdUser))
                 .Returns(Task.FromResult(FactoryUser.ProducerUser()));
             _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
-                .Returns(Task.FromResult(this.receiptAccountDTO.makeReceiptAccount()));
+                .Returns(Task.FromResult(this.listReceiptAccountComplet));
             _receiptAccountRepositoryMock.Setup(x => x.Save<ReceiptAccount>(It.IsAny<ReceiptAccount>()))
                 .Throws(new SaveReceiptAccountException(expectedMessage));
 
@@ -395,7 +399,7 @@ namespace Prime.UnitTests.Services
 
             //Act
             _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
-                .Returns(Task.FromResult(this.receiptAccountDTO.makeReceiptAccount()));
+                .Returns(Task.FromResult(this.listReceiptAccountComplet));
             _receiptAccountRepositoryMock.Setup(x => x.Delete<object>(id))
             .Returns(Task.FromResult(expectedMessage as object));
             
@@ -467,7 +471,7 @@ namespace Prime.UnitTests.Services
 
             //Act
             _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
-                .Returns(Task.FromResult(this.receiptAccountDTO.makeReceiptAccount()));
+                .Returns(Task.FromResult(this.listReceiptAccountComplet));
 
             _receiptAccountRepositoryMock.Setup(x => x.Delete<object>(id))
             .Throws(new DeleteReceiptAccountException(expectedMessage));
