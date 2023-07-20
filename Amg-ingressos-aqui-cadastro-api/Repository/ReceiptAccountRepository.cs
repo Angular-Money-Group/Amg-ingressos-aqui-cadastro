@@ -13,12 +13,15 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
     {
         private readonly IMongoCollection<ReceiptAccount> _receiptAccountCollection;
 
-        public ReceiptAccountRepository(IDbConnection<ReceiptAccount> dbConnection) {
+        public ReceiptAccountRepository(IDbConnection<ReceiptAccount> dbConnection)
+        {
             this._receiptAccountCollection = dbConnection.GetConnection("receiptAccount");
         }
-        
-        public async Task<object> Save<T>(ReceiptAccount receiptAccountComplet) {
-            try {
+
+        public async Task<object> Save<T>(ReceiptAccount receiptAccountComplet)
+        {
+            try
+            {
                 await this._receiptAccountCollection.InsertOneAsync(receiptAccountComplet);
 
                 if (receiptAccountComplet.Id is null)
@@ -26,7 +29,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
 
                 return receiptAccountComplet.Id;
             }
-            catch (SaveReceiptAccountException ex) {
+            catch (SaveReceiptAccountException ex)
+            {
                 throw ex;
             }
             catch (Exception ex)
@@ -35,31 +39,35 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
         }
 
-        public async Task<bool> DoesValueExistsOnField<T>(string fieldName, object value) {
-            try {
+        public async Task<bool> DoesValueExistsOnField<T>(string fieldName, object value)
+        {
+            try
+            {
                 var filter = Builders<ReceiptAccount>.Filter.Eq(fieldName, value);
                 var receiptAccount = await _receiptAccountCollection.Find(filter).FirstOrDefaultAsync();
                 if (receiptAccount is null)
                     return false;
                 return true;
-            }   
+            }
             catch (Exception ex)
             {
                 throw ex;
             }
         }
 
-        public async Task<ReceiptAccount> FindByField<T>(string fieldName, object value) {
-            try {
+        public async Task<List<ReceiptAccount>> FindByField<T>(string fieldName, object value)
+        {
+            try
+            {
 
                 var filter = Builders<ReceiptAccount>.Filter.Eq(fieldName, value);
-                var receiptAccount = await _receiptAccountCollection.Find(filter).FirstOrDefaultAsync();
-                if (receiptAccount is not null)
-                    return receiptAccount;
-                else
-                    throw new ReceiptAccountNotFound("Conta de Recebimento não encontrada por " + fieldName + ".");
+                var receiptAccount = await _receiptAccountCollection.Find(filter).ToListAsync();
+
+                return receiptAccount;
+
             }
-            catch (ReceiptAccountNotFound ex) {
+            catch (ReceiptAccountNotFound ex)
+            {
                 throw ex;
             }
             catch (Exception ex)
@@ -67,8 +75,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 throw ex;
             }
         }
-        
-        public async Task<object> Delete<T>(object id) {
+
+        public async Task<object> Delete<T>(object id)
+        {
             try
             {
                 var result = await _receiptAccountCollection.DeleteOneAsync(x => x.Id == id as string);
@@ -87,7 +96,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
         }
 
-        public async Task<List<ReceiptAccount>> GetAllReceiptAccounts<T>() {
+        public async Task<List<ReceiptAccount>> GetAllReceiptAccounts<T>()
+        {
             try
             {
                 List<ReceiptAccount> result = await _receiptAccountCollection.Find(_ => true).ToListAsync();
