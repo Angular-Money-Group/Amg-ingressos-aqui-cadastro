@@ -7,7 +7,6 @@ using Microsoft.AspNetCore.Mvc;
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
     [Route("v1/associate")]
-    [Produces("application/json")]
     public class AssociateController : ControllerBase
     {
         private readonly ILogger<AssociateController> _logger;
@@ -26,7 +25,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        [Route("/organizer/{idUserOrganizer}/collaborator/{idUserCollaborator}")]
+        [Route("organizer/{idUserOrganizer}/collaborator/{idUserCollaborator}")]
         public async Task<IActionResult> AssociateColabWithOrganizerAsync([FromRoute] string idUserOrganizer,[FromRoute] string idUserCollaborator)
         {
             try
@@ -62,7 +61,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        [Route("/event/collaborator/")]
+        [Route("event/collaborator/")]
         public async Task<IActionResult> AssociateColabWithEventAsync([FromBody] AssociateColabEvent colabEvent)
         {
             try
@@ -98,7 +97,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpDelete]
-        [Route("/organizer/collaborator/{idAssociate}")]
+        [Route("organizer/collaborator/{idAssociate}")]
         public async Task<IActionResult> DeleteAssociateColabOrganizerAsync([FromRoute] string idAssociate)
         {
             try
@@ -132,7 +131,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpDelete]
-        [Route("/event/collaborator/{idAssociate}")]
+        [Route("event/collaborator/{idAssociate}")]
         public async Task<IActionResult> DeleteAssociateColabEventAsync([FromRoute] string idAssociate)
         {
             try
