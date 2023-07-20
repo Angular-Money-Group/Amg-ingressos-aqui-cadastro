@@ -26,7 +26,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
             List<ReceiptAccount> listReceiptAccount = new List<ReceiptAccount>();
             listReceiptAccount.Add(new ReceiptAccount(SimpleReceiptAccount()));
 
-            return listReceiptAccount;
+            return listReceiptAccount as List<ReceiptAccount>;
         }
     }
 }

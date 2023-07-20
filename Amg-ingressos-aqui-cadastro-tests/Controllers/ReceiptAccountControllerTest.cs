@@ -29,6 +29,8 @@ namespace Prime.UnitTests.Controllers
         private Mock<ILogger<ReceiptAccountController>> _loggerMock = new Mock<ILogger<ReceiptAccountController>>();
         private ReceiptAccount receiptAccountComplet;
         private ReceiptAccountDTO receiptAccountDTO;
+        private List<ReceiptAccount> listReceiptAccountComplet;
+        private List<ReceiptAccount> receiptAccountListDTO;
 
 
         [SetUp]
@@ -39,6 +41,8 @@ namespace Prime.UnitTests.Controllers
             this._receiptAccountController = new ReceiptAccountController(_loggerMock.Object, this._receiptAccountService);
             this.receiptAccountComplet = FactoryReceiptAccount.SimpleReceiptAccount();
             this.receiptAccountDTO = new ReceiptAccountDTO(this.receiptAccountComplet);
+            this.listReceiptAccountComplet = FactoryReceiptAccount.ListSimpleReceiptAccount();
+            this.receiptAccountListDTO = new List<ReceiptAccount>(this.listReceiptAccountComplet);
         }
 
 
@@ -163,7 +167,7 @@ namespace Prime.UnitTests.Controllers
             var id = this.receiptAccountDTO.Id;
 
             _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
-                .Returns(Task.FromResult(this.receiptAccountComplet));
+                .Returns(Task.FromResult(this.receiptAccountListDTO));
 
             //Act
             var result = await _receiptAccountController.FindByIdReceiptAccountAsync(id) as ObjectResult;
@@ -260,7 +264,7 @@ namespace Prime.UnitTests.Controllers
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", receiptAccountComplet.IdUser))
                 .Returns(Task.FromResult(FactoryUser.ProducerUser()));
             _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
-                .Returns(Task.FromResult(receiptAccountComplet));
+                .Returns(Task.FromResult(receiptAccountListDTO));
             _receiptAccountRepositoryMock.Setup(x => x.Delete<object>(id))
                 .Returns(Task.FromResult(expectedMessage as object));
             
