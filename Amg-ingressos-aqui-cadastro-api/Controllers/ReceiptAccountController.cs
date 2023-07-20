@@ -96,13 +96,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             {
                 var result = await _receiptAccountService.FindByIdAsync(id);
                 if(result.hasRunnedSuccessfully())
-                    return Ok(result.Data as ReceiptAccountDTO);
+                    return Ok(result.Data as List<ReceiptAccountDTO>);
                 else
                     throw new ReceiptAccountNotFound(result.Message);
             }
             catch (ReceiptAccountNotFound ex)
             {
-                return BadRequest(ex.Message);
+                return NoContent();
             }
             catch (Exception ex)    
             {
