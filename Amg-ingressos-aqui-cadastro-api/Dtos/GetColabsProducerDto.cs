@@ -7,12 +7,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
 {
     public class GetColabsProducerDto
     {
-        public GetColabsProducerDto(string id, string name, string documentId, string email) {
+        public GetColabsProducerDto(string id, string name, string documentId, string email, string idAssociate) {
             //colab.ValidateColabFormat();
             this.Id = id;
             this.Name = name;
             this.CPF = documentId;
             this.Email = email;
+            this.IdAssociate = idAssociate;
         }
 
         /// <summary>
@@ -39,5 +40,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         /// </summary>
         [JsonPropertyName("email")]
         public string? Email { get; set; }
+
+        /// <summary>
+        /// Email do usuário
+        /// </summary>
+        [JsonPropertyName("idAssociate")]
+        public string? IdAssociate { get; set; }
     }
 }
