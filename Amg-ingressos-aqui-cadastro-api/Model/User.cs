@@ -17,6 +17,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
             this.Contact = null;
             this.UserConfirmation = null;
             this.Password = null;
+            this.IdAssociate = null;
         }
         
         public User(User user) {
@@ -111,5 +112,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         [BsonElement("Password")]
         [JsonPropertyName("password")]
         public string? Password { get; set; }
+
+        /// <summary>
+        /// Senha de acesso
+        /// </summary>
+        [Required]
+        [BsonElement("idAssociate")]
+        [JsonPropertyName("idAssociate")]
+        public string? IdAssociate { get; set; }
     }
 }

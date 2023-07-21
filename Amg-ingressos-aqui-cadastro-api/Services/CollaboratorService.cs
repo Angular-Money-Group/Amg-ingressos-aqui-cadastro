@@ -19,28 +19,33 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                                     IUserService userService)
         {
             _organizerRepository = organizerRepository;
-            _eventRepository= eventRepository;
+            _eventRepository = eventRepository;
             _userService = userService;
         }
-        
+
         public async Task<MessageReturn> GetAllColabsOfProducerAsync(string idProducer)
         {
             this._messageReturn = new MessageReturn();
             try
             {
                 idProducer.ValidateIdMongo();
-                var listUser = (List<UserDTO>)_userService
-                                    .GetAsync(string.Empty, type: Enum.TypeUserEnum.Collaborator.ToString())
-                                    .Result.Data;
-                var listAssociate = (List<AssociateColabOrganizer>)_organizerRepository.
-                                                    FindAllColabsOfProducer<AssociateColabOrganizer>(idProducer).Result;
+
+                var listUser = (List<UserDTO>) _userService.GetAsync(string.Empty, type: Enum.TypeUserEnum.Collaborator.ToString()).Result.Data;
+                var listAssociate = (List<AssociateColabOrganizer>) _organizerRepository.FindAllColabsOfProducer<AssociateColabOrganizer>(idProducer).Result;
                 var listColab = listAssociate.Select(x => x.IdUserColaborator);
-                var result = listUser.Where(i=> listColab.Contains(i.Id))
-                                .Select(x=> new GetColabsProducerDto(
-                                    email: x.Contact.Email,
-                                    documentId: x.DocumentId,
-                                    name: x.Name,
-                                    id: x.Id));
+
+                var result = listUser
+                    .Where(i => listColab.Contains(i.Id))
+                    .Select(x => new GetColabsProducerDto(
+                        email: x.Contact.Email,
+                        documentId: x.DocumentId,
+                        name: x.Name,
+                        idAssociate: null,
+                        id: x.Id))
+                    .ToList();
+
+                result.ForEach(x => x.IdAssociate = listAssociate.Where(y => y.IdUserColaborator == x.Id).FirstOrDefault().Id);
+
                 _messageReturn.Data = result;
 
             }
@@ -74,11 +79,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var listAssociate = (List<AssociateColabEvent>)_eventRepository.
                                                     FindAllColabsOfEvent<AssociateColabEvent>(idEvent).Result;
                 var listColab = listAssociate.Select(x => x.IdUserColaborator);
-                var result = listUser.Where(i=> listColab.Contains(i.Id))
-                                .Select(x=> new GetColabsProducerDto(
+                var result = listUser.Where(i => listColab.Contains(i.Id))
+                                .Select(x => new GetColabsProducerDto(
                                     email: x.Contact.Email,
                                     documentId: x.DocumentId,
                                     name: x.Name,
+                                    idAssociate: x.IdAssociate,
                                     id: x.Id));
                 _messageReturn.Data = result;
 

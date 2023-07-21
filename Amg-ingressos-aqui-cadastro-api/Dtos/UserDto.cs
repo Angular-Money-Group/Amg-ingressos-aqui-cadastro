@@ -20,6 +20,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             this.Contact = null;
             this.UserConfirmation = null;
             this.Password = null;
+            this.IdAssociate = null;
         }
 
         public UserDTO(System.Enum TEnum, UserDTO userDTO)
@@ -34,6 +35,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             this.Contact = userDTO.Contact;
             this.UserConfirmation = userDTO.UserConfirmation;
             this.Password = userDTO.Password;
+            this.IdAssociate = userDTO.IdAssociate;
         }
 
         public UserDTO(System.Enum TEnum, User user)
