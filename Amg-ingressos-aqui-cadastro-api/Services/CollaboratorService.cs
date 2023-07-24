@@ -76,9 +76,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var listUser = (List<UserDTO>)_userService
                                     .GetAsync(string.Empty, type: Enum.TypeUserEnum.Collaborator.ToString())
                                     .Result.Data;
-                var listAssociate = (List<AssociateColabEvent>)_eventRepository.
-                                                    FindAllColabsOfEvent<AssociateColabEvent>(idEvent).Result;
+                
+                var listAssociate = (List<AssociateColabEvent>)_eventRepository.FindAllColabsOfEvent<AssociateColabEvent>(idEvent).Result;
+                
                 var listColab = listAssociate.Select(x => x.IdUserColaborator);
+
                 var result = listUser.Where(i => listColab.Contains(i.Id))
                                 .Select(x => new GetColabsProducerDto(
                                     email: x.Contact.Email,
@@ -86,6 +88,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                                     name: x.Name,
                                     idAssociate: x.IdAssociate,
                                     id: x.Id));
+
                 _messageReturn.Data = result;
 
             }
