@@ -69,10 +69,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<MessageReturn> DeleteAssociateColabOrganizerAsync(string idAssociate)
         {
-             try
+            try
             {
-                _messageReturn.Data = await _associateColabOrganizerRepository
-                                        .DeleteAssociateColabAsync(idAssociate);
+                var result = await _associateColabOrganizerRepository
+                                         .DeleteAssociateColabAsync(idAssociate);
+
+                 _messageReturn.Data = result;
             }
             catch (Exception ex)
             {

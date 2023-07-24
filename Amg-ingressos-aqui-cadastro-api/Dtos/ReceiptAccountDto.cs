@@ -44,11 +44,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             if (this.Id is not null)
                 this.Id = null;
             this.ValidateIdUserFormat();
-            this.ValidateFullNameFormat();
-            this.ValidateBankFormat();
-            this.ValidateBankAgency();
-            this.ValidateBankAccount();
-            this.ValidateBankDigit();
+            // this.ValidateFullNameFormat();
+            // this.ValidateBankFormat();
+            // this.ValidateBankAgency();
+            // this.ValidateBankAccount();
+            // this.ValidateBankDigit();
             return this.makeReceiptAccount();
         }
 
