@@ -9,6 +9,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
     [ApiController]
     [Route("v1/paymentMethod")]
+    [Produces("application/json")]
     public class PaymentMethodController : ControllerBase
     {
         private readonly ILogger<PaymentMethodController> _logger;

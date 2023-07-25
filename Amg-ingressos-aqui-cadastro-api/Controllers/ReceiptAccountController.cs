@@ -9,6 +9,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
     [Route("/v1/accountBank")]
+    [Produces("application/json")]
     public class ReceiptAccountController : ControllerBase
     {
         private readonly ILogger<ReceiptAccountController> _logger;
