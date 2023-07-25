@@ -62,7 +62,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        [Route("/event/collaborator/")]
+        [Route("event/collaborator/")]
         public async Task<IActionResult> AssociateColabWithEventAsync([FromBody] AssociateCollaboratorEvent colabEvent)
         {
             try
@@ -99,7 +99,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        [Route("/organizer/collaborators/")]
+        [Route("organizer/collaborators/")]
         public async Task<IActionResult> AssociateManyColabWithOrganizerAsync([FromBody] List<AssociateCollaboratorOrganizer> collaboratorsOrganizer)
         {
             try
@@ -135,7 +135,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        [Route("/event/collaborators/")]
+        [Route("event/collaborators/")]
         public async Task<IActionResult> AssociateManyColabWithEventAsync([FromBody] List<AssociateCollaboratorEvent> collaboratorsEvent)
         {
             try
