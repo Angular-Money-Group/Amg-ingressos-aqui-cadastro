@@ -18,7 +18,7 @@
         flex-direction: column;
         gap: 15px;
     }
-    header, main, footer{
+    header, footer{
         display: flex;
         justify-content: center;
     }
@@ -106,43 +106,19 @@
         </div>
     </header>
     <main>
-        <div class="container">
-            <div class="info-user">
-                <p>Olá <strong>{nome_usuario}</strong></p>
-                <p>Seu ingresso referente ao evento <strong>{nome_evento}</strong> está anexado neste e-mail.</p>
-                <p style="text-align: initial;">Este arquivo contém o QR Code para Check-in, bem como as informações que foram
-                preenchidas no ato da compra do pedido.</p>
-            </div>
-            <div class="info-evento">
-                <div class="event_details">
-                        <h3>{nome_evento}</h3>
-                        <p>{data_evento}</p>
-                        <h3>{local_evento}</h3>
-                        <p>{endereco_evento}</p>
-                    <div>
-                        <h3>{area_evento}</h3>
-                        <p>{tipo_ingresso}</p>
-                    </div>
-                </div>
-                <hr>
-                <div class="qrcode-content">
-                    <h1 style="font-size: 3vw">SEU INGRESSO</h1>
-                    <h1 style="font-size: 3vw">WM4UNH-1</h1>
-                    <img style="width: 60%;" src="{qr_code}" alt="qr-cpde">
-                </div>
-                <div class="buttons-content">
-                    <button>Imprimir Ingresso</button>
-                    <button class="download-btn"><span class="material-symbols-outlined">
-                        print
-                        </span> Fazer Download</button>
-                </div>
-                <div>
-                </div>
-            </div>
-            <div class="email-msg">
-                <p>OBS: Este é um e-mail automático, em caso de dúvidas relacionadas ao evento contate diretamente o organizador através do e-mail: <strong>emaildoorganizador@etiquetei.com.br</strong></p>
-            </div>
-        </div>  
+        <h1>Olá!</h1>
+        <br>
+        <p>Estamos escrevendo para confirmar sua conta em nosso site.</p>
+        <br>
+        <p>Para completar seu registro, insira o seguinte código em nosso site:</p>
+        <br>
+        <p> <b>{{ code_validation }}</b></p>
+        <br>
+        <p>Se você não criou uma conta, por favor, desconsidere este e-mail.</p>
+        <br>
+        <p>Obrigado,</p>
+        <br>
+        <p>A equipe ETIQUETEI</p>
     </main>
 
     <footer>

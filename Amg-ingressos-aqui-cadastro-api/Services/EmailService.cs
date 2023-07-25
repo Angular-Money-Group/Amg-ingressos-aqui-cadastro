@@ -69,7 +69,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        public string GenerateBody()
+        public string GenerateBody(int randomNumber)
         {
             var path  = Environment.CurrentDirectory +"/Template/index.html";
             
@@ -78,7 +78,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 _logger.LogInformation("Read Index - Email Service");
                 var html = System.IO.File.ReadAllText(@path);
-                var body = html;
+                var body = html.Replace("{{ code_validation }}", randomNumber.ToString());
                 _logger.LogInformation("Finished Index - Email Service");
                 return body;
             }

@@ -10,6 +10,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
     {
         Task<MessageReturn> SaveAsync(Email email);
         MessageReturn Send(string idEmail);
-        string GenerateBody();
+        string GenerateBody(int randomNumber);
     }
 }
