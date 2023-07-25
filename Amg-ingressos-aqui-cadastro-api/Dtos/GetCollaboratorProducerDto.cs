@@ -35,7 +35,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         /// <summary>
         /// Email do usuário
         /// </summary>
-        [JsonPropertyName("idassociate")]
+        [JsonPropertyName("idAssociate")]
         public string? IdAssociate { get; set; }
     }
 }
