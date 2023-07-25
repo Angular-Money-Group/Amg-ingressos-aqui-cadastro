@@ -20,6 +20,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             _organizerRepository = organizerRepository;
             _eventRepository = eventRepository;
+            _eventRepository = eventRepository;
             _userService = userService;
         }
 
