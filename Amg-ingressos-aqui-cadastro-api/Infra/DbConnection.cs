@@ -1,4 +1,3 @@
-using Amg_ingressos_aqui_cadastro_api.Model;
 using Microsoft.Extensions.Options;
 using MongoDB.Driver;
 
@@ -6,8 +5,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Infra
 {
     public class DbConnection<T> : IDbConnection<T>
     {
-        private IOptions<TransactionDatabaseSettings> _config;
-        public DbConnection(IOptions<TransactionDatabaseSettings> transactionDatabaseSettings)
+        private IOptions<CadastroDatabaseSettings> _config;
+        public DbConnection(IOptions<CadastroDatabaseSettings> transactionDatabaseSettings)
         {
             _config = transactionDatabaseSettings;
         }

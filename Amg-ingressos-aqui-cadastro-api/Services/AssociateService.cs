@@ -19,7 +19,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             _messageReturn = new MessageReturn();
         }
 
-        public async Task<MessageReturn> AssociateColabEventAsync(AssociateColabEvent collaboratorEvent)
+        public async Task<MessageReturn> AssociateCollaboratorEventAsync(AssociateCollaboratorEvent collaboratorEvent)
         {
             try
             {
@@ -38,11 +38,25 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 _messageReturn.Data = await _associateColabOrganizerRepository
-                .AssociateColabAsync(new AssociateColabOrganizer()
+                .AssociateColabAsync(new AssociateCollaboratorOrganizer()
                 {
-                    IdUserColaborator = idUserColaborator,
+                    IdUserCollaborator = idUserColaborator,
                     IdUserOrganizer = idUserOrganizer
                 });
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return _messageReturn;
+        }
+
+        public async Task<MessageReturn> AssociateManyColabWithEventAsync(List<AssociateCollaboratorEvent> collaboratorEvent)
+        {
+            try
+            {
+                _messageReturn.Data = await _associateColabEventRepository.AssociateManyColabWithEventAsync(collaboratorEvent);
             }
             catch (Exception ex)
             {
@@ -73,6 +87,21 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 _messageReturn.Data = await _associateColabOrganizerRepository
                                         .DeleteAssociateColabAsync(idAssociate);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return _messageReturn;
+        }
+
+        public async Task<MessageReturn> AssociateManyColabWithOrganizerAsync(List<AssociateCollaboratorOrganizer> colaboratorOrganizer)
+        {
+            try
+            {
+                _messageReturn.Data = await _associateColabOrganizerRepository
+                .AssociateManyColabWithOrganizerAsync(colaboratorOrganizer);
             }
             catch (Exception ex)
             {

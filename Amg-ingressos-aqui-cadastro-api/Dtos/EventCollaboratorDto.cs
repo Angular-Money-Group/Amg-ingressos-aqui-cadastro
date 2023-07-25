@@ -6,26 +6,26 @@ using Amg_ingressos_aqui_cadastro_api.Model;
 
 namespace Amg_ingressos_aqui_cadastro_api.Dtos 
 {
-    public class EventColabDTO : EventColab
+    public class EventCollaboratorDto : EventColab
     {
-        public EventColabDTO() {
+        public EventCollaboratorDto() {
             this.Id = null;
             this.IdEvent = null;
             this.IdColab = null;
         }
         
-        public EventColabDTO (EventColabDTO eventColabDTO) {
+        public EventCollaboratorDto (EventCollaboratorDto eventColabDTO) {
             this.Id = eventColabDTO.Id;
             this.IdEvent = eventColabDTO.IdEvent;
             this.IdColab = eventColabDTO.IdColab;
         }
 
-        public EventColabDTO (EventColab eventColabToValidate)
+        public EventCollaboratorDto (EventColab eventColabToValidate)
         : base(eventColabToValidate)
         {
         }
         
-        public EventColabDTO(string? idUser, string? documentId) {
+        public EventCollaboratorDto(string? idUser, string? documentId) {
             this.IdEvent = idUser;
             this.IdColab = documentId;
         }

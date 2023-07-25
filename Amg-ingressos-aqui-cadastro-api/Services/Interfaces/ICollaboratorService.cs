@@ -5,7 +5,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
 {
     public interface ICollaboratorService
     {
-        Task<MessageReturn> GetAllColabsOfProducerAsync(string IdProducer);
-        Task<MessageReturn> GetAllColabsOfEventAsync(string idEvent);
+        Task<MessageReturn> GetAllCollaboratorOfOrganizerAsync(string idUserOrganizer);
+        Task<MessageReturn> GetAllCollaboratorOfEventAssignedAsync(string idEvent, string idUserOrganizer);
     }
 }
