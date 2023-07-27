@@ -9,5 +9,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
     public interface IEmailRepository
     {
         public Task<object> SaveAsync(object email);
+        public Task<object> SaveManyAsync(List<Email> email);
     }
 }

@@ -9,7 +9,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
     public interface IEmailService
     {
         Task<MessageReturn> SaveAsync(Email email);
+        Task<MessageReturn> SaveManyAsync(List<Email> emails);
         MessageReturn Send(string idEmail);
+        Task<string> ProcessEmail(List<Email> listEmail);
         string GenerateBody(int randomNumber);
+        string GenerateBodyCollaboratorEvent(string link);
     }
 }
