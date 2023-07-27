@@ -65,11 +65,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
         [Produces("application/json")]
-        public async Task<IActionResult> GetAsync([FromQuery]string email = null,[FromQuery]string type = null)
+        public async Task<IActionResult> GetAsync([FromQuery] string email = null, [FromQuery] string type = null)
         {
             try
             {
-                var result = await _userService.GetAsync(email,type);
+                var result = await _userService.GetAsync(email, type);
 
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
@@ -78,8 +78,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             }
             catch (GetAllUserException ex)
             {
-                    _logger.LogInformation(ex.Message);
-                    return NoContent();
+                _logger.LogInformation(ex.Message);
+                return NoContent();
             }
             catch (Exception ex)
             {
@@ -106,7 +106,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 //System.Enum.TryParse(type, out TypeUserEnum enumValue);
 
                 var result = await _userService.FindByIdAsync(id);
-                if(result.hasRunnedSuccessfully()) {
+                if (result.hasRunnedSuccessfully())
+                {
                     return Ok(result.Data as UserDTO);
                 }
                 else
@@ -116,7 +117,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception ex)    
+            catch (Exception ex)
             {
                 _logger.LogError(MessageLogErrors.FindByIdUserMessage, ex);
                 return StatusCode(500, MessageLogErrors.FindByIdUserMessage);
@@ -134,7 +135,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpPut]
         [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateAsync([FromRoute]string id, [FromBody] UserDTO usuarioUpdated)
+        public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromBody] UserDTO usuarioUpdated)
         {
             try
             {
@@ -156,7 +157,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             {
                 return BadRequest(ex.Message);
             }
-            catch (Exception ex)    
+            catch (Exception ex)
             {
                 _logger.LogError(MessageLogErrors.updateUserMessage, ex);
                 return StatusCode(500, MessageLogErrors.updateUserMessage);
@@ -171,7 +172,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>500 Erro inesperado</returns>
         [HttpDelete]
         [Route("{id}")]
-        public async Task<IActionResult> DeleteAsync([FromRoute]string id)
+        public async Task<IActionResult> DeleteAsync([FromRoute] string id)
         {
             try
             {
@@ -192,6 +193,41 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 return StatusCode(500, MessageLogErrors.deleteUserMessage);
             }
         }
-    
+
+        /// <summary>
+        /// Reenviar codigo de confirmação usuario 
+        /// </summary>
+        /// <param name="id">Id usuario</param>
+        /// <returns>200 email reenviado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpGet]
+        [Route("resendEmail/{idUser}")]
+        public async Task<IActionResult> ResendUserConfirmationAsync([FromRoute] string idUser)
+        {
+            try
+            {
+                var result = await _userService.ResendUserConfirmationAsync(idUser);
+                if (result.hasRunnedSuccessfully())
+                {
+                    return Ok(result.Data);
+                }
+                else
+                {
+                    throw new UserVerifiedException(result.Message);
+                }
+
+            }
+            catch (UserVerifiedException ex)
+            {
+                _logger.LogInformation(MessageLogErrors.deleteUserMessage, ex);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MessageLogErrors.deleteUserMessage, ex);
+                return StatusCode(500, MessageLogErrors.deleteUserMessage);
+            }
+        }
+
     }
 }

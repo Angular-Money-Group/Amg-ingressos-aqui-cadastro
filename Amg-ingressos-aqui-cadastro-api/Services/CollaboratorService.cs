@@ -10,17 +10,20 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
     public class CollaboratorService : ICollaboratorService
     {
         private IAssociateColabOrganizerRepository _organizerRepository;
-        private IAssociateColabEventRepository _eventRepository;
+        private IAssociateColabEventRepository _associateColabEventRepository;
+        private IEventRepository _eventRepository;
         private IUserService _userService;
         private IEmailService _emailService;
         private MessageReturn? _messageReturn;
 
         public CollaboratorService(IAssociateColabOrganizerRepository organizerRepository,
-                                    IAssociateColabEventRepository eventRepository,
+                                    IEventRepository eventRepository,
+                                    IAssociateColabEventRepository associateColabEventRepository,
                                     IUserService userService,
                                     IEmailService emailService)
         {
             _organizerRepository = organizerRepository;
+            _associateColabEventRepository = associateColabEventRepository;
             _eventRepository = eventRepository;
             _userService = userService;
             _emailService = emailService;
@@ -86,7 +89,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 //lista associada ao evento
                 var listAssociate =
-                    (IEnumerable<AssociateCollaboratorEvent>)_eventRepository.FindAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent).Result;
+                    (IEnumerable<AssociateCollaboratorEvent>)_associateColabEventRepository.FindAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent).Result;
 
 
                 var result = from usersCollaborator in listUser
@@ -126,30 +129,35 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        public async Task<MessageReturn> SendEmailCollaborator(string idEvent, string idUserOrganizer, string link)
+        public async Task<MessageReturn> SendEmailCollaborator(string idEvent)
         {
             try
             {
-                var listUserEvent = (IEnumerable<AssociateCollaboratorEvent>)_eventRepository
-                                        .FindAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent).Result;
 
-                var listUser = (List<UserDTO>) _userService
-                                        .GetAsync(string.Empty, type: Enum.TypeUserEnum.Collaborator.ToString())
-                                        .Result.Data;
+                var eventDetailsTask = _eventRepository.FindById<List<Event>>(idEvent);
+                var listUserEventTask = _associateColabEventRepository.FindAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent);
+                var listUserTask = _userService.GetAsync(string.Empty, type: Enum.TypeUserEnum.Collaborator.ToString());
+
+                await Task.WhenAll(eventDetailsTask, listUserEventTask, listUserTask);
+
+                var eventDetails = eventDetailsTask.Result;
+                var listUserEvent = (IEnumerable<AssociateCollaboratorEvent>) listUserEventTask.Result;
+                var listUser = ((List<UserDTO>)listUserTask.Result.Data).ToDictionary(u => u.Id);
 
                 var listEmail = from usersEvent in listUserEvent
-                                join  users in listUser
-                                    on usersEvent.IdUserCollaborator equals users.Id
+                                join user in listUser.Values
+                                on usersEvent.IdUserCollaborator equals user.Id
                                 select new Email
                                 {
-                                    Body = _emailService.GenerateBodyCollaboratorEvent(link),
-                                    Subject = "Ingressos",
+                                    Body = _emailService.GenerateBodyLoginColab(user, eventDetails.FirstOrDefault()),
+                                    Subject = "Credenciais de Acesso ao Evento",
                                     Sender = "suporte@ingressosaqui.com",
-                                    To = users?.Contact?.Email != null ? users.Contact.Email: string.Empty,
+                                    To = user.Contact.Email,
                                     DataCadastro = DateTime.Now
                                 };
 
                 _messageReturn.Data = await _emailService.ProcessEmail(listEmail.ToList());
+
 
             }
             catch (IdMongoException ex)

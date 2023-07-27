@@ -123,6 +123,32 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
         }
 
+        public string GenerateBodyLoginColab(User colabInfo, Event eventDetails)
+        {
+            var path = Environment.CurrentDirectory + "/Template/loginColab.html";
+
+            _logger.LogInformation("Init GenerateBody- Email Service");
+            try
+            {
+                _logger.LogInformation("Read Index - Email Service");
+                var html = System.IO.File.ReadAllText(@path);
+                var body = html.Replace("{{Nome do Usuário}}", colabInfo.Name)
+                .Replace("{{Email do Usuário}}", colabInfo.Contact.Email)
+                .Replace("{{Senha do Usuário}}", colabInfo.Password)
+                .Replace("{{Nome do Evento}}", eventDetails.Name)
+                .Replace("{{Data do evento}}", eventDetails.StartDate.ToString("dd/MM/yyyy"))
+                .Replace("{{linkQrCode}}", "https://dev.ingressosaqui.com/qr/" + eventDetails._Id);
+
+                _logger.LogInformation("Finished Index - Email Service");
+                return body;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error GenerateBody- Email Service");
+                throw ex;
+            }
+        }
+
         public async Task<string> ProcessEmail(List<Email> listEmail)
         {
             try

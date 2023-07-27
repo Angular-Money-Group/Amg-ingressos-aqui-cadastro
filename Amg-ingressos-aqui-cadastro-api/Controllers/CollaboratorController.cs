@@ -88,13 +88,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 Lista de todos metodos de pagamento</returns>
         /// <returns>204 Nenhum metodo de pagamento encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
-        [HttpPost]
-        [Route("event/{idEvent}/organizer/{idUserOrganizer}/email")]
-        public async Task<IActionResult> SendEmailCollaboratorAsync([FromRoute]string idEvent, [FromRoute]string idUserOrganizer,[FromBody]string linkLogin)
+        [HttpGet]
+        [Route("event/sendCredentials/{idEvent}")]
+        public async Task<IActionResult> SendEmailCollaboratorAsync([FromRoute]string idEvent)
         {
             try
             {
-                MessageReturn result = await _collaboratorService.SendEmailCollaborator(idEvent,idUserOrganizer, linkLogin);
+                MessageReturn result = await _collaboratorService.SendEmailCollaborator(idEvent);
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
                 else
