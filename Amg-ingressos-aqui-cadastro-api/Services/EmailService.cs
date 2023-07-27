@@ -42,13 +42,31 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             _logger.LogInformation("Finished SaveAsync- Email Service");
             return _messageReturn;
         }
+
+        public async Task<MessageReturn> SaveManyAsync(List<Email> emails)
+        {
+            _logger.LogInformation("Init SaveAsync- Email Service");
+            try
+            {
+                _logger.LogInformation("SaveAsync- Email Service");
+                _messageReturn.Data = await _emailRepository.SaveManyAsync(emails);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Erro SaveAsync- Email Service", ex);
+                throw ex;
+            }
+
+            _logger.LogInformation("Finished SaveAsync- Email Service");
+            return _messageReturn;
+        }
         public MessageReturn Send(string idEmail)
         {
             try
             {
                 _logger.LogInformation("Init Send - Email Service");
 
-                var json = new StringContent(JsonSerializer.Serialize(new {emailID = idEmail}),
+                var json = new StringContent(JsonSerializer.Serialize(new { emailID = idEmail }),
                 Encoding.UTF8, Application.Json); // using static System.Net.Mime.MediaTypeNames;
                 _logger.LogInformation("Add Header - Email Service");
                 _HttpClient.DefaultRequestHeaders.Add(
@@ -65,17 +83,15 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 _logger.LogError("Error Send - Email Service", ex);
                 throw;
             }
-            
+
             return _messageReturn;
         }
-
         public string GenerateBody(int randomNumber)
         {
-            var path  = Environment.CurrentDirectory +"/Template/index.html";
-            
             _logger.LogInformation("Init GenerateBody- Email Service");
             try
             {
+                var path = Environment.CurrentDirectory + "/Template/index.html";
                 _logger.LogInformation("Read Index - Email Service");
                 var html = System.IO.File.ReadAllText(@path);
                 var body = html.Replace("{{ code_validation }}", randomNumber.ToString());
@@ -87,6 +103,44 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 _logger.LogError("Error GenerateBody- Email Service");
                 throw ex;
             }
+        }
+        public string GenerateBodyCollaboratorEvent(string link)
+        {
+            _logger.LogInformation("Init GenerateBody- Email Service");
+            try
+            {
+                var path = Environment.CurrentDirectory + "/Template/collaborator.html";
+                _logger.LogInformation("Read Index - Email Service");
+                var html = System.IO.File.ReadAllText(@path);
+                var body = html.Replace("{{ link }}", link);
+                _logger.LogInformation("Finished Index - Email Service");
+                return body;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error GenerateBody- Email Service");
+                throw ex;
+            }
+        }
+
+        public async Task<string> ProcessEmail(List<Email> listEmail)
+        {
+            try
+            {
+                await SaveManyAsync(listEmail);
+
+            listEmail.ForEach(x =>
+                {
+                    Send(x.id);
+                }
+            );
+            return "processado";
+            }
+            catch (System.Exception ex)
+            {
+                throw ex;
+            }
+            
         }
     }
 }
