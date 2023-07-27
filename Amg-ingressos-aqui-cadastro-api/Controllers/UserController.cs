@@ -201,7 +201,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 email reenviado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
-        [Route("/resendEmail/{idUser}")]
+        [Route("resendEmail/{idUser}")]
         public async Task<IActionResult> ResendUserConfirmationAsync([FromRoute] string idUser)
         {
             try
