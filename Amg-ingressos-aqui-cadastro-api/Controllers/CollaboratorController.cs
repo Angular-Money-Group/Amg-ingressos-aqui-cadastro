@@ -1,14 +1,13 @@
 using Amg_ingressos_aqui_cadastro_api.Consts;
-using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
-using Amg_ingressos_aqui_cadastro_api.Model.Querys;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
     [Route("v1/collaborator")]
+    [Produces("application/json")]
     public class CollaboratorController : ControllerBase
     {
         private readonly ILogger<CollaboratorController> _logger;
@@ -29,12 +28,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
         [Route("organizer/{idUserOrganizer}")]
-        [Produces("application/json")]
         public async Task<IActionResult> GetAllColabsFromProducerAsync([FromRoute] string idUserOrganizer)
         {
             try
             {
-                MessageReturn result = await _collaboratorService.GetAllColabsOfProducerAsync(idUserOrganizer);
+                MessageReturn result = await _collaboratorService.GetAllCollaboratorOfOrganizerAsync(idUserOrganizer);
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
                 else
@@ -60,13 +58,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>204 Nenhum metodo de pagamento encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
-        [Route("event/{idEvent}")]
-        [Produces("application/json")]
-        public async Task<IActionResult> GetAllColabsFromEventAsync([FromRoute] string idEvent)
+        [Route("event/{idEvent}/organizer/{idUserOrganizer}")]
+        public async Task<IActionResult> GetAllColabsFromEventAssignedAsync([FromRoute]string idEvent, [FromRoute]string idUserOrganizer)
         {
             try
             {
-                MessageReturn result = await _collaboratorService.GetAllColabsOfEventAsync(idEvent);
+                MessageReturn result = await _collaboratorService.GetAllCollaboratorOfEventAssignedAsync(idEvent,idUserOrganizer);
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
                 else
@@ -82,6 +79,37 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 _logger.LogError(MessageLogErrors.GetAllProducerColabMessage, ex);
                 return StatusCode(500, MessageLogErrors.GetAllProducerColabMessage);
             }
-        } 
+        }
+
+        /// <summary>
+        /// Busca todos os metodos de pagamento
+        /// </summary>
+        /// <param name="idProducer">id do produtor que deseja ver seus colaboradores</param>
+        /// <returns>200 Lista de todos metodos de pagamento</returns>
+        /// <returns>204 Nenhum metodo de pagamento encontrado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpPost]
+        [Route("event/{idEvent}/organizer/{idUserOrganizer}/email")]
+        public async Task<IActionResult> SendEmailCollaboratorAsync([FromRoute]string idEvent, [FromRoute]string idUserOrganizer,[FromBody]string linkLogin)
+        {
+            try
+            {
+                MessageReturn result = await _collaboratorService.SendEmailCollaborator(idEvent,idUserOrganizer, linkLogin);
+                if (result.hasRunnedSuccessfully())
+                    return Ok(result.Data);
+                else
+                    throw new GetAllProducerColabException(result.Message);
+            }
+            catch (GetAllProducerColabException ex)
+            {
+                    _logger.LogInformation(ex.Message);
+                    return NoContent();
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MessageLogErrors.GetAllProducerColabMessage, ex);
+                return StatusCode(500, MessageLogErrors.GetAllProducerColabMessage);
+            }
+        }
     }
 }

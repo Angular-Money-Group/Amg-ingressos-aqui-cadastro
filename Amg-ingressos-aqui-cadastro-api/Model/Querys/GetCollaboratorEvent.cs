@@ -6,9 +6,9 @@ using Amg_ingressos_aqui_cadastro_api.Dtos;
 
 namespace Amg_ingressos_aqui_cadastro_api.Model.Querys
 {
-    public class GetColabsEvent
+    public class GetCollaboratorEvent
     {
-        public GetColabsEvent(string id, string name, string documentId, string email, bool isOnEvent) {
+        public GetCollaboratorEvent(string id, string name, string documentId, string email, bool isOnEvent) {
             this.Id = id;
             this.Name = name;
             this.CPF = documentId;
@@ -47,14 +47,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model.Querys
         [BsonElement("Contact.Email")]
         [JsonPropertyName("Contact.Email")]
         public string? Email { get; set; }
-
-        // /// <summary>
-        // /// Senha de acesso
-        // /// </summary>
-        // [Required]
-        // [BsonElement("Password")]
-        // [JsonPropertyName("Password")]
-        // public string? Password { get; set; }
 
         /// <summary>
         /// Flag indicando se colaborador esta ou n no evento

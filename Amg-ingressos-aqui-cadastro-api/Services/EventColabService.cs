@@ -55,7 +55,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
         
-        public async Task<MessageReturn> SaveAsync(EventColabDTO eventColabSaveDTO) {
+        public async Task<MessageReturn> SaveAsync(EventCollaboratorDto eventColabSaveDTO) {
             this._messageReturn = new MessageReturn();
             try
             {

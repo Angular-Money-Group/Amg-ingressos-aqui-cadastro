@@ -15,7 +15,7 @@ builder.Services.AddEndpointsApiExplorer();
 builder.Services.AddSwaggerGen();
 builder.Services.AddHttpClient();
 // Add services to the container.
-builder.Services.Configure<TransactionDatabaseSettings>(
+builder.Services.Configure<CadastroDatabaseSettings>(
     builder.Configuration.GetSection("CadastroDatabase"));
 
 // injecao de dependencia
@@ -41,8 +41,8 @@ builder.Services.AddScoped<IDbConnection<User>, DbConnection<User>>();
 builder.Services.AddScoped<IDbConnection<ReceiptAccount>, DbConnection<ReceiptAccount>>();
 builder.Services.AddScoped<IDbConnection<PaymentMethod>, DbConnection<PaymentMethod>>();
 builder.Services.AddScoped<IDbConnection<Email>, DbConnection<Email>>();
-builder.Services.AddScoped<IDbConnection<AssociateColabOrganizer>, DbConnection<AssociateColabOrganizer>>();
-builder.Services.AddScoped<IDbConnection<AssociateColabEvent>, DbConnection<AssociateColabEvent>>();
+builder.Services.AddScoped<IDbConnection<AssociateCollaboratorOrganizer>, DbConnection<AssociateCollaboratorOrganizer>>();
+builder.Services.AddScoped<IDbConnection<AssociateCollaboratorEvent>, DbConnection<AssociateCollaboratorEvent>>();
 
 builder.Services.AddCors(options =>
 {

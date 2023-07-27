@@ -1,6 +1,6 @@
 namespace Amg_ingressos_aqui_cadastro_api.Infra
 {
-    public class TransactionDatabaseSettings
+    public class CadastroDatabaseSettings
     {
         /// <summary>
         /// Connection string base de dados Mongo
@@ -13,6 +13,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Infra
         /// <summary>
         /// Nome collection Mongo
         /// </summary>
-        public string TransactionCollectionName { get; set; } = null!;
+        public string CollectionName { get; set; } = null!;
     }
 }

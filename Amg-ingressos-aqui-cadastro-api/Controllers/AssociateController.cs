@@ -7,6 +7,7 @@ using Microsoft.AspNetCore.Mvc;
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
     [Route("v1/associate")]
+    [Produces("application/json")]
     public class AssociateController : ControllerBase
     {
         private readonly ILogger<AssociateController> _logger;
@@ -62,11 +63,84 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
         [Route("event/collaborator/")]
-        public async Task<IActionResult> AssociateColabWithEventAsync([FromBody] AssociateColabEvent colabEvent)
+        public async Task<IActionResult> AssociateColabWithEventAsync([FromBody] AssociateCollaboratorEvent colabEvent)
         {
             try
             {
-                MessageReturn result = await _associateService.AssociateColabEventAsync(colabEvent);
+                MessageReturn result = await _associateService.AssociateCollaboratorEventAsync(colabEvent);
+                if (result.hasRunnedSuccessfully())
+                    return Ok(result.Data);
+                else
+                    throw new SaveUserException(result.Message);
+            }
+            catch (EmailAlreadyExists ex)
+            {
+                throw ex;
+                //_logger.LogInformation(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
+                //return BadRequest(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
+            }
+            catch (SaveUserException ex)
+            {
+                _logger.LogInformation(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
+                return StatusCode(500, MessageLogErrors.saveUserMessage);
+            }
+        }
+
+        
+        /// <summary>
+        /// Grava usuario
+        /// </summary>
+        /// <param name="user">Corpo usuario a ser Gravado</param>
+        /// <returns>200 usuario criado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpPost]
+        [Route("organizer/collaborators/")]
+        public async Task<IActionResult> AssociateManyColabWithOrganizerAsync([FromBody] List<AssociateCollaboratorOrganizer> collaboratorsOrganizer)
+        {
+            try
+            {
+                MessageReturn result = await _associateService.AssociateManyColabWithOrganizerAsync(collaboratorsOrganizer);
+                if (result.hasRunnedSuccessfully())
+                    return Ok(result.Data);
+                else
+                    throw new SaveUserException(result.Message);
+            }
+            catch (EmailAlreadyExists ex)
+            {
+                throw ex;
+                //_logger.LogInformation(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
+                //return BadRequest(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
+            }
+            catch (SaveUserException ex)
+            {
+                _logger.LogInformation(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
+                return StatusCode(500, MessageLogErrors.saveUserMessage);
+            }
+        }
+
+        /// <summary>
+        /// Grava usuario
+        /// </summary>
+        /// <param name="user">Corpo usuario a ser Gravado</param>
+        /// <returns>200 usuario criado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpPost]
+        [Route("event/collaborators/")]
+        public async Task<IActionResult> AssociateManyColabWithEventAsync([FromBody] List<AssociateCollaboratorEvent> collaboratorsEvent)
+        {
+            try
+            {
+                MessageReturn result = await _associateService.AssociateManyColabWithEventAsync(collaboratorsEvent);
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
                 else

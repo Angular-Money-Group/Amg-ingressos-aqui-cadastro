@@ -28,5 +28,18 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 throw;
             }
         }
+
+        public async Task<object> SaveManyAsync(List<Email> emails)
+        {
+            try
+            {
+                await _emailCollection.InsertManyAsync(emails);
+                return emails;
+            }
+            catch (Exception ex)
+            {
+                throw;
+            }
+        }
     }
 }

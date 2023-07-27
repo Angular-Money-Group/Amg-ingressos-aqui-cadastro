@@ -5,17 +5,8 @@ using System.Text.Json.Serialization;
 
 namespace Amg_ingressos_aqui_cadastro_api.Dtos 
 {
-    public class GetColabsProducerDto
+    public class GetCollaboratorProducerDto
     {
-        public GetColabsProducerDto(string id, string name, string documentId, string email, string idAssociate) {
-            //colab.ValidateColabFormat();
-            this.Id = id;
-            this.Name = name;
-            this.CPF = documentId;
-            this.Email = email;
-            this.IdAssociate = idAssociate;
-        }
-
         /// <summary>
         /// Nome do usuário
         /// </summary>
@@ -33,7 +24,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         /// Documento identificação
         /// </sumary>
         [JsonPropertyName("documentId")]
-        public string? CPF { get; set; }
+        public string? DocumentId { get; set; }
 
         /// <summary>
         /// Email do usuário
