@@ -211,7 +211,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var email = new Email
                 {
                     Body = _emailService.GenerateBody(randomNumber),
-                    Subject = "Ingressos",
+                    Subject = "Confirmação de Conta",
                     Sender = "suporte@ingressosaqui.com",
                     To = user.Contact.Email,
                     DataCadastro = DateTime.Now
@@ -222,7 +222,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     EmailConfirmationCode = randomNumber.ToString(),
                     EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
                 };
-                
+
                 var id = await _userRepository.Save<User>(user);
 
                 _emailService.SaveAsync(email);
@@ -412,5 +412,60 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             return _messageReturn;
         }
+
+        public async Task<MessageReturn> ResendUserConfirmationAsync(string idUser)
+        {
+            this._messageReturn = new MessageReturn();
+            try
+            {
+                idUser.ValidateIdMongo();
+
+                User user = await _userRepository.FindByField<User>("Id", idUser);
+
+                if(user.UserConfirmation.EmailVerified == true){
+                    throw new UserVerifiedException("Usuário já verificado");
+                }
+
+                int randomNumber = new Random().Next(100000, 999999);
+
+                var email = new Email
+                {
+                    Body = _emailService.GenerateBody(randomNumber),
+                    Subject = "Confirmação de Conta",
+                    Sender = "suporte@ingressosaqui.com",
+                    To = user.Contact.Email,
+                    DataCadastro = DateTime.Now
+                };
+
+
+                user.UserConfirmation = new UserConfirmation()
+                {
+                    EmailConfirmationCode = randomNumber.ToString(),
+                    EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
+                };
+
+                var id = await _userRepository.UpdateUser<User>(idUser, user);
+
+                _emailService.SaveAsync(email);
+                _emailService.Send(email.id);
+
+                UserDTO userDTO = new UserDTO(user);
+
+                _messageReturn.Data = userDTO;
+            }
+            catch (UserVerifiedException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error 500" + ex.Message, ex);
+                throw ex;
+            }
+            _logger.LogInformation("Finished", _messageReturn.Data);
+            return _messageReturn;
+        }
+
     }
 }
