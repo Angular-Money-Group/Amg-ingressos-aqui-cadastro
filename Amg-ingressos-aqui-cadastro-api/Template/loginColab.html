@@ -137,16 +137,16 @@
         <p style="text-align: center; margin-bottom: 25px">
           Você recebeu uma solicitação para realizar o processo de leituras de
           QR CODE do evento
-          <span class="bold">{{Nome do Evento aqui}}</span> que acontecerá na
+          <span class="bold">{{Nome do Evento}}</span> que acontecerá na
           data
-          <span class="bold">{{DD/MM/AAAA}}</span>
+          <span class="bold">{{Data do evento}}</span>
         </p>
         <p>
           Para realizar seu login, utilize o seu e-mail de acesso e a senha a
           seguir:
         </p>
-        <p class="email">{{emaildocolaborador@etiquetei.com}}</p>
-        <div class="senha">{{A1b2Cf2023}}</div>
+        <p class="email">{{Email do Usuário}}</p>
+        <div class="senha">{{Senha do Usuário}}</div>
         <hr style="width: 90%; margin: 20px 0" />
         <p>Para acessar a aplicação de leituras de ingressos</p>
         <a style="margin: 15px 0 20px 0" href="{{linkQrCode}}">Clique Aqui</a>
@@ -155,7 +155,7 @@
           navegador.
         </p>
         <div class="copiar">
-          <div class="link" id="linkDiv"><a href="">{{link}}</a></div>
+          <div class="link" id="linkDiv"><a href="{{linkQrCode}}">{{linkQrCode}}</a></div>
           <div class="copiar-link" id="copyIcon">
             <span class="material-symbols-outlined"> content_copy </span>
             <span class="copiar-texto">Copiar</span>

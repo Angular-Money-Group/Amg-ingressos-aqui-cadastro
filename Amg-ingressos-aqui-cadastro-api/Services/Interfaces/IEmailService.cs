@@ -14,5 +14,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
         Task<string> ProcessEmail(List<Email> listEmail);
         string GenerateBody(int randomNumber);
         string GenerateBodyCollaboratorEvent(string link);
+        string GenerateBodyLoginColab(User colabInfo, Event eventDetails);
     }
 }
