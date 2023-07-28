@@ -71,7 +71,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 _logger.LogInformation("Add Header - Email Service");
                 _HttpClient.DefaultRequestHeaders.Add(
                     HeaderNames.Accept, "application/json");
-                _HttpClient.Timeout = TimeSpan.FromMinutes(10);
+
                 var url = "http://api.ingressosaqui.com:3006/";
                 var uri = "v1/email/";
 
@@ -91,7 +91,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             _logger.LogInformation("Init GenerateBody- Email Service");
             try
             {
-                var path = Environment.CurrentDirectory + "/Template/index.html";
+                var path = Environment.CurrentDirectory + "/Template/verifique-email.html";
                 _logger.LogInformation("Read Index - Email Service");
                 var html = System.IO.File.ReadAllText(@path);
                 var body = html.Replace("{{ code_validation }}", randomNumber.ToString());
