@@ -137,7 +137,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 .Replace("{{Senha do Usuário}}", colabInfo.Password)
                 .Replace("{{Nome do Evento}}", eventDetails.Name)
                 .Replace("{{Data do evento}}", eventDetails.StartDate.ToString("dd/MM/yyyy"))
-                .Replace("{{linkQrCode}}", "https://dev.ingressosaqui.com/qr/" + eventDetails._Id);
+                .Replace("{{linkQrCode}}", "https://qrcode.ingressosaqui.com/auth/" + eventDetails._Id);
 
                 _logger.LogInformation("Finished Index - Email Service");
                 return body;
