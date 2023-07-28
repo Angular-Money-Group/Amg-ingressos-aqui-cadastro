@@ -208,25 +208,29 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 int randomNumber = new Random().Next(100000, 999999);
 
-                var email = new Email
+                if (user.Type != TypeUserEnum.Collaborator)
                 {
-                    Body = _emailService.GenerateBody(randomNumber),
-                    Subject = "Confirmação de Conta",
-                    Sender = "suporte@ingressosaqui.com",
-                    To = user.Contact.Email,
-                    DataCadastro = DateTime.Now
-                };
+                    var email = new Email
+                    {
+                        Body = _emailService.GenerateBody(randomNumber),
+                        Subject = "Confirmação de Conta",
+                        Sender = "suporte@ingressosaqui.com",
+                        To = user.Contact.Email,
+                        DataCadastro = DateTime.Now
+                    };
 
-                user.UserConfirmation = new UserConfirmation()
-                {
-                    EmailConfirmationCode = randomNumber.ToString(),
-                    EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
-                };
+                    user.UserConfirmation = new UserConfirmation()
+                    {
+                        EmailConfirmationCode = randomNumber.ToString(),
+                        EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
+                    };
 
-                var id = await _userRepository.Save<User>(user);
+                    var id = await _userRepository.Save<User>(user);
 
-                _emailService.SaveAsync(email);
-                _emailService.Send(email.id);
+                    _emailService.SaveAsync(email);
+                    _emailService.Send(email.id);
+                }
+
 
                 _messageReturn.Data = user;
             }
@@ -422,7 +426,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 User user = await _userRepository.FindByField<User>("Id", idUser);
 
-                if(user.UserConfirmation.EmailVerified == true){
+                if (user.Type == TypeUserEnum.Collaborator)
+                    throw new UserNotFound("Usuário não pode ser colaborador");
+
+                if (user.UserConfirmation.EmailVerified == true)
+                {
                     throw new UserVerifiedException("Usuário já verificado");
                 }
 
