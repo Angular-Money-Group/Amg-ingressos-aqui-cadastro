@@ -4,8 +4,12 @@
 # https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
 
 trigger:
-- main
-- develop
+  branches:
+    include:
+      - develop  # Substitua "master" pelo nome da branch de destino
+  paths:
+    exclude:
+      - '*'
 
 pool:
   vmImage: 'windows-latest'
