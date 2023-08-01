@@ -7,9 +7,6 @@ trigger:
   branches:
     include:
       - develop  # Substitua "master" pelo nome da branch de destino
-  paths:
-    exclude:
-      - '*'
 
 pool:
   vmImage: 'windows-latest'
