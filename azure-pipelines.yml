@@ -17,7 +17,7 @@ jobs:
         displayName: 'Use .NET SDK'  # Nome exibido na tarefa
         inputs:
           packageType: 'sdk'
-          version: '3.x'  # Substitua pela versão do .NET que você deseja usar (por exemplo, 5.x, 6.x)
+          version: '7.x'
 
       - script: dotnet restore  # Restaura as dependências do projeto
         displayName: 'Restore'
