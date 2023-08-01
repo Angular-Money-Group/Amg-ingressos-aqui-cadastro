@@ -1,37 +1,26 @@
-# ASP.NET Core (.NET Framework)
-# Build and test ASP.NET Core projects targeting the full .NET Framework.
-# Add steps that publish symbols, save build artifacts, and more:
-# https://docs.microsoft.com/azure/devops/pipelines/languages/dotnet-core
-
+# Trigger do pipeline. Defina quando o pipeline deve ser acionado.
 trigger:
   branches:
     include:
-      - develop  # Substitua "master" pelo nome da branch de destino
+      - main  # Substitua "main" pelo nome da branch principal do seu repositório
+      - development  # Se você tiver uma branch de desenvolvimento, inclua-a aqui
 
-pool:
-  vmImage: 'windows-latest'
-variables:
-  solution: '**/*.sln'
-  buildPlatform: 'Any CPU'
-  buildConfiguration: 'Release'
+# Etapas do pipeline
+jobs:
+  - job: Build
+    displayName: Build .NET Application
+    pool:
+      vmImage: 'windows-latest'  # Usaremos o ambiente Windows para construir a aplicação .NET, mas você pode escolher outro ambiente se preferir.
 
-steps:
-- task: NuGetToolInstaller@1
+    steps:
+      - task: UseDotNet@2  # Essa tarefa define a versão do .NET a ser usada no build.
+        displayName: 'Use .NET SDK'  # Nome exibido na tarefa
+        inputs:
+          packageType: 'sdk'
+          version: '3.x'  # Substitua pela versão do .NET que você deseja usar (por exemplo, 5.x, 6.x)
 
-- task: NuGetCommand@2
-  inputs:
-    restoreSolution: '$(solution)'
-    
-- task: DotNetCoreCLI@2
-  displayName: "Build"
-  inputs:
-    command: 'test'
-    projects: 'Amg-ingressos-aqui-carrinho-tests'
-    
-- task: DotNetCoreCLI@2
-  displayName: "Tests"
-  inputs:
-    command: 'build'
-    projects: 'Amg-ingressos-aqui-carrinho-api'
-    
+      - script: dotnet restore  # Restaura as dependências do projeto
+        displayName: 'Restore'
 
+      - script: dotnet build --configuration Release  # Executa o build da aplicação
+        displayName: 'Build'
