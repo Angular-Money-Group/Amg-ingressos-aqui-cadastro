@@ -3,96 +3,30 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="preconnect" href="https://fonts.googleapis.com" />
-    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-    <link
-      rel="stylesheet"
-      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
-    />
-    <link
-      href="https://fonts.googleapis.com/css2?family=Sora:wght@100;200;300;400;500;600;700;800&family=Poppins:wght@100;200;300;400;500;600;700;800;900&family=Roboto:wght@100;300;400;500;700;900display=swap"
-      rel="stylesheet"
-    />
     <title>Verifica E-mail</title>
-    <style>
-      * {
-        margin: 0;
-        padding: 0;
-        box-sizing: border-box;
-      }
-      body {
-        background-color: #f0f0f0;
-        display: flex;
-        justify-content: center;
-        align-items: center;
-        height: 100vh;
-      }
-      p {
-        font-family: "Poppins", sans-serif;
-        font-size: 14px;
-        text-align: center;
-        width: 250px;
-      }
-      .card {
-        width: 50%;
-        background-color: #fff;
-        padding: 40px;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
-        justify-content: center;
-        border: 1px solid #f2994a;
-        border-radius: 5px;
-        box-shadow: 0px 0px 10px 0px #f2994a;
-      }
-      .card-title {
-        text-align: center;
-        font-family: "Sora", sans-serif;
-        font-weight: 600;
-        font-size: 24px;
-      }
-      .material-symbols-outlined {
-        color: #f2994a;
-        font-size: 40px;
-      }
-      .senha {
-        background-color: #f2994a;
-        color: #fff;
-        border-radius: 5px;
-        padding: 15px;
-        margin: 15px 0;
-        font-family: "Roboto", sans-serif;
-        font-size: 24px;
-        font-weight: 700;
-      }
-      .expira {
-        color: #ff0000;
-        margin-bottom: 10px;
-      }
-
-      @media (max-width: 678px) {
-        .card {
-          height: 100vh;
-          width: 100%;
-          border: none;
-          border-radius: 0;
-        }
-      }
-    </style>
   </head>
-  <body>
-    <div class="card">
-      <h1 class="card-title">Verifique seu E-mail</h1>
-      <hr style="width: 100%; margin: 20px 0" />
-      <p style="text-align: center">
-        Para validar seu endereço de e-mail <b>digite este código</b> em seu
-        navegador.
-      </p>
-      <div class="senha">{{ code_validation }}</div>
-      <p class="expira">O código expira em 15 minutos.</p>
-      <p>
-        Se você não solicitou esta validação, você pode ignorar este e-mail.
-      </p>
-    </div>
+  <body style="margin: 0; padding: 0; background-color: #f0f0f0; height: 100vh; display: flex; align-items: center;">
+    <table
+      align="center"
+      cellpadding="0"
+      cellspacing="0"
+      width="100%"
+      style="max-width: 600px; margin: auto; padding: 20px;"
+    >
+      <tr>
+        <td align="center" bgcolor="#ffffff" style="border: 1px solid #f2994a; border-radius: 5px; box-shadow: 0px 0px 10px 0px #f2994a; padding: 40px;">
+          <h1 style="font-family: 'Sora', sans-serif; font-weight: 600; font-size: 24px;">Verifique seu E-mail</h1>
+          <hr style="width: 100%;" />
+          <p style="font-family: 'Poppins', sans-serif; font-size: 14px; text-align: center;">Para validar seu endereço de e-mail <b>digite este código</b> em seu navegador.</p>
+          <div style="background-color: #f2994a; color: #fff; border-radius: 5px; padding: 15px; margin: 15px 0; font-family: 'Roboto', sans-serif; font-size: 24px; font-weight: 700;">
+            {{ code_validation }}
+          </div>
+          <p style="color: #ff0000; margin-bottom: 10px;">O código expira em 15 minutos.</p>
+          <p style="font-family: 'Poppins', sans-serif; font-size: 14px; text-align: center;">
+            Se você não solicitou esta validação, você pode ignorar este e-mail.
+          </p>
+        </td>
+      </tr>
+    </table>
   </body>
 </html>
