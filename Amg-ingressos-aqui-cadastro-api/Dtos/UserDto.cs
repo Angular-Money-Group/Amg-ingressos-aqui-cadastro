@@ -85,6 +85,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             //this.ValidateStatusFormat();
 
             this.ValidateBasicUserFormat();
+            
             switch (this.Type)
             {
                 case TypeUserEnum.Admin:

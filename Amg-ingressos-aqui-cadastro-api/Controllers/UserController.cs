@@ -163,6 +163,45 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 return StatusCode(500, MessageLogErrors.updateUserMessage);
             }
         }
+        /// <summary>
+        /// Atualiza usuario pelo ID
+        /// </summary>
+        /// <param name="id"> id do usuario</param>
+        /// <param name="usuarioUpdated">Corpo usuario a ser Gravado</param>
+        /// <returns>200 usuario da busca</returns>
+        /// <returns>204 Nenhum usuario encontrado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpPut]
+        [Route("resetpassword/{id}")]
+        [Produces("application/json")]
+        public async Task<IActionResult> UpdatePassowordAsync([FromRoute] string id, [FromBody] UserDTO userPassword)
+        {
+            try
+            {
+                if (userPassword is null)
+                    throw new EmptyFieldsException("Json de Usuario veio Nulo.");
+
+                MessageReturn result = await _userService.UpdatePassowrdByIdAsync(id, userPassword.Password);
+
+                if (result.hasRunnedSuccessfully())
+                    return NoContent();
+                else
+                    throw new UpdateUserException(result.Message);
+            }
+            catch (EmptyFieldsException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (UpdateUserException ex)
+            {
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MessageLogErrors.updateUserMessage, ex);
+                return StatusCode(500, MessageLogErrors.updateUserMessage);
+            }
+        }
 
         /// <summary>
         /// Delete usuario 

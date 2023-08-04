@@ -55,7 +55,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// <summary>
         /// name
         /// </summary>
-        [Required]
         [BsonElement("Name")]
         [JsonPropertyName("name")]
         public string? Name { get; set; }
@@ -63,7 +62,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// <sumary>
         /// Documento identificação
         /// </sumary>
-        [Required]
         [BsonElement("DocumentId")]
         [JsonPropertyName("documentId")]
         public string? DocumentId { get; set; }
@@ -78,7 +76,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// <summary>
         /// Tipo do usuário
         /// </summary>
-        [Required]
         [BsonElement("Type")]
         [JsonPropertyName("type")]
         public TypeUserEnum? Type { get; set; }
@@ -93,7 +90,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// <summary>
         /// Contato do usuário
         /// </summary>
-        [Required]
         [BsonElement("Contact")]
         [JsonPropertyName("contact")]
         public Contact? Contact { get; set; }
@@ -108,7 +104,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// <summary>
         /// Senha de acesso
         /// </summary>
-        [Required]
         [BsonElement("Password")]
         [JsonPropertyName("password")]
         public string? Password { get; set; }
