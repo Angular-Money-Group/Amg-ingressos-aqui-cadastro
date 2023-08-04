@@ -383,6 +383,51 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
+        public async Task<MessageReturn> UpdatePassowrdByIdAsync(string id, string password)
+        {
+            this._messageReturn = new MessageReturn();
+            try
+            {
+                if (!await DoesIdExists(id))
+                    throw new UserNotFound("Id de usuário não encontrado.");
+
+                var key = "b14ca5898a4e4133bbce2ea2315a2023";
+                password = AesOperation.EncryptString(key, password);
+
+                _messageReturn.Data = await _userRepository.UpdatePasswordUser<object>(id, password);
+            }
+            catch (IdMongoException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (EmptyFieldsException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (UserNotFound ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (InvalidFormatException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (UpdateUserException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+            return _messageReturn;
+        }
+
         public async Task<MessageReturn> DeleteAsync(string id)
         {
             this._messageReturn = new MessageReturn();

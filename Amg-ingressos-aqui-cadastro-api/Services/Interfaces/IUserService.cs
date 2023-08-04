@@ -13,6 +13,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
         Task<MessageReturn> SaveColabAsync(UserDTO colabSave);
         Task<bool> DoesIdExists(string id);
         Task<MessageReturn> UpdateByIdAsync(UserDTO UserUpdated);
+        Task<MessageReturn> UpdatePassowrdByIdAsync(string id, string password);
         Task<MessageReturn> ResendUserConfirmationAsync(string id);
         Task<MessageReturn> DeleteAsync(string id);
     }
