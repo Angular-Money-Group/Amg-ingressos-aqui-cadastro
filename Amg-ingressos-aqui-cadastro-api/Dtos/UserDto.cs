@@ -84,7 +84,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             this.Id.ValidateIdMongo();
             //this.ValidateStatusFormat();
 
-            this.ValidateBasicUserFormat();
+            this.ValidateBasicUserUpdateFormat();
             
             switch (this.Type)
             {
@@ -109,6 +109,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             // this.ValidateAdressFormat();
             this.validateConctact();
             // this.validateUserConfirmation();
+        }
+
+        public void ValidateBasicUserUpdateFormat()
+        {
+            this.ValidateNameFormat();
+            if(this.Password is not null){
+                this.validatePasswordFormat();
+            }
         }
         public void ValidateAdminFormat()
         {

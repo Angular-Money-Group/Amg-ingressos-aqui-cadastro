@@ -145,7 +145,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 MessageReturn result = await _userService.UpdateByIdAsync(usuarioUpdated);
 
                 if (result.hasRunnedSuccessfully())
-                    return NoContent();
+                    return Ok(result.Data);
                 else
                     throw new UpdateUserException(result.Message);
             }
