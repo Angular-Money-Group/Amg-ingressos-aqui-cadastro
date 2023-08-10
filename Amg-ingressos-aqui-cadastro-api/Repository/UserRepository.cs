@@ -92,10 +92,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                     .Eq(userMongo => userMongo.Id, userModel.Id);
 
                 UpdateResult updateResult = await _userCollection.UpdateOneAsync(filter, update);
-                if (updateResult.IsAcknowledged && updateResult.ModifiedCount > 0)
+                if (updateResult.ModifiedCount > 0)
                 {
                     // The data was successfully updated
-                    return "Usuário Atualizado.";
+                    return updateResult;
                 }
                 else
                 {

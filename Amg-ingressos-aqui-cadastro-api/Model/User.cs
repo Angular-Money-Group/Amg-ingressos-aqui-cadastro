@@ -118,8 +118,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// <summary>
         /// Senha de acesso
         /// </summary>
-        [BsonElement("UpdateAt")]
-        [JsonPropertyName("updateAt")]
-        public DateTime? updateAt { get; set; }
+        [BsonElement("updatedAt")]
+        [JsonPropertyName("updatedAt")]
+        public DateTime? updatedAt { get; set; }
     }
 }
