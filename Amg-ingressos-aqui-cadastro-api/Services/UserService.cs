@@ -15,7 +15,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         private MessageReturn? _messageReturn;
         private ILogger<UserService> _logger;
 
-        public UserService(IUserRepository userRepository, IEmailService emailService, ILogger<UserService> logger)
+        public UserService(
+            IUserRepository userRepository,
+            IEmailService emailService,
+            ILogger<UserService> logger
+        )
         {
             _userRepository = userRepository;
             _emailService = emailService;
@@ -61,8 +65,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 User user = await _userRepository.FindByField<User>("Id", idUser);
                 UserDTO userDTO = new UserDTO(user);
                 _messageReturn.Data = userDTO;
-
-
             }
             catch (InvalidUserTypeException ex)
             {
@@ -98,8 +100,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 User user = await _userRepository.FindByField<User>("DocumentId", documentId);
                 UserDTO userDTO = new UserDTO(TEnum, user);
                 _messageReturn.Data = userDTO;
-
-
             }
             catch (InvalidUserTypeException ex)
             {
@@ -135,7 +135,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 User user = await _userRepository.FindByField<User>("Contact.Email", email);
                 UserDTO userDTO = new UserDTO(TEnum, user);
                 _messageReturn.Data = userDTO;
-
             }
             catch (InvalidUserTypeException ex)
             {
@@ -183,7 +182,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             this._messageReturn = new MessageReturn();
             try
             {
-                return !await _userRepository.DoesValueExistsOnField<User>("DocumentId", documentId);
+                return !await _userRepository.DoesValueExistsOnField<User>(
+                    "DocumentId",
+                    documentId
+                );
             }
             catch (Exception ex)
             {
@@ -225,12 +227,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
                     };
 
-                    var id = await _userRepository.Save<User>(user);
-
                     _emailService.SaveAsync(email);
                     _emailService.Send(email.id);
                 }
 
+                var id = await _userRepository.Save<User>(user) as string;
+
+                user.Id = id;
 
                 _messageReturn.Data = user;
             }
@@ -271,7 +274,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
             _logger.LogInformation("Finished", _messageReturn.Data);
             return _messageReturn;
-
         }
 
         public async Task<MessageReturn> SaveColabAsync(UserDTO colabSave)
@@ -281,12 +283,18 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 User user = colabSave.makeUserSave();
-                _messageReturn = await FindByDocumentIdAsync(TypeUserEnum.Collaborator, user.DocumentId);
+                _messageReturn = await FindByDocumentIdAsync(
+                    TypeUserEnum.Collaborator,
+                    user.DocumentId
+                );
                 if (_messageReturn.hasRunnedSuccessfully())
                     id = (_messageReturn.Data as UserDTO).Id;
                 else
                 {
-                    _messageReturn = await FindByEmailAsync(TypeUserEnum.Collaborator, user.Contact.Email);
+                    _messageReturn = await FindByEmailAsync(
+                        TypeUserEnum.Collaborator,
+                        user.Contact.Email
+                    );
                     if (_messageReturn.hasRunnedSuccessfully())
                         id = (_messageReturn.Data as UserDTO).Id;
                     else
@@ -394,7 +402,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var key = "b14ca5898a4e4133bbce2ea2315a2023";
                 password = AesOperation.EncryptString(key, password);
 
-                _messageReturn.Data = await _userRepository.UpdatePasswordUser<object>(id, password);
+                _messageReturn.Data = await _userRepository.UpdatePasswordUser<object>(
+                    id,
+                    password
+                );
             }
             catch (IdMongoException ex)
             {
@@ -490,7 +501,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     DataCadastro = DateTime.Now
                 };
 
-
                 user.UserConfirmation = new UserConfirmation()
                 {
                     EmailConfirmationCode = randomNumber.ToString(),
@@ -519,6 +529,5 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             _logger.LogInformation("Finished", _messageReturn.Data);
             return _messageReturn;
         }
-
     }
 }
