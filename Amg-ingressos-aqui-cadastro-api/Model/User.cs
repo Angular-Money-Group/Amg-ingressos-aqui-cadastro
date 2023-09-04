@@ -121,5 +121,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         [BsonElement("updatedAt")]
         [JsonPropertyName("updatedAt")]
         public DateTime? updatedAt { get; set; }
+
+        /// <summary>
+        /// Atualização do usuário
+        /// </summary>
+        [BsonElement("UpdateAt")]
+        [JsonPropertyName("UpdateAt")]
+        public DateTime? UpdateAt { get; set; }
     }
 }
