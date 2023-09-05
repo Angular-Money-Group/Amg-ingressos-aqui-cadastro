@@ -96,7 +96,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             {
                 MessageReturn result = await _collaboratorService.SendEmailCollaborator(idEvent);
                 if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
+                    return Ok(result);
                 else
                     throw new GetAllProducerColabException(result.Message);
             }
