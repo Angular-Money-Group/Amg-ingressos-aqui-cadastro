@@ -88,5 +88,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// </summary>
         [BsonDefaultValue(false)]
         public bool Highlighted { get; set; }
+        
+        /// <summary>
+        /// Se o evento está em destaque
+        /// </summary>
+        public object Courtesy { get; set; }
     }
 }

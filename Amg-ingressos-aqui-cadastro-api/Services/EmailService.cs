@@ -125,12 +125,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public string GenerateBodyLoginColab(User colabInfo, Event eventDetails)
         {
-            var path = Environment.CurrentDirectory + '/';
+            var path = Environment.CurrentDirectory;
 
             if(colabInfo.Contact.Email.Contains("outlook.com") || colabInfo.Contact.Email.Contains("hotmail.com")){
                 path = Environment.CurrentDirectory + "/Template/loginColab.html";
             } else if(colabInfo.Contact.Email.Contains("gmail.com")){
                 path = Environment.CurrentDirectory + "/Template/loginColabGmail.html";
+            } else {
+                path = Environment.CurrentDirectory + "/Template/loginColab.html";
             }
 
             _logger.LogInformation("Init GenerateBody- Email Service");
