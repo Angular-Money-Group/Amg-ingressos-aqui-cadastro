@@ -89,13 +89,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>204 Nenhum conta de recebimento encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
-        [Route("{id}")]
+        [Route("idUser/{idUser}")]
         [Produces("application/json")]
-        public async Task<IActionResult> FindByIdReceiptAccountAsync([FromRoute] string id)
+        public async Task<IActionResult> FindByIdReceiptAccountAsync([FromRoute] string idUser)
         {
             try
             {
-                var result = await _receiptAccountService.FindByIdAsync(id);
+                var result = await _receiptAccountService.FindByIdUserAsync(idUser);
                 if(result.hasRunnedSuccessfully())
                     return Ok(result.Data as List<ReceiptAccountDTO>);
                 else

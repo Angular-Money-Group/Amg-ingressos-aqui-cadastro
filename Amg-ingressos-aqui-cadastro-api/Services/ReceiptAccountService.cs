@@ -80,6 +80,38 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
         
+        public async Task<MessageReturn> FindByIdUserAsync(string idUser)
+        {
+            this._messageReturn = new MessageReturn();
+            try
+            {
+                idUser.ValidateIdMongo();
+                var receiptAccountDTOList = new List<ReceiptAccountDTO>();
+                List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<List<ReceiptAccount>>("IdUser", idUser);
+
+                for(var i = 0; i < receiptAccount.Count; i++){
+                    receiptAccountDTOList.Add(new ReceiptAccountDTO(receiptAccount[i]));
+                }
+                _messageReturn.Data = receiptAccountDTOList;
+
+            }
+            catch (IdMongoException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (ReceiptAccountNotFound ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return _messageReturn;
+        }
         public async Task<MessageReturn> SaveAsync(ReceiptAccountDTO receiptAccountSave) {
             this._messageReturn = new MessageReturn();
             try
