@@ -54,12 +54,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 idReceiptAccount.ValidateIdMongo();
                 var receiptAccountDTOList = new List<ReceiptAccountDTO>();
-                List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<List<ReceiptAccount>>("IdUser", idReceiptAccount);
+                List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<List<ReceiptAccount>>("_id", idReceiptAccount);
 
                 for(var i = 0; i < receiptAccount.Count; i++){
                     receiptAccountDTOList.Add(new ReceiptAccountDTO(receiptAccount[i]));
                 }
-                _messageReturn.Data = receiptAccountDTOList;
+                _messageReturn.Data = receiptAccountDTOList.FirstOrDefault();
 
             }
             catch (IdMongoException ex)
