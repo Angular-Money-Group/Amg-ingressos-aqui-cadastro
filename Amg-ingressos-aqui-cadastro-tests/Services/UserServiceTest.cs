@@ -291,7 +291,7 @@ namespace Prime.UnitTests.Services
                 .Returns(Task.FromResult(true));
 
             //Act
-            var result = _userService.DoesIdExists(email);
+            var result = _userService.DoesIdExists(new User());
 
             //Assert
             Assert.False(result.Result);
@@ -649,7 +649,7 @@ namespace Prime.UnitTests.Services
             _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id)).Returns(Task.FromResult(true));
 
             //Act
-            var result = _userService.DoesIdExists(id);
+            var result = _userService.DoesIdExists(new User());
 
             //Assert
             Assert.True(result.Result);
@@ -665,7 +665,7 @@ namespace Prime.UnitTests.Services
             _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id)).Returns(Task.FromResult(false));
 
             //Act
-            var result = _userService.DoesIdExists(id);
+            var result = _userService.DoesIdExists(new User());
 
             //Assert
             Assert.False(result.Result);
@@ -682,7 +682,7 @@ namespace Prime.UnitTests.Services
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
-            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.DoesIdExists(id));
+            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.DoesIdExists(new User()));
             Assert.AreEqual(expectedMessage, exception.Message);
         }
 

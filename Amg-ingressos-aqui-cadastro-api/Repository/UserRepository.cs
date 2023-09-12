@@ -54,6 +54,21 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
         }
 
+        public async Task<User> GetUser(string id)
+        {
+            try
+            {
+                var filter = Builders<User>.Filter.Eq("Id", id);
+                var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
+                
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<User> FindByField<T>(string fieldName, object value)
         {
             try

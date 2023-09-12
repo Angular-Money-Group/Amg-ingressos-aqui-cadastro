@@ -11,7 +11,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
         Task<bool> IsEmailAvailable(string email);
         Task<MessageReturn> SaveAsync(UserDTO userSave);
         Task<MessageReturn> SaveColabAsync(UserDTO colabSave);
-        Task<bool> DoesIdExists(string id);
         Task<MessageReturn> UpdateByIdAsync(UserDTO UserUpdated);
         Task<MessageReturn> UpdatePassowrdByIdAsync(string id, string password);
         Task<MessageReturn> ResendUserConfirmationAsync(string id);

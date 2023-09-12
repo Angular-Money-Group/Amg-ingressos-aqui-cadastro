@@ -6,6 +6,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
     {
         Task<object> Save<T>(User userComplet);
         Task<bool> DoesValueExistsOnField<T>(string fieldName, object value);
+        Task<User> GetUser(string id);
         Task<User> FindByField<T>(string fieldName, object value);
         Task<object> UpdateUser<T>(object id, User userComplet);
         Task<object> UpdatePasswordUser<T>(string id, string password);

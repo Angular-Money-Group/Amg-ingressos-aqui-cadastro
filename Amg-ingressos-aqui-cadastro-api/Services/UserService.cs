@@ -331,12 +331,26 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        public async Task<bool> DoesIdExists(string idUser)
+        public async Task<bool> DoesIdExists(User user)
         {
             this._messageReturn = new MessageReturn();
             try
             {
-                return await _userRepository.DoesValueExistsOnField<User>("Id", idUser);
+                return DoesValueExistsOnField(user);
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
+        public bool DoesValueExistsOnField(User user)
+        {
+            try
+            {
+                if (user is null)
+                    return false;
+                return true;
             }
             catch (Exception ex)
             {
@@ -350,12 +364,25 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 User user = userUpdated.makeUserUpdate();
+                User userDb = await _userRepository.GetUser(user.Id);
 
-                if (!await DoesIdExists(user.Id))
+                if (!await DoesIdExists(userDb))
                     throw new UserNotFound("Id de usuário não encontrado.");
-
-                var key = "b14ca5898a4e4133bbce2ea2315a2023";
-                user.Password = AesOperation.EncryptString(key, user.Password);
+                if(userUpdated.Password != null){
+                    var key = "b14ca5898a4e4133bbce2ea2315a2023";
+                    user.Password = AesOperation.EncryptString(key, user.Password);
+                }else{
+                    user.Password = userDb.Password;
+                }
+                if(userUpdated.Address == null){
+                    user.Address = userDb.Address;
+                }
+                if(userUpdated.Contact == null){
+                    user.Contact = userDb.Contact;
+                }
+                if(userUpdated.UserConfirmation == null){
+                    user.UserConfirmation = userDb.UserConfirmation;
+                }
 
                 _messageReturn.Data = await _userRepository.UpdateUser<User>(user.Id, user);
             }
@@ -396,7 +423,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             this._messageReturn = new MessageReturn();
             try
             {
-                if (!await DoesIdExists(id))
+                User userDb = await _userRepository.GetUser(id);
+                if (!await DoesIdExists(userDb))
                     throw new UserNotFound("Id de usuário não encontrado.");
 
                 var key = "b14ca5898a4e4133bbce2ea2315a2023";
@@ -445,8 +473,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 id.ValidateIdMongo();
-
-                if (!await DoesIdExists(id))
+                User userDb = await _userRepository.GetUser(id);
+                if (!await DoesIdExists(userDb))
                     throw new UserNotFound("Id de usuário não encontrado.");
 
                 _messageReturn.Data = await _userRepository.Delete<User>(id) as string;
