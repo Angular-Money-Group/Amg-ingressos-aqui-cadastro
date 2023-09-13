@@ -74,7 +74,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
         {
             try
             {
-
                 var filter = Builders<User>.Filter.Eq(fieldName, value);
                 var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
                 if (user is not null)
@@ -97,15 +96,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             try
             {
                 var update = Builders<User>.Update
-                   .Set(userMongo => userMongo.Name, userModel.Name)
-                   .Set(userMongo => userMongo.DocumentId, userModel.DocumentId)
-                   .Set(userMongo => userMongo.Address, userModel.Address)
-                   .Set(userMongo => userMongo.Contact, userModel.Contact)
-                   .Set(userMongo => userMongo.UserConfirmation, userModel.UserConfirmation)
-                   .Set(userMongo => userMongo.Password, userModel.Password);
+                    .Set(userMongo => userMongo.Name, userModel.Name)
+                    .Set(userMongo => userMongo.DocumentId, userModel.DocumentId)
+                    .Set(userMongo => userMongo.Address, userModel.Address)
+                    .Set(userMongo => userMongo.Contact, userModel.Contact)
+                    .Set(userMongo => userMongo.UserConfirmation, userModel.UserConfirmation)
+                    .Set(userMongo => userMongo.Password, userModel.Password);
 
-                var filter = Builders<User>.Filter
-                    .Eq(userMongo => userMongo.Id, userModel.Id);
+                var filter = Builders<User>.Filter.Eq(userMongo => userMongo.Id, userModel.Id);
 
                 UpdateResult updateResult = await _userCollection.UpdateOneAsync(filter, update);
                 if (updateResult.ModifiedCount > 0)
@@ -132,9 +130,35 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
         {
             try
             {
-                var result = await _userCollection.DeleteOneAsync(x => x.Id == id as string);
-                if (result.DeletedCount >= 1)
-                    return "Usuário Deletado.";
+                var user = await _userCollection
+                    .Find(Builders<User>.Filter.Eq(userMongo => userMongo.Id, id))
+                    .FirstOrDefaultAsync();
+
+                if (user != null)
+                {
+                    if (user.Status == TypeStatusEnum.Inactive)
+                    {
+                        var result = await _userCollection.UpdateOneAsync(
+                            Builders<User>.Filter.Eq(userMongo => userMongo.Id, id),
+                            Builders<User>.Update.Set(
+                                userMongo => userMongo.Status,
+                                TypeStatusEnum.Active
+                            )
+                        );
+                        return "Usuário Reativado.";
+                    }
+                    else
+                    {
+                        var result = await _userCollection.UpdateOneAsync(
+                            Builders<User>.Filter.Eq(userMongo => userMongo.Id, id),
+                            Builders<User>.Update.Set(
+                                userMongo => userMongo.Status,
+                                TypeStatusEnum.Inactive
+                            )
+                        );
+                        return "Usuário Deletado.";
+                    }
+                }
                 else
                     throw new DeleteUserException("Usuário não encontrado.");
             }
@@ -152,10 +176,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
         {
             try
             {
-                var filters = new List<FilterDefinition<User>>
-                {
-                    Builders<User>.Filter.Empty
-                };
+                var filters = new List<FilterDefinition<User>> { Builders<User>.Filter.Empty };
 
                 if (filterOptions != null)
                 {
@@ -191,16 +212,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
 
                     if (filterOptions.Type != null)
                     {
-                        filters.Add(
-                            Builders<User>.Filter.Eq(g => g.Type, filterOptions.Type)
-                        );
+                        filters.Add(Builders<User>.Filter.Eq(g => g.Type, filterOptions.Type));
                     }
                 }
-                
+
                 var filter = Builders<User>.Filter.And(filters);
-                var pResults = _userCollection
-                    .Find(filter)
-                    .ToList();
+                var pResults = _userCollection.Find(filter).ToList();
 
                 if (pResults.Count == 0)
                 {
@@ -232,10 +249,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                     // The data was successfully updated
                     return "Usuário Atualizado.";
                 }
-                else if(updateResult.ModifiedCount == 0 && updateResult.MatchedCount > 0)
+                else if (updateResult.ModifiedCount == 0 && updateResult.MatchedCount > 0)
                 {
                     throw new UpdateUserException("Nova senha não pode ser igual a antiga.");
-                } else
+                }
+                else
                 {
                     throw new UpdateUserException("Erro ao atualizar usuario.");
                 }
@@ -248,8 +266,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             {
                 throw ex;
             }
-
-
         }
     }
 }
