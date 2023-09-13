@@ -124,10 +124,10 @@ namespace Prime.UnitTests.Controllers
         {
             //Arrange
             var expectedResult = FactoryUser.ListSimpleUser();
-            _userRepositoryMock.Setup(x => x.Get<User>(string.Empty,string.Empty)).Returns(Task.FromResult(expectedResult as List<User>));
+            _userRepositoryMock.Setup(x => x.Get<User>(new FiltersUser())).Returns(Task.FromResult(expectedResult as List<User>));
 
             //Act
-            var result = await _userController.GetAsync(string.Empty,string.Empty) as ObjectResult;
+            var result = await _userController.GetAsync(new FiltersUser()) as ObjectResult;
             var list = result.Value as IEnumerable<UserDTO>;
             
             //Assert
@@ -142,11 +142,11 @@ namespace Prime.UnitTests.Controllers
         {
             //Arrange
             var expectedResult = new NoContentResult();
-            _userRepositoryMock.Setup(x => x.Get<User>(string.Empty,string.Empty))
+            _userRepositoryMock.Setup(x => x.Get<User>(new FiltersUser()))
                 .Throws(new GetAllUserException("Usuários não encontrados"));
 
             //Act
-            var result = await _userController.GetAsync(string.Empty,string.Empty);
+            var result = await _userController.GetAsync(new FiltersUser());
 
             //Assert
             Assert.IsInstanceOf<NoContentResult>(result);
@@ -158,11 +158,11 @@ namespace Prime.UnitTests.Controllers
         {
             //Arrange
             var expectedMessage = MessageLogErrors.GetAllUserMessage;
-            _userRepositoryMock.Setup(x => x.Get<User>(string.Empty,string.Empty))
+            _userRepositoryMock.Setup(x => x.Get<User>(new FiltersUser()))
                 .Throws(new Exception("Erro ao conectar-se ao banco"));
 
             //Act
-            var result = await _userController.GetAsync(string.Empty,string.Empty) as ObjectResult;
+            var result = await _userController.GetAsync(new FiltersUser()) as ObjectResult;
 
             //Assert
             Assert.AreEqual(expectedMessage, result?.Value);

@@ -5,6 +5,7 @@ using Amg_ingressos_aqui_cadastro_api.Infra;
 using MongoDB.Driver;
 using Amg_ingressos_aqui_cadastro_api.Enum;
 using System;
+using MongoDB.Bson;
 
 namespace Amg_ingressos_aqui_cadastro_api.Repository
 {
@@ -147,30 +148,66 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
         }
 
-        public async Task<List<User>> Get<T>(string email, string type)
+        public async Task<List<User>> Get<T>(FiltersUser? filterOptions)
         {
             try
             {
-                var builder = Builders<User>.Filter;
-                var filter = builder.Empty;
+                var filters = new List<FilterDefinition<User>>
+                {
+                    Builders<User>.Filter.Empty
+                };
 
-                if (!string.IsNullOrWhiteSpace(email))
-                    filter &= builder.Eq(x => x.Contact.Email, email);
-                if (!string.IsNullOrWhiteSpace(type))
-                    filter &= builder.Eq(x => x.Type, System.Enum.Parse<TypeUserEnum>(type));
+                if (filterOptions != null)
+                {
+                    if (!string.IsNullOrEmpty(filterOptions.Name))
+                    {
+                        filters.Add(
+                            Builders<User>.Filter.Regex(
+                                g => g.Name,
+                                new BsonRegularExpression(filterOptions.Name, "i")
+                            )
+                        );
+                    }
 
-                var result = await _userCollection.Find(filter).ToListAsync();
+                    if (!string.IsNullOrEmpty(filterOptions.Email))
+                    {
+                        filters.Add(
+                            Builders<User>.Filter.Regex(
+                                g => g.Contact!.Email,
+                                new BsonRegularExpression(filterOptions.Email, "i")
+                            )
+                        );
+                    }
 
-                if (!result.Any())
-                    throw new GetAllUserException("Usuários não encontrados");
+                    if (!string.IsNullOrEmpty(filterOptions.PhoneNumber))
+                    {
+                        filters.Add(
+                            Builders<User>.Filter.Regex(
+                                g => g.Contact!.PhoneNumber,
+                                new BsonRegularExpression(filterOptions.PhoneNumber, "i")
+                            )
+                        );
+                    }
 
-                return result;
+                    if (filterOptions.Type != null)
+                    {
+                        filters.Add(
+                            Builders<User>.Filter.Eq(g => g.Type, filterOptions.Type)
+                        );
+                    }
+                }
+                
+                var filter = Builders<User>.Filter.And(filters);
+                var pResults = _userCollection
+                    .Find(filter)
+                    .ToList();
 
-                //List<User> result = await _userCollection.Find(_ => true).ToListAsync();
-                //if (!result.Any())
-                //throw new GetAllUserException("Usuários não encontrados");
+                if (pResults.Count == 0)
+                {
+                    throw new GetAllUserException("Usuarios não encontrados");
+                }
 
-                //return result;
+                return pResults;
             }
             catch (GetAllUserException ex)
             {
