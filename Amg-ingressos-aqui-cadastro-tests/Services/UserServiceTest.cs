@@ -41,11 +41,11 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             var messageReturn = FactoryUser.ListSimpleUser();
-            _userRepositoryMock.Setup(x => x.Get<User>(string.Empty,string.Empty))
+            _userRepositoryMock.Setup(x => x.Get<User>(new FiltersUser()))
                 .Returns(Task.FromResult<List<User>>(messageReturn));
 
             //Act
-            var result = _userService.GetAsync(string.Empty,string.Empty);
+            var result = _userService.GetAsync(new FiltersUser());
             var list = result.Result.Data as IEnumerable<UserDTO>;
 
             //Assert
@@ -60,11 +60,11 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             var expectedMessage = "Usuários não encontrados";
-            _userRepositoryMock.Setup(x => x.Get<object>(string.Empty,string.Empty))
+            _userRepositoryMock.Setup(x => x.Get<object>(new FiltersUser()))
                 .Throws(new GetAllUserException(expectedMessage));
 
             //Act
-            var resultTask = _userService.GetAsync(string.Empty,string.Empty);
+            var resultTask = _userService.GetAsync(new FiltersUser());
 
             //Assert
             Assert.AreEqual(expectedMessage, resultTask.Result.Message);
@@ -76,11 +76,11 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             var expectedMessage = "Erro de conexao";
-            _userRepositoryMock.Setup(x => x.Get<object>(string.Empty,string.Empty))
+            _userRepositoryMock.Setup(x => x.Get<object>(new FiltersUser()))
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
-            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.GetAsync(string.Empty,string.Empty));
+            var exception = Assert.ThrowsAsync<Exception>(() =>_userService.GetAsync(new FiltersUser()));
             Assert.AreEqual(expectedMessage, exception.Message);
         }
 

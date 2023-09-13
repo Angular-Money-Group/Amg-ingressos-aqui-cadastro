@@ -42,8 +42,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             }
             catch (EmailAlreadyExists ex)
             {
-                _logger.LogInformation(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
-                return BadRequest(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
+                _logger.LogInformation(
+                    MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email
+                );
+                return BadRequest(
+                    MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email
+                );
             }
             catch (SaveUserException ex)
             {
@@ -65,11 +69,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
         [Produces("application/json")]
-        public async Task<IActionResult> GetAsync([FromQuery] string email = null, [FromQuery] string type = null)
+        public async Task<IActionResult> GetAsync(
+            [FromQuery] FiltersUser filters
+        )
         {
             try
             {
-                var result = await _userService.GetAsync(email, type);
+                var result = await _userService.GetAsync(filters);
 
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
@@ -135,7 +141,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpPut]
         [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromBody] UserDTO usuarioUpdated)
+        public async Task<IActionResult> UpdateAsync(
+            [FromRoute] string id,
+            [FromBody] UserDTO usuarioUpdated
+        )
         {
             try
             {
@@ -163,6 +172,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 return StatusCode(500, MessageLogErrors.updateUserMessage);
             }
         }
+
         /// <summary>
         /// Atualiza usuario pelo ID
         /// </summary>
@@ -174,14 +184,20 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpPut]
         [Route("resetpassword/{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdatePassowordAsync([FromRoute] string id, [FromBody] UserDTO userPassword)
+        public async Task<IActionResult> UpdatePassowordAsync(
+            [FromRoute] string id,
+            [FromBody] UserDTO userPassword
+        )
         {
             try
             {
                 if (userPassword is null)
                     throw new EmptyFieldsException("Json de Usuario veio Nulo.");
 
-                MessageReturn result = await _userService.UpdatePassowrdByIdAsync(id, userPassword.Password);
+                MessageReturn result = await _userService.UpdatePassowrdByIdAsync(
+                    id,
+                    userPassword.Password
+                );
 
                 if (result.hasRunnedSuccessfully())
                     return NoContent();
@@ -204,7 +220,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         }
 
         /// <summary>
-        /// Delete usuario 
+        /// Delete usuario
         /// </summary>
         /// <param name="id">Id usuario</param>
         /// <returns>200 usuario deletado</returns>
@@ -234,7 +250,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         }
 
         /// <summary>
-        /// Reenviar codigo de confirmação usuario 
+        /// Reenviar codigo de confirmação usuario
         /// </summary>
         /// <param name="id">Id usuario</param>
         /// <returns>200 email reenviado</returns>
@@ -254,7 +270,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 {
                     throw new UserVerifiedException(result.Message);
                 }
-
             }
             catch (UserVerifiedException ex)
             {
@@ -267,6 +282,5 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 return StatusCode(500, MessageLogErrors.deleteUserMessage);
             }
         }
-
     }
 }

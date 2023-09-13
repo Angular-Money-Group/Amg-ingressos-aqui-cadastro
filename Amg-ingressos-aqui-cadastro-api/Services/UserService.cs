@@ -26,12 +26,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             _logger = logger;
         }
 
-        public async Task<MessageReturn> GetAsync(string email, string type)
+        public async Task<MessageReturn> GetAsync(FiltersUser filters)
         {
             this._messageReturn = new MessageReturn();
             try
             {
-                var result = await _userRepository.Get<User>(email, type);
+                var result = await _userRepository.Get<User>(filters);
 
                 List<UserDTO> list = new List<UserDTO>();
                 var key = "b14ca5898a4e4133bbce2ea2315a2023";
