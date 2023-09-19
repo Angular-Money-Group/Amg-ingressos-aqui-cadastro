@@ -25,6 +25,7 @@ builder.Services.AddScoped<IReceiptAccountService, ReceiptAccountService>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
 builder.Services.AddScoped<IEmailService, EmailService>();
 builder.Services.AddScoped<IAssociateService, AssociateService>();
+builder.Services.AddScoped<ISupportService, SupportService>();
 builder.Services.AddScoped<IAssociateService, AssociateService>();
 builder.Services.AddScoped<ICollaboratorService, CollaboratorService>();
 //repository
@@ -33,6 +34,8 @@ builder.Services.AddScoped<IReceiptAccountRepository, ReceiptAccountRepository<o
 builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository<object>>();
 builder.Services.AddScoped<IEmailRepository, EmailRepository>();
 builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<ISupportRepository, SupportRepository>();
+builder.Services.AddScoped<ISequenceRepository, SequenceRepository>();
 builder.Services.AddScoped<IAssociateColabOrganizerRepository, AssociateColabOrganizerRepository>();
 builder.Services.AddScoped<IAssociateColabEventRepository, AssociateColabEventRepository>();
 
@@ -42,6 +45,8 @@ builder.Services.AddScoped<IDbConnection<User>, DbConnection<User>>();
 builder.Services.AddScoped<IDbConnection<Event>, DbConnection<Event>>();
 builder.Services.AddScoped<IDbConnection<ReceiptAccount>, DbConnection<ReceiptAccount>>();
 builder.Services.AddScoped<IDbConnection<PaymentMethod>, DbConnection<PaymentMethod>>();
+builder.Services.AddScoped<IDbConnection<TicketSupport>, DbConnection<TicketSupport>>();
+builder.Services.AddScoped<IDbConnection<Sequence>, DbConnection<Sequence>>();
 builder.Services.AddScoped<IDbConnection<Email>, DbConnection<Email>>();
 builder.Services.AddScoped<IDbConnection<AssociateCollaboratorOrganizer>, DbConnection<AssociateCollaboratorOrganizer>>();
 builder.Services.AddScoped<IDbConnection<AssociateCollaboratorEvent>, DbConnection<AssociateCollaboratorEvent>>();

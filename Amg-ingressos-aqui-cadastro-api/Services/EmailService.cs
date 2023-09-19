@@ -60,17 +60,20 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             _logger.LogInformation("Finished SaveAsync- Email Service");
             return _messageReturn;
         }
+
         public MessageReturn Send(string idEmail)
         {
             try
             {
                 _logger.LogInformation("Init Send - Email Service");
 
-                var json = new StringContent(JsonSerializer.Serialize(new { emailID = idEmail }),
-                Encoding.UTF8, Application.Json); // using static System.Net.Mime.MediaTypeNames;
+                var json = new StringContent(
+                    JsonSerializer.Serialize(new { emailID = idEmail }),
+                    Encoding.UTF8,
+                    Application.Json
+                ); // using static System.Net.Mime.MediaTypeNames;
                 _logger.LogInformation("Add Header - Email Service");
-                _HttpClient.DefaultRequestHeaders.Add(
-                    HeaderNames.Accept, "application/json");
+                _HttpClient.DefaultRequestHeaders.Add(HeaderNames.Accept, "application/json");
 
                 var url = "http://api.ingressosaqui.com:3006/";
                 var uri = "v1/email/";
@@ -86,6 +89,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
             return _messageReturn;
         }
+
         public string GenerateBody(int randomNumber)
         {
             _logger.LogInformation("Init GenerateBody- Email Service");
@@ -104,6 +108,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 throw ex;
             }
         }
+
         public string GenerateBodyCollaboratorEvent(string link)
         {
             _logger.LogInformation("Init GenerateBody- Email Service");
@@ -123,15 +128,45 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
         }
 
+        public string GenerateBodySupport(TicketSupport ticketSupport, User user)
+        {
+            _logger.LogInformation("Init GenerateBody- Email Service");
+            try
+            {
+                var path = Environment.CurrentDirectory + "/Template/ticketSupport.html";
+                _logger.LogInformation("Read Index - Email Service");
+                var html = System.IO.File.ReadAllText(@path);
+                var body = html.Replace("{{nome_usuario}}", user.Name)
+                    .Replace("{{email_usuario}}", user.Contact.Email)
+                    .Replace("{{telefone_usuario}}", user.Contact.PhoneNumber)
+                    .Replace("{{message}}", ticketSupport.Message);
+                _logger.LogInformation("Finished Index - Email Service");
+                return body;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError("Error GenerateBody- Email Service");
+                throw ex;
+            }
+        }
+
         public string GenerateBodyLoginColab(User colabInfo, Event eventDetails)
         {
             var path = Environment.CurrentDirectory;
 
-            if(colabInfo.Contact.Email.Contains("outlook.com") || colabInfo.Contact.Email.Contains("hotmail.com")){
+            if (
+                colabInfo.Contact.Email.Contains("outlook.com")
+                || colabInfo.Contact.Email.Contains("hotmail.com")
+            )
+            {
                 path = Environment.CurrentDirectory + "/Template/loginColab.html";
-            } else if(colabInfo.Contact.Email.Contains("gmail.com")){
+            }
+            else if (colabInfo.Contact.Email.Contains("gmail.com"))
+            {
                 path = Environment.CurrentDirectory + "/Template/loginColabGmail.html";
-            } else {
+            }
+            else
+            {
                 path = Environment.CurrentDirectory + "/Template/loginColab.html";
             }
 
@@ -141,11 +176,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 _logger.LogInformation("Read Index - Email Service");
                 var html = System.IO.File.ReadAllText(@path);
                 var body = html.Replace("{{Nome do Usuário}}", colabInfo.Name)
-                .Replace("{{Email do Usuário}}", colabInfo.Contact.Email)
-                .Replace("{{Senha do Usuário}}", colabInfo.Password)
-                .Replace("{{Nome do Evento}}", eventDetails.Name)
-                .Replace("{{Data do evento}}", eventDetails.StartDate.ToString("dd/MM/yyyy"))
-                .Replace("{{linkQrCode}}", "https://qrcode.ingressosaqui.com/auth/" + eventDetails._Id);
+                    .Replace("{{Email do Usuário}}", colabInfo.Contact.Email)
+                    .Replace("{{Senha do Usuário}}", colabInfo.Password)
+                    .Replace("{{Nome do Evento}}", eventDetails.Name)
+                    .Replace("{{Data do evento}}", eventDetails.StartDate.ToString("dd/MM/yyyy"))
+                    .Replace(
+                        "{{linkQrCode}}",
+                        "https://qrcode.ingressosaqui.com/auth/" + eventDetails._Id
+                    );
 
                 _logger.LogInformation("Finished Index - Email Service");
                 return body;
@@ -163,18 +201,16 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 await SaveManyAsync(listEmail);
 
-            listEmail.ForEach(x =>
+                listEmail.ForEach(x =>
                 {
                     Send(x.id);
-                }
-            );
-            return "processado";
+                });
+                return "processado";
             }
             catch (System.Exception ex)
             {
                 throw ex;
             }
-            
         }
     }
 }
