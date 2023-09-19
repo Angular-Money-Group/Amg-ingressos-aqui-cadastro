@@ -15,5 +15,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
         string GenerateBody(int randomNumber);
         string GenerateBodyCollaboratorEvent(string link);
         string GenerateBodyLoginColab(User colabInfo, Event eventDetails);
+        string GenerateBodySupport(TicketSupport ticketSupport, User user);
     }
 }
