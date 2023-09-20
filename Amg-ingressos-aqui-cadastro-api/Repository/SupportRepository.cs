@@ -23,7 +23,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
         {
             try
             {
-                var filter = Builders<TicketSupport>.Filter.Empty;
+                var filter = Builders<TicketSupport>.Filter.Ne(x => x.Status, StatusSupport.Canceled);
                 var pResults = _supportCollection.Find(filter).ToList();
 
                 if (pResults.Count == 0)
