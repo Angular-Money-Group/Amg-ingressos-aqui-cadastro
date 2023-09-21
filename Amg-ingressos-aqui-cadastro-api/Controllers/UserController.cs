@@ -4,6 +4,7 @@ using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using MongoDB.Bson;
 
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
@@ -53,6 +54,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             {
                 _logger.LogInformation(ex.Message);
                 return BadRequest(ex.Message);
+            }
+            catch (UserInactiveException ex)
+            {
+                _logger.LogInformation(ex.Message);
+                return Conflict(ex.Message);
             }
             catch (Exception ex)
             {

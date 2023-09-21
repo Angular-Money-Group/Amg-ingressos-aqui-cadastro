@@ -177,6 +177,33 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
         }
 
+        public async Task<bool> IsUserInactive(UserDTO user)
+        {
+            this._messageReturn = new MessageReturn();
+            try
+            {
+                var userValue = await _userRepository.FindByField<User>(
+                    "DocumentId",
+                    user.DocumentId
+                );
+
+                if (userValue == null)
+                {
+                    return true;
+                }
+                else if (userValue.Status == StatusUserEnum.Inactive)
+                {
+                    return false;
+                }
+
+                return true;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<bool> IsDocumentIdAvailable(string documentId)
         {
             this._messageReturn = new MessageReturn();
@@ -199,6 +226,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 User user = userSave.makeUserSave();
+
+                if (!await IsUserInactive(userSave))
+                    throw new UserInactiveException("Usuário inativo. Deseja reativalo?");
 
                 if (!await IsDocumentIdAvailable(user.DocumentId))
                     throw new DocumentIdAlreadyExists("Documento de Identificação já cadastrado.");
@@ -238,6 +268,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 _messageReturn.Data = user;
             }
             catch (EmptyFieldsException ex)
+            {
+                _logger.LogError("Empty Fields", ex);
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (UserInactiveException ex)
             {
                 _logger.LogError("Empty Fields", ex);
                 _messageReturn.Data = null;

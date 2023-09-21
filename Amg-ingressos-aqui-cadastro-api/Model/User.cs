@@ -32,7 +32,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
             this.Password = user.Password;
         }
         
-        public User(string? id, string? name, string? documentId, TypeStatusEnum? status, TypeUserEnum? type, Address? address,
+        public User(string? id, string? name, string? documentId, StatusUserEnum? status, TypeUserEnum? type, Address? address,
                     Contact? contact, UserConfirmation? userConfirmation, string? password) {
             this.Id = id;
             this.Name = name;
@@ -71,7 +71,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         /// </sumary>
         [BsonElement("Status")]
         [JsonPropertyName("status")]
-        public TypeStatusEnum? Status { get; set; }
+        public StatusUserEnum? Status { get; set; }
 
         /// <summary>
         /// Tipo do usuário

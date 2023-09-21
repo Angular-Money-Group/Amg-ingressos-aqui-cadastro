@@ -61,7 +61,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             if (this.Id is not null)
                 this.Id = null;
 
-            this.Status = TypeStatusEnum.Active;
+            this.Status = StatusUserEnum.Active;
 
             this.ValidateBasicUserFormat();
             switch (this.Type)
