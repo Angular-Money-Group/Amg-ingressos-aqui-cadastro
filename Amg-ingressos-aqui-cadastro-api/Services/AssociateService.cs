@@ -37,6 +37,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
+                
+
+
+
                 _messageReturn.Data = await _associateColabOrganizerRepository
                 .AssociateColabAsync(new AssociateCollaboratorOrganizer()
                 {

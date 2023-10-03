@@ -353,9 +353,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 if (!await DoesIdExists(user.Id))
                     throw new UserNotFound("Id de usuário não encontrado.");
-
-                var key = "b14ca5898a4e4133bbce2ea2315a2023";
-                user.Password = AesOperation.EncryptString(key, user.Password);
+                if(user.Password != null) {
+                    var key = "b14ca5898a4e4133bbce2ea2315a2023";
+                    user.Password = AesOperation.EncryptString(key, user.Password);
+                }
 
                 _messageReturn.Data = await _userRepository.UpdateUser<User>(user.Id, user);
             }
