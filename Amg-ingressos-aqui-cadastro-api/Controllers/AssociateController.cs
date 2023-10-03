@@ -1,4 +1,6 @@
 using Amg_ingressos_aqui_cadastro_api.Consts;
+using Amg_ingressos_aqui_cadastro_api.Dtos;
+using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
@@ -12,11 +14,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
     {
         private readonly ILogger<AssociateController> _logger;
         private readonly IAssociateService _associateService;
+        private readonly IUserService _userService;
 
-        public AssociateController(ILogger<AssociateController> logger, IAssociateService associateService)
+        public AssociateController(ILogger<AssociateController> logger, IAssociateService associateService, IUserService userService)
         {
             _logger = logger;
             _associateService = associateService;
+            _userService = userService;
         }
 
         /// <summary>
@@ -26,11 +30,21 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        [Route("organizer/{idUserOrganizer}/collaborator/{idUserCollaborator}")]
-        public async Task<IActionResult> AssociateColabWithOrganizerAsync([FromRoute] string idUserOrganizer,[FromRoute] string idUserCollaborator)
+        [Route("organizer/{idUserOrganizer}")]
+        public async Task<IActionResult> AssociateColabWithOrganizerAsync([FromRoute] string idUserOrganizer,[FromBody] UserDTO user)
         {
             try
             {
+                var userData = (UserDTO)_userService.FindByEmailAsync(TypeUserEnum.Collaborator,user.Contact.Email).Result.Data;
+                var idUserCollaborator = string.Empty;
+                if(userData != null){
+                    idUserCollaborator = userData.Id;
+                }
+                else{
+                    var userSave = (UserDTO)_userService.SaveAsync(user).Result.Data;
+                    idUserCollaborator = userSave.Id;
+                }
+
                 MessageReturn result = await _associateService.AssociateColabOrganizerAsync(idUserOrganizer, idUserCollaborator);
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);

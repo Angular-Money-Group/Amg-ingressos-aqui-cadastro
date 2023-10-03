@@ -96,12 +96,15 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             try
             {
                 var update = Builders<User>.Update
-                    .Set(userMongo => userMongo.Name, userModel.Name)
-                    .Set(userMongo => userMongo.DocumentId, userModel.DocumentId)
-                    .Set(userMongo => userMongo.Address, userModel.Address)
-                    .Set(userMongo => userMongo.Contact, userModel.Contact)
-                    .Set(userMongo => userMongo.UserConfirmation, userModel.UserConfirmation)
-                    .Set(userMongo => userMongo.Password, userModel.Password);
+                   .Set(userMongo => userMongo.Name, userModel.Name)
+                   .Set(userMongo => userMongo.DocumentId, userModel.DocumentId)
+                   .Set(userMongo => userMongo.Address, userModel.Address)
+                   .Set(userMongo => userMongo.Contact, userModel.Contact)
+                   .Set(userMongo => userMongo.UserConfirmation, userModel.UserConfirmation);
+                
+                if( userModel.Password != null){
+                    update.Set(userMongo => userMongo.Password, userModel.Password);
+                }
 
                 var filter = Builders<User>.Filter.Eq(userMongo => userMongo.Id, userModel.Id);
 
