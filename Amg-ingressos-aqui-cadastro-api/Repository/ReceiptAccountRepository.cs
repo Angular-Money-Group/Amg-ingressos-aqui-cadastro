@@ -59,8 +59,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
         {
             try
             {
+                FilterDefinition<ReceiptAccount> filter = null;
+                if(fieldName == "_id")
+                  filter =  Builders<ReceiptAccount>.Filter.Eq(fieldName, ObjectId.Parse(value.ToString()));
+                else
+                 filter = Builders<ReceiptAccount>.Filter.Eq(fieldName, value);
 
-                var filter = Builders<ReceiptAccount>.Filter.Eq(fieldName, value);
                 var receiptAccount = await _receiptAccountCollection.Find(filter).ToListAsync();
 
                 return receiptAccount;

@@ -5,6 +5,7 @@ using Amg_ingressos_aqui_cadastro_api.Infra;
 using MongoDB.Driver;
 using Amg_ingressos_aqui_cadastro_api.Enum;
 using System;
+using MongoDB.Bson;
 
 namespace Amg_ingressos_aqui_cadastro_api.Repository
 {
@@ -54,11 +55,25 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
         }
 
+        public async Task<User> GetUser(string id)
+        {
+            try
+            {
+                var filter = Builders<User>.Filter.Eq("Id", id);
+                var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
+                
+                return user;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
+
         public async Task<User> FindByField<T>(string fieldName, object value)
         {
             try
             {
-
                 var filter = Builders<User>.Filter.Eq(fieldName, value);
                 var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
                 if (user is not null)
@@ -91,8 +106,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                     update.Set(userMongo => userMongo.Password, userModel.Password);
                 }
 
-                var filter = Builders<User>.Filter
-                    .Eq(userMongo => userMongo.Id, userModel.Id);
+                var filter = Builders<User>.Filter.Eq(userMongo => userMongo.Id, userModel.Id);
 
                 UpdateResult updateResult = await _userCollection.UpdateOneAsync(filter, update);
                 if (updateResult.ModifiedCount > 0)
@@ -119,9 +133,35 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
         {
             try
             {
-                var result = await _userCollection.DeleteOneAsync(x => x.Id == id as string);
-                if (result.DeletedCount >= 1)
-                    return "Usuário Deletado.";
+                var user = await _userCollection
+                    .Find(Builders<User>.Filter.Eq(userMongo => userMongo.Id, id))
+                    .FirstOrDefaultAsync();
+
+                if (user != null)
+                {
+                    if (user.Status == TypeStatusEnum.Inactive)
+                    {
+                        var result = await _userCollection.UpdateOneAsync(
+                            Builders<User>.Filter.Eq(userMongo => userMongo.Id, id),
+                            Builders<User>.Update.Set(
+                                userMongo => userMongo.Status,
+                                TypeStatusEnum.Active
+                            )
+                        );
+                        return "Usuário Reativado.";
+                    }
+                    else
+                    {
+                        var result = await _userCollection.UpdateOneAsync(
+                            Builders<User>.Filter.Eq(userMongo => userMongo.Id, id),
+                            Builders<User>.Update.Set(
+                                userMongo => userMongo.Status,
+                                TypeStatusEnum.Inactive
+                            )
+                        );
+                        return "Usuário Deletado.";
+                    }
+                }
                 else
                     throw new DeleteUserException("Usuário não encontrado.");
             }
@@ -135,30 +175,59 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
         }
 
-        public async Task<List<User>> Get<T>(string email, string type)
+        public async Task<List<User>> Get<T>(FiltersUser? filterOptions)
         {
             try
             {
-                var builder = Builders<User>.Filter;
-                var filter = builder.Empty;
+                var filters = new List<FilterDefinition<User>> { Builders<User>.Filter.Empty };
 
-                if (!string.IsNullOrWhiteSpace(email))
-                    filter &= builder.Eq(x => x.Contact.Email, email);
-                if (!string.IsNullOrWhiteSpace(type))
-                    filter &= builder.Eq(x => x.Type, System.Enum.Parse<TypeUserEnum>(type));
+                if (filterOptions != null)
+                {
+                    if (!string.IsNullOrEmpty(filterOptions.Name))
+                    {
+                        filters.Add(
+                            Builders<User>.Filter.Regex(
+                                g => g.Name,
+                                new BsonRegularExpression(filterOptions.Name, "i")
+                            )
+                        );
+                    }
 
-                var result = await _userCollection.Find(filter).ToListAsync();
+                    if (!string.IsNullOrEmpty(filterOptions.Email))
+                    {
+                        filters.Add(
+                            Builders<User>.Filter.Regex(
+                                g => g.Contact!.Email,
+                                new BsonRegularExpression(filterOptions.Email, "i")
+                            )
+                        );
+                    }
 
-                if (!result.Any())
-                    throw new GetAllUserException("Usuários não encontrados");
+                    if (!string.IsNullOrEmpty(filterOptions.PhoneNumber))
+                    {
+                        filters.Add(
+                            Builders<User>.Filter.Regex(
+                                g => g.Contact!.PhoneNumber,
+                                new BsonRegularExpression(filterOptions.PhoneNumber, "i")
+                            )
+                        );
+                    }
 
-                return result;
+                    if (filterOptions.Type != null)
+                    {
+                        filters.Add(Builders<User>.Filter.Eq(g => g.Type, filterOptions.Type));
+                    }
+                }
 
-                //List<User> result = await _userCollection.Find(_ => true).ToListAsync();
-                //if (!result.Any())
-                //throw new GetAllUserException("Usuários não encontrados");
+                var filter = Builders<User>.Filter.And(filters);
+                var pResults = _userCollection.Find(filter).ToList();
 
-                //return result;
+                if (pResults.Count == 0)
+                {
+                    throw new GetAllUserException("Usuarios não encontrados");
+                }
+
+                return pResults;
             }
             catch (GetAllUserException ex)
             {
@@ -183,10 +252,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                     // The data was successfully updated
                     return "Usuário Atualizado.";
                 }
-                else if(updateResult.ModifiedCount == 0 && updateResult.MatchedCount > 0)
+                else if (updateResult.ModifiedCount == 0 && updateResult.MatchedCount > 0)
                 {
                     throw new UpdateUserException("Nova senha não pode ser igual a antiga.");
-                } else
+                }
+                else
                 {
                     throw new UpdateUserException("Erro ao atualizar usuario.");
                 }
@@ -199,8 +269,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             {
                 throw ex;
             }
-
-
         }
     }
 }

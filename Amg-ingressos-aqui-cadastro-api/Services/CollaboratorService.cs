@@ -16,11 +16,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         private IEmailService _emailService;
         private MessageReturn? _messageReturn;
 
-        public CollaboratorService(IAssociateColabOrganizerRepository organizerRepository,
-                                    IEventRepository eventRepository,
-                                    IAssociateColabEventRepository associateColabEventRepository,
-                                    IUserService userService,
-                                    IEmailService emailService)
+        public CollaboratorService(
+            IAssociateColabOrganizerRepository organizerRepository,
+            IEventRepository eventRepository,
+            IAssociateColabEventRepository associateColabEventRepository,
+            IUserService userService,
+            IEmailService emailService
+        )
         {
             _organizerRepository = organizerRepository;
             _associateColabEventRepository = associateColabEventRepository;
@@ -35,26 +37,31 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 idOrganizer.ValidateIdMongo();
-                var listUser = (List<UserDTO>)_userService
-                                    .GetAsync(string.Empty, type: Enum.TypeUserEnum.Collaborator.ToString())
-                                    .Result.Data;
-                var listAssociate = (List<AssociateCollaboratorOrganizer>)_organizerRepository.
-                                                    FindAllColabsOfProducer<AssociateCollaboratorOrganizer>(idOrganizer).Result;
+                var listUser =
+                    (List<UserDTO>)
+                        _userService
+                            .GetAsync(new FiltersUser() { Type = Enum.TypeUserEnum.Collaborator })
+                            .Result.Data;
 
-                var result = from associate in listAssociate
-                             join users in listUser
-                             on associate.IdUserCollaborator equals users.Id
-                             select new GetCollaboratorProducerDto
-                             {
-                                 Email = users.Contact.Email,
-                                 DocumentId = users.DocumentId,
-                                 Name = users.Name,
-                                 Id = users.Id,
-                                 IdAssociate = associate.Id
-                             };
+                var listAssociate =
+                    (List<AssociateCollaboratorOrganizer>)
+                        _organizerRepository
+                            .FindAllColabsOfProducer<AssociateCollaboratorOrganizer>(idOrganizer)
+                            .Result;
+
+                var result =
+                    from associate in listAssociate
+                    join users in listUser on associate.IdUserCollaborator equals users.Id
+                    select new GetCollaboratorProducerDto
+                    {
+                        Email = users.Contact.Email,
+                        DocumentId = users.DocumentId,
+                        Name = users.Name,
+                        Id = users.Id,
+                        IdAssociate = associate.Id
+                    };
 
                 _messageReturn.Data = result;
-
             }
             catch (IdMongoException ex)
             {
@@ -74,42 +81,57 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        public async Task<MessageReturn> GetAllCollaboratorOfEventAssignedAsync(string idEvent, string idUserOrganizer)
+        public async Task<MessageReturn> GetAllCollaboratorOfEventAssignedAsync(
+            string idEvent,
+            string idUserOrganizer
+        )
         {
             try
             {
                 idEvent.ValidateIdMongo();
                 idUserOrganizer.ValidateIdMongo();
                 //list de usuarios collaborator
-                var listUser = (IEnumerable<UserDTO>)_userService
-                                    .GetAsync(string.Empty, type: Enum.TypeUserEnum.Collaborator.ToString()).Result.Data;
+                var listUser =
+                    (IEnumerable<UserDTO>)
+                        _userService
+                            .GetAsync(new FiltersUser() { Type = Enum.TypeUserEnum.Collaborator })
+                            .Result.Data;
                 //lista de usuarios relacionados ao Organizador
                 var listUserOrganizerCollaborator =
-                    (IEnumerable<GetCollaboratorProducerDto>)GetAllCollaboratorOfOrganizerAsync(idUserOrganizer).Result.Data;
+                    (IEnumerable<GetCollaboratorProducerDto>)
+                        GetAllCollaboratorOfOrganizerAsync(idUserOrganizer).Result.Data;
 
                 //lista associada ao evento
                 var listAssociate =
-                    (IEnumerable<AssociateCollaboratorEvent>)_associateColabEventRepository.FindAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent).Result;
+                    (IEnumerable<AssociateCollaboratorEvent>)
+                        _associateColabEventRepository
+                            .FindAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent)
+                            .Result;
 
-
-                var result = from usersCollaborator in listUser
-                             join usersOrganizer in listUserOrganizerCollaborator
-                                 on usersCollaborator.Id equals usersOrganizer.Id
-                             select new GetCollaboratorProducerEventDto
-                             {
-                                 IdAssociateEvent =
-                                    listAssociate.Select(x => x.IdUserCollaborator)
-                                                    .Contains(usersOrganizer.Id) ?
-                                                    listAssociate.FirstOrDefault(x => x.IdUserCollaborator == usersCollaborator.Id).Id : string.Empty,
-                                 Assigned = listAssociate.Select(x => x.IdUserCollaborator)
-                                                    .Contains(usersOrganizer.Id) ? true : false,
-                                 DocumentId = usersOrganizer.DocumentId,
-                                 Email = usersOrganizer.Email,
-                                 Id = usersOrganizer.Id,
-                                 Name = usersOrganizer.Name
-                             };
+                var result =
+                    from usersCollaborator in listUser
+                    join usersOrganizer in listUserOrganizerCollaborator
+                        on usersCollaborator.Id equals usersOrganizer.Id
+                    select new GetCollaboratorProducerEventDto
+                    {
+                        IdAssociateEvent = listAssociate
+                            .Select(x => x.IdUserCollaborator)
+                            .Contains(usersOrganizer.Id)
+                            ? listAssociate
+                                .FirstOrDefault(x => x.IdUserCollaborator == usersCollaborator.Id)
+                                .Id
+                            : string.Empty,
+                        Assigned = listAssociate
+                            .Select(x => x.IdUserCollaborator)
+                            .Contains(usersOrganizer.Id)
+                            ? true
+                            : false,
+                        DocumentId = usersOrganizer.DocumentId,
+                        Email = usersOrganizer.Email,
+                        Id = usersOrganizer.Id,
+                        Name = usersOrganizer.Name
+                    };
                 _messageReturn.Data = result;
-
             }
             catch (IdMongoException ex)
             {
@@ -133,32 +155,38 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-
                 var eventDetailsTask = _eventRepository.FindById<List<Event>>(idEvent);
-                var listUserEventTask = _associateColabEventRepository.FindAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent);
-                var listUserTask = _userService.GetAsync(string.Empty, type: Enum.TypeUserEnum.Collaborator.ToString());
+                var listUserEventTask =
+                    _associateColabEventRepository.FindAllColabsOfEvent<AssociateCollaboratorEvent>(
+                        idEvent
+                    );
+                var listUserTask = _userService.GetAsync(
+                    new FiltersUser() { Type = Enum.TypeUserEnum.Collaborator }
+                );
 
                 await Task.WhenAll(eventDetailsTask, listUserEventTask, listUserTask);
 
                 var eventDetails = eventDetailsTask.Result;
-                var listUserEvent = (IEnumerable<AssociateCollaboratorEvent>) listUserEventTask.Result;
+                var listUserEvent =
+                    (IEnumerable<AssociateCollaboratorEvent>)listUserEventTask.Result;
                 var listUser = ((List<UserDTO>)listUserTask.Result.Data).ToDictionary(u => u.Id);
 
-                var listEmail = from usersEvent in listUserEvent
-                                join user in listUser.Values
-                                on usersEvent.IdUserCollaborator equals user.Id
-                                select new Email
-                                {
-                                    Body = _emailService.GenerateBodyLoginColab(user, eventDetails.FirstOrDefault()),
-                                    Subject = "Credenciais de Acesso ao Evento",
-                                    Sender = "suporte@ingressosaqui.com",
-                                    To = user.Contact.Email,
-                                    DataCadastro = DateTime.Now
-                                };
+                var listEmail =
+                    from usersEvent in listUserEvent
+                    join user in listUser.Values on usersEvent.IdUserCollaborator equals user.Id
+                    select new Email
+                    {
+                        Body = _emailService.GenerateBodyLoginColab(
+                            user,
+                            eventDetails.FirstOrDefault()
+                        ),
+                        Subject = "Credenciais de Acesso ao Evento",
+                        Sender = "suporte@ingressosaqui.com",
+                        To = user.Contact.Email,
+                        DataCadastro = DateTime.Now
+                    };
 
                 _messageReturn.Data = await _emailService.ProcessEmail(listEmail.ToList());
-
-
             }
             catch (IdMongoException ex)
             {
