@@ -185,8 +185,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         To = user.Contact.Email,
                         DataCadastro = DateTime.Now
                     };
-
-                _messageReturn.Data = await _emailService.ProcessEmail(listEmail.ToList());
+                if(listEmail.Any())
+                    _messageReturn.Data = await _emailService.ProcessEmail(listEmail.ToList());
+                
             }
             catch (IdMongoException ex)
             {

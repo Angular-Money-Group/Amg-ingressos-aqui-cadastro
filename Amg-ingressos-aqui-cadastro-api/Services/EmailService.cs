@@ -182,7 +182,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     .Replace("{{Data do evento}}", eventDetails.StartDate.ToString("dd/MM/yyyy"))
                     .Replace(
                         "{{linkQrCode}}",
-                        "https://qrcode.ingressosaqui.com/auth/" + eventDetails._Id
+                        "https://qrcode.ingressosaqui.com/auth?idEvento=" + eventDetails._Id
                     );
 
                 _logger.LogInformation("Finished Index - Email Service");
