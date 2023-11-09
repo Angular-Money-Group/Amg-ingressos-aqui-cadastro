@@ -118,6 +118,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
             try
             {
+                if(!ModelState.IsValid)
+                    throw new SaveUserException("dados invalidos");
+                    
                 MessageReturn result = await _associateService.AssociateManyColabWithOrganizerAsync(collaboratorsOrganizer);
                 if (result.hasRunnedSuccessfully())
                     return Ok(result.Data);
