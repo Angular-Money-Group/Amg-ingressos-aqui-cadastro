@@ -112,16 +112,19 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 }
 
                 //Where do update
-                var filter = Builders<User>.Filter.Eq(userMongo => userMongo.Id, userModel.Id);
+                var filter = Builders<User>.Filter.Eq(userMongo => userMongo.Id, id);
                 
                 //Prepara o objeto para atualização
                 var combinedUpdate = Builders<User>.Update.Combine(updateDefination);
 
                 //Realiza o update
-                UpdateResult updateResult = await _userCollection.UpdateOneAsync(filter, combinedUpdate);
-                
-                //Se comandoe executado com sucesso e atualizou uma lilnha
-                if (updateResult.IsAcknowledged && updateResult.ModifiedCount > 0)
+                UpdateResult updateResult = await _userCollection.UpdateOneAsync(filter, combinedUpdate, new UpdateOptions() {  });
+
+                //Se comando executado com sucesso e
+                //encontrou o usuario (id) na collection (MatchedCount > 0) e
+                //atualizou (ModifiedCount > 0) ou não atualiza um a linha (no put, veio o mesmo registro que ja estava no banco de dados)
+                //retorna sucesso no comando update
+                if (updateResult.IsAcknowledged && updateResult.MatchedCount > 0 && updateResult.ModifiedCount >= 0)
                 {
                     // The data was successfully updated
                     return updateResult;
