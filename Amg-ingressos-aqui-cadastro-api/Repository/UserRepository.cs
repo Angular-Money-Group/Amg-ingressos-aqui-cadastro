@@ -6,6 +6,8 @@ using MongoDB.Driver;
 using Amg_ingressos_aqui_cadastro_api.Enum;
 using System;
 using MongoDB.Bson;
+using System.Collections.Generic;
+using Amg_ingressos_aqui_cadastro_api.Utils;
 
 namespace Amg_ingressos_aqui_cadastro_api.Repository
 {
@@ -91,25 +93,38 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
         }
 
-        public async Task<object> UpdateUser<T>(object id, User userModel)
+        public async Task<object> UpdateUser<T>(string id, User userModel)
         {
             try
             {
-                var update = Builders<User>.Update
-                   .Set(userMongo => userMongo.Name, userModel.Name)
-                   .Set(userMongo => userMongo.DocumentId, userModel.DocumentId)
-                   .Set(userMongo => userMongo.Address, userModel.Address)
-                   .Set(userMongo => userMongo.Contact, userModel.Contact)
-                   .Set(userMongo => userMongo.UserConfirmation, userModel.UserConfirmation);
-                
-                if( userModel.Password != null){
-                    update.Set(userMongo => userMongo.Password, userModel.Password);
+                //Monta lista de campos, que serão atualizado - Set do update
+                var updateDefination = new List<UpdateDefinition<User>>();
+
+                if (!string.IsNullOrEmpty(userModel.Name)) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.Name, userModel.Name));
+                if (!string.IsNullOrEmpty(userModel.DocumentId)) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.DocumentId, userModel.DocumentId));
+
+                if (userModel.Address != null) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.Address, userModel.Address));
+                if (userModel.Contact != null) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.Contact, userModel.Contact));
+
+                if (!string.IsNullOrEmpty(userModel.Password))
+                {
+                    updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.Password, userModel.Password));
                 }
 
-                var filter = Builders<User>.Filter.Eq(userMongo => userMongo.Id, userModel.Id);
+                //Where do update
+                var filter = Builders<User>.Filter.Eq(userMongo => userMongo.Id, id);
+                
+                //Prepara o objeto para atualização
+                var combinedUpdate = Builders<User>.Update.Combine(updateDefination);
 
-                UpdateResult updateResult = await _userCollection.UpdateOneAsync(filter, update);
-                if (updateResult.ModifiedCount > 0)
+                //Realiza o update
+                UpdateResult updateResult = await _userCollection.UpdateOneAsync(filter, combinedUpdate, new UpdateOptions() {  });
+
+                //Se comando executado com sucesso e
+                //encontrou o usuario (id) na collection (MatchedCount > 0) e
+                //atualizou (ModifiedCount > 0) ou não atualiza um a linha (no put, veio o mesmo registro que ja estava no banco de dados)
+                //retorna sucesso no comando update
+                if (updateResult.IsAcknowledged && updateResult.MatchedCount > 0 && updateResult.ModifiedCount >= 0)
                 {
                     // The data was successfully updated
                     return updateResult;
