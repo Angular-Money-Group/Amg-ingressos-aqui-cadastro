@@ -4,6 +4,7 @@ using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
+using System.Net;
 
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
@@ -32,6 +33,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
             try
             {
+                //Pegar o jwt e ver o id do organizador
+//                var n = Request.Headers["Authorization"];
+        
                 // userObject.Password = hashPassword;
                 MessageReturn result = await _userService.SaveAsync(user);
                 // userDTOObject.Password = hashPassword;
