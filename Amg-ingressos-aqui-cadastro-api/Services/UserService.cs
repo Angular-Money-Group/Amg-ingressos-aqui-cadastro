@@ -202,9 +202,23 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 if (!await IsDocumentIdAvailable(user.DocumentId))
                     throw new DocumentIdAlreadyExists("Documento de Identificação já cadastrado.");
-                if (!await IsEmailAvailable(user.Contact.Email))
-                    throw new EmailAlreadyExists("Email Indisponível.");
 
+                if (user.Type != TypeUserEnum.Collaborator && !await IsEmailAvailable(user.Contact.Email))
+                {
+                    throw new EmailAlreadyExists("Email Indisponível.");
+                }
+                //Se o colaborador ja tiver cadastro (o email ja tiver cadastrado), apenas será retornado os dados do usuario
+                else if (user.Type == TypeUserEnum.Collaborator)
+                {
+                    user = await _userRepository.FindByField<User>("Contact.Email", user.Contact.Email);
+                    if (user != null)
+                    {
+                        _messageReturn.Data = user;
+                        _logger.LogInformation("Finished", _messageReturn.Data);
+                        return _messageReturn;
+                    }
+                }
+              
                 var key = "b14ca5898a4e4133bbce2ea2315a2023";
                 user.Password = AesOperation.EncryptString(key, user.Password);
 

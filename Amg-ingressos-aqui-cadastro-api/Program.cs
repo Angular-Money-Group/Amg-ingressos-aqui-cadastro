@@ -82,6 +82,16 @@ app.UseCors(x => x
 
 app.UseAuthorization();
 
+//app.MapGet("/jwt-token/headers", (HttpContext ctx) =>
+//{
+//    if (ctx.Request.Headers.TryGetValue("Authorization", out var headerAuth))
+//    {
+//        var jwtToken = headerAuth.First().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1];
+//        return Task.FromResult(TypedResults.Ok(new { token = jwtToken }));
+//    }
+//    return Task.FromResult(TypedResults.NotFound(new { message = "jwt not found" }));
+//});
+
 app.MapControllers();
 
 app.Run();

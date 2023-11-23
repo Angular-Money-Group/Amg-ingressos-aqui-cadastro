@@ -4,3 +4,14 @@ Amg-ingressos-aqui-cadastro-tests/bin/
 Amg-ingressos-aqui-cadastro-tests/obj/
 .vscode/
 .vs
+
+# User-specific files
+*.suo
+*.vsidx
+*.dtbcache.v2
+
+# Config files
+applicationhost*.config
+
+# Lock files
+read*.lock
