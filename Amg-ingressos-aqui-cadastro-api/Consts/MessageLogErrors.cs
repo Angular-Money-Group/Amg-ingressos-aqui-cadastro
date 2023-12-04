@@ -33,5 +33,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Consts
         public const string saveProducerColabMessage = "SaveProducerColabAsync : Erro inesperado ao salvar um produtorXcolaborador";
         public const string deleteProducerColabMessage = "DeleteProducerColabAsync : Erro inesperado ao deletar um produtorXcolaborador";
         public const string updateProducerColabMessage = "UpdateProducerColabAsync : Erro inesperado ao atualizar um produtorXcolaborador";
+
+        // AssociateColab
+        public const string FindUserAssociateColab = "Colaborador já vinculado ao organizador de Evento";
     }
 }

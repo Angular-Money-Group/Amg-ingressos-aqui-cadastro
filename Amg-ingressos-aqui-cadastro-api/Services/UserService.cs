@@ -200,25 +200,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 User user = userSave.makeUserSave();
 
-                if (!await IsDocumentIdAvailable(user.DocumentId))
+                if (user.Type != TypeUserEnum.Collaborator && !await IsDocumentIdAvailable(user.DocumentId))
                     throw new DocumentIdAlreadyExists("Documento de Identificação já cadastrado.");
 
                 if (user.Type != TypeUserEnum.Collaborator && !await IsEmailAvailable(user.Contact.Email))
                 {
                     throw new EmailAlreadyExists("Email Indisponível.");
                 }
-                //Se o colaborador ja tiver cadastro (o email ja tiver cadastrado), apenas será retornado os dados do usuario
-                else if (user.Type == TypeUserEnum.Collaborator)
-                {
-                    user = await _userRepository.FindByField<User>("Contact.Email", user.Contact.Email);
-                    if (user != null)
-                    {
-                        _messageReturn.Data = user;
-                        _logger.LogInformation("Finished", _messageReturn.Data);
-                        return _messageReturn;
-                    }
-                }
-              
+
                 var key = "b14ca5898a4e4133bbce2ea2315a2023";
                 user.Password = AesOperation.EncryptString(key, user.Password);
 
@@ -382,19 +371,19 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 if (!await DoesIdExists(userDb))
                     throw new UserNotFound("Id de usuário não encontrado.");
-                if(userUpdated.Password != null){
+                if (userUpdated.Password != null) {
                     var key = "b14ca5898a4e4133bbce2ea2315a2023";
                     user.Password = AesOperation.EncryptString(key, user.Password);
-                }else{
+                } else {
                     user.Password = userDb.Password;
                 }
-                if(userUpdated.Address == null){
+                if (userUpdated.Address == null) {
                     user.Address = userDb.Address;
                 }
-                if(userUpdated.Contact == null){
+                if (userUpdated.Contact == null) {
                     user.Contact = userDb.Contact;
                 }
-                if(userUpdated.UserConfirmation == null){
+                if (userUpdated.UserConfirmation == null) {
                     user.UserConfirmation = userDb.UserConfirmation;
                 }
 
@@ -569,6 +558,45 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 throw ex;
             }
             _logger.LogInformation("Finished", _messageReturn.Data);
+            return _messageReturn;
+        }
+        public async Task<MessageReturn> FindByDocumentIdAndEmailAsync(System.Enum TEnum, string documentId, string email)
+        {
+            this._messageReturn = new MessageReturn();
+            try
+            {
+                UserDTO.ValidateEmailFormat(email);
+
+                //validate user type
+                User user = await _userRepository.FindByField<User>("Contact.Email", email);
+                UserDTO userDTO = new UserDTO(TEnum, user);
+                _messageReturn.Data = userDTO;
+            }
+            catch (InvalidUserTypeException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (EmptyFieldsException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (InvalidFormatException ex)
+            {
+                _messageReturn.Data = null;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (UserNotFound ex)
+            {
+                _messageReturn.Data = string.Empty;
+                _messageReturn.Message = ex.Message;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
             return _messageReturn;
         }
     }
