@@ -285,5 +285,22 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 throw ex;
             }
         }
+
+        public async Task<User> FindByGenericField<T>(string fieldName, object value)
+        {
+            try
+            {
+                var filter = Builders<User>.Filter.Eq(fieldName, value);
+                var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
+                if (user is not null)
+                    return user;
+                else
+                    return null;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+        }
     }
 }
