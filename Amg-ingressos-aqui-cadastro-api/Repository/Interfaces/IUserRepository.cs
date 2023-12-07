@@ -12,5 +12,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
         Task<object> UpdatePasswordUser<T>(string id, string password);
         Task<object> Delete<T>(object id);
         Task<List<User>> Get<T>(FiltersUser filters);
+        Task<User> FindByGenericField<T>(string fieldName, object value);
     }
 }

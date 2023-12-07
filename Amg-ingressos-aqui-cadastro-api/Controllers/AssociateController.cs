@@ -63,7 +63,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                     else if(userData == null)
                     {
                         //Consulta se user do documentId, é colaborador e se já esta vinculado ao organizador do evento
-                        User userLocal = await _userRepository.FindByField<User>("DocumentId", user.DocumentId);
+                        User userLocal = await _userRepository.FindByGenericField<User>("DocumentId", user.DocumentId);
                         if (userLocal != null && userLocal.Type == TypeUserEnum.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userLocal.Id))
                         {
                             return BadRequest(MessageLogErrors.FindUserAssociateColab);
