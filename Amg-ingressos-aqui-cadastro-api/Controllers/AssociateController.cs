@@ -54,8 +54,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 //Se o Id do user, estiver vazio, consulta se email ou documentId (cpf) já existe para o tipo colaborador
                 if (string.IsNullOrEmpty(user.Id))
                 {
+                    //TypeUserEnum.Collaborator
                     //Consulta se user do email, é colaborador e se já esta vinculado ao organizador do evento
-                    var userData = (UserDTO)_userService.FindByEmailAsync(TypeUserEnum.Collaborator, user.Contact.Email).Result.Data;
+                    User userData = await _userRepository.FindByGenericField<User>("Contact.Email", user.Contact.Email);
                     if (userData != null && userData.Type == TypeUserEnum.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userData.Id))
                     {
                         return BadRequest(MessageLogErrors.FindUserAssociateColab);
