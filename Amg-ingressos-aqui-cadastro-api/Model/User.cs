@@ -4,10 +4,13 @@ using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
-namespace Amg_ingressos_aqui_cadastro_api.Model {
-    public class User 
+namespace Amg_ingressos_aqui_cadastro_api.Model
+{
+    [BsonIgnoreExtraElements]
+    public class User
     {
-        public User() {
+        public User()
+        {
             this.Id = null;
             this.Name = null;
             this.DocumentId = null;
@@ -19,8 +22,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
             this.Password = null;
             this.IdAssociate = null;
         }
-        
-        public User(User user) {
+
+        public User(User user)
+        {
             this.Id = user.Id;
             this.Name = user.Name;
             this.DocumentId = user.DocumentId;
@@ -31,9 +35,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
             this.UserConfirmation = user.UserConfirmation;
             this.Password = user.Password;
         }
-        
+
         public User(string? id, string? name, string? documentId, TypeStatusEnum? status, TypeUserEnum? type, Address? address,
-                    Contact? contact, UserConfirmation? userConfirmation, string? password) {
+                    Contact? contact, UserConfirmation? userConfirmation, string? password)
+        {
             this.Id = id;
             this.Name = name;
             this.DocumentId = documentId;
@@ -128,5 +133,17 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         [BsonElement("UpdateAt")]
         [JsonPropertyName("UpdateAt")]
         public DateTime? UpdateAt { get; set; }
+
+        /// <summary>
+        /// Atualização do usuário
+        /// </summary>
+        [JsonPropertyName("sex")]
+        public string Sex { get; set; }
+
+        /// <summary>
+        /// Atualização do usuário
+        /// </summary>
+        [JsonPropertyName("birthDate")]
+        public string BirthDate { get; set; }
     }
 }
