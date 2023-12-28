@@ -206,5 +206,44 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
             return _messageReturn;
         }
+
+        public async Task<MessageReturn> GetCollaboratorByEvent(string idEvent)
+        {
+            try
+            {
+                idEvent.ValidateIdMongo();
+                var listUser =
+                    (List<UserDTO>)
+                        _userService
+                            .GetAsync(new FiltersUser() { Type = Enum.TypeUserEnum.Collaborator })
+                            .Result.Data;
+                    //lista associada ao evento
+                var listAssociate =
+                    (IEnumerable<AssociateCollaboratorEvent>)
+                        _associateColabEventRepository
+                            .FindAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent)
+                            .Result;
+
+                var result =
+                    from associate in listAssociate
+                    join users in listUser on associate.IdUserCollaborator equals users.Id
+                    select new GetCollaboratorProducerDto
+                    {
+                        Email = users.Contact.Email,
+                        DocumentId = users.DocumentId,
+                        Name = users.Name,
+                        Id = users.Id,
+                        IdAssociate = associate.Id
+                    };
+
+                _messageReturn.Data = result;
+            }
+            catch (Exception ex)
+            {
+                throw ex;
+            }
+
+            return _messageReturn;
+        }
     }
 }

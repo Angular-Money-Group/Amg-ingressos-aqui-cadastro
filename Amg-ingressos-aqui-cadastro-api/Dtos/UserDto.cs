@@ -38,14 +38,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             this.IdAssociate = userDTO.IdAssociate;
         }
 
-        public UserDTO(System.Enum TEnum, User user)
-        : base(user)
+        public UserDTO(System.Enum TEnum, User user) : base(user)
         {
             ValidateUserType(TEnum, user.Type);
         }
 
-        public UserDTO(User user)
-        : base(user)
+        public UserDTO(User user) : base(user)
         {
         }
 
