@@ -8,5 +8,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
         Task<MessageReturn> GetAllCollaboratorOfOrganizerAsync(string idUserOrganizer);
         Task<MessageReturn> GetAllCollaboratorOfEventAssignedAsync(string idEvent, string idUserOrganizer);
         Task<MessageReturn> SendEmailCollaborator(string idEvent);
+        Task<MessageReturn> GetCollaboratorByEvent(string idEvent);
     }
 }

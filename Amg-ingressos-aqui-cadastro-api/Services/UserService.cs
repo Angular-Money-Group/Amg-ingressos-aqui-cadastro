@@ -371,19 +371,25 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 if (!await DoesIdExists(userDb))
                     throw new UserNotFound("Id de usuário não encontrado.");
-                if (userUpdated.Password != null) {
+                if (userUpdated.Password != null)
+                {
                     var key = "b14ca5898a4e4133bbce2ea2315a2023";
                     user.Password = AesOperation.EncryptString(key, user.Password);
-                } else {
+                }
+                else
+                {
                     user.Password = userDb.Password;
                 }
-                if (userUpdated.Address == null) {
+                if (userUpdated.Address == null)
+                {
                     user.Address = userDb.Address;
                 }
-                if (userUpdated.Contact == null) {
+                if (userUpdated.Contact == null)
+                {
                     user.Contact = userDb.Contact;
                 }
-                if (userUpdated.UserConfirmation == null) {
+                if (userUpdated.UserConfirmation == null)
+                {
                     user.UserConfirmation = userDb.UserConfirmation;
                 }
 
