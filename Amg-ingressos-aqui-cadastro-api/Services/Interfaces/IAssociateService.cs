@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Amg_ingressos_aqui_cadastro_api.Model;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
@@ -14,6 +10,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
         Task<MessageReturn> AssociateManyColabWithEventAsync(List<AssociateCollaboratorEvent> collaboratorEvent);
         Task<MessageReturn> DeleteAssociateColabOrganizerAsync(string idAssociate);
         Task<MessageReturn> DeleteAssociateColabEventAsync(string idAssociate);
-
+        Task<MessageReturn> AssociateUserApiDataToEventAsync(string idEvent, string idUser);
+        Task<MessageReturn> GetUserApiDataToEventAsync(string idEvent);
     }
 }

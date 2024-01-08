@@ -4,6 +4,7 @@
         Admin = 0, 
         Customer = 1,
         Organizer = 2,
-        Collaborator = 3
+        Collaborator = 3,
+        ApiData = 4
     }
 }

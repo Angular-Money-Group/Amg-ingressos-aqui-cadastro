@@ -38,6 +38,7 @@ builder.Services.AddScoped<ISupportRepository, SupportRepository>();
 builder.Services.AddScoped<ISequenceRepository, SequenceRepository>();
 builder.Services.AddScoped<IAssociateColabOrganizerRepository, AssociateColabOrganizerRepository>();
 builder.Services.AddScoped<IAssociateColabEventRepository, AssociateColabEventRepository>();
+builder.Services.AddScoped<IAssociateUserApiDataEventRepository, AssociateUserApiDataEventRepository>();
 
 
 //infra
@@ -50,6 +51,7 @@ builder.Services.AddScoped<IDbConnection<Sequence>, DbConnection<Sequence>>();
 builder.Services.AddScoped<IDbConnection<Email>, DbConnection<Email>>();
 builder.Services.AddScoped<IDbConnection<AssociateCollaboratorOrganizer>, DbConnection<AssociateCollaboratorOrganizer>>();
 builder.Services.AddScoped<IDbConnection<AssociateCollaboratorEvent>, DbConnection<AssociateCollaboratorEvent>>();
+builder.Services.AddScoped<IDbConnection<AssociateUserApiDataEvent>, DbConnection<AssociateUserApiDataEvent>>();
 
 builder.Services.AddCors(options =>
 {
