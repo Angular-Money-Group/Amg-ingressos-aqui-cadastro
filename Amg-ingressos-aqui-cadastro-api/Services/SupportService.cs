@@ -141,17 +141,18 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         private async Task ProcessEmail(TicketSupport support, User user)
         {
-            var email = new Email
+            var email = new EmailTicketSupportDto
             {
-                Body = _emailService.GenerateBodySupport(support, user),
+                UserPhone= user.Contact.PhoneNumber,
+                UserName = user.Name,
+                UserEmail = user.Contact.Email,
+                Message = support.Message,
                 Subject = support.Subject,
                 Sender = "suporte@ingressosaqui.com",
                 To = "augustopires@angularmoneygroup.com.br",
-                DataCadastro = DateTime.Now
             };
 
             await _emailService.SaveAsync(email);
-            _emailService.Send(email.id);
         }
     }
 }
