@@ -215,13 +215,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 if (user.Type != TypeUserEnum.Collaborator)
                 {
-                    var email = new Email
+
+                    var email = new EmailVerifyAccountDto
                     {
-                        Body = _emailService.GenerateBody(randomNumber),
+                        CodeValidation = randomNumber,
                         Subject = "Confirmação de Conta",
                         Sender = "suporte@ingressosaqui.com",
                         To = user.Contact.Email,
-                        DataCadastro = DateTime.Now
                     };
 
                     user.UserConfirmation = new UserConfirmation()
@@ -231,7 +231,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     };
 
                     _emailService.SaveAsync(email);
-                    _emailService.Send(email.id);
                 }
 
                 var id = await _userRepository.Save<User>(user) as string;
@@ -529,13 +528,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 int randomNumber = new Random().Next(100000, 999999);
 
-                var email = new Email
+                var email = new EmailVerifyAccountDto
                 {
-                    Body = _emailService.GenerateBody(randomNumber),
+                    CodeValidation = randomNumber,
                     Subject = "Confirmação de Conta",
                     Sender = "suporte@ingressosaqui.com",
                     To = user.Contact.Email,
-                    DataCadastro = DateTime.Now
                 };
 
                 user.UserConfirmation = new UserConfirmation()
@@ -547,7 +545,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var id = await _userRepository.UpdateUser<User>(idUser, user);
 
                 _emailService.SaveAsync(email);
-                _emailService.Send(email.id);
 
                 UserDTO userDTO = new UserDTO(user);
 

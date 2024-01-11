@@ -174,16 +174,16 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var listEmail =
                     from usersEvent in listUserEvent
                     join user in listUser.Values on usersEvent.IdUserCollaborator equals user.Id
-                    select new Email
+                    select new EmailLoginCollaboratorCredentialDto
                     {
-                        Body = _emailService.GenerateBodyLoginColab(
-                            user,
-                            eventDetails.FirstOrDefault()
-                        ),
                         Subject = "Credenciais de Acesso ao Evento",
                         Sender = "suporte@ingressosaqui.com",
                         To = user.Contact.Email,
-                        DataCadastro = DateTime.Now
+                        EventDate = eventDetails.FirstOrDefault().StartDate.ToString(),
+                        EventName = eventDetails.FirstOrDefault().Name,
+                        LinkQrCode = "https://qrcode.ingressosaqui.com/auth?idEvento=" + eventDetails.FirstOrDefault()._Id,
+                        Password = user.Password,
+                        UserName = user.Name
                     };
                 if(listEmail.Any())
                     _messageReturn.Data = await _emailService.ProcessEmail(listEmail.ToList());
