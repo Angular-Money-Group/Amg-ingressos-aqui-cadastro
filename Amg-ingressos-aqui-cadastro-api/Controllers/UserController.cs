@@ -118,7 +118,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 var result = await _userService.FindByIdAsync(id);
                 if (result.hasRunnedSuccessfully())
                 {
-                    return Ok(result.Data as UserDTO);
+                    return Ok(result.Data);
                 }
                 else
                     throw new UserNotFound(result.Message);
