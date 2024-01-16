@@ -35,7 +35,7 @@ namespace Prime.UnitTests.Controllers
             this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object,_loggerMockUserService.Object);
             this._userController = new UserController(_loggerMock.Object, this._userService);
             this.userComplet = FactoryUser.SimpleUser();
-            this.userDTO = new UserDTO(this.userComplet);
+            this.userDTO = new UserDTO();
         }
 
 
