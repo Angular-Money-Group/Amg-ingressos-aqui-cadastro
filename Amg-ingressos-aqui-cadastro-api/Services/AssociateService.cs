@@ -1,4 +1,5 @@
 using Amg_ingressos_aqui_cadastro_api.Dtos;
+using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
@@ -45,10 +46,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-
-
-
-
                 _messageReturn.Data = await _associateColabOrganizerRepository
                 .AssociateColabAsync(new AssociateCollaboratorOrganizer()
                 {
@@ -134,8 +131,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var user = (UserDTO)_userService.FindByIdAsync(idUser).Result.Data;
                 if(user == null)
                     throw new Exception("Usário não cadastrado."); 
-                
-                if (user.Type != Enum.TypeUserEnum.ApiData)
+                TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),user.Type,true);
+                if (type != Enum.TypeUserEnum.ApiData)
                     throw new Exception("Usário não está no perfil de ApiData."); 
                 
 
