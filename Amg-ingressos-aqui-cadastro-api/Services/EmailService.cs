@@ -31,7 +31,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var uri = Settings.UriEmailVerifyAccount;
 
                 _logger.LogInformation(string.Format("Call PostAsync - Send: {0}",this.GetType().Name));
-                _HttpClient.PostAsync(url + uri, jsonBody).Wait();
+                var result = _HttpClient.PostAsync(url + uri, jsonBody);
+                if(result.Result.IsSuccessStatusCode)
+                {
+                    var response = result.Result.Content.ReadAsStringAsync();
+                    _messageReturn.Message = response.Result;
+                }
 
                 _logger.LogInformation(string.Format("Finished - Save: {0}",this.GetType().Name));
                 return _messageReturn;
