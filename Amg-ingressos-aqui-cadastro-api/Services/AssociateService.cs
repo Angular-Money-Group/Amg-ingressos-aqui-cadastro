@@ -37,10 +37,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-                
-
-
-
                 _messageReturn.Data = await _associateColabOrganizerRepository
                 .AssociateColabAsync(new AssociateCollaboratorOrganizer()
                 {
@@ -92,7 +88,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var result = await _associateColabOrganizerRepository
                                          .DeleteAssociateColabAsync(idAssociate);
 
-                 _messageReturn.Data = result;
+                _messageReturn.Data = result;
             }
             catch (Exception ex)
             {
