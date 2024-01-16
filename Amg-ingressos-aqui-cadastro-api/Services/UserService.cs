@@ -33,12 +33,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 var result = await _userRepository.Get<User>(filters);
 
-                List<UserDTO> list = new List<UserDTO>();
+                List<User> list = new List<User>();
                 var key = "b14ca5898a4e4133bbce2ea2315a2023";
                 foreach (User user in result)
                 {
                     user.Password = AesOperation.DecryptString(key, user.Password);
-                    list.Add(new UserDTO(user));
+                    list.Add(user);
                 }
                 _messageReturn.Data = list;
             }
@@ -63,8 +63,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 //validate user type
                 User user = await _userRepository.FindByField<User>("Id", idUser);
-                UserDTO userDTO = new UserDTO(user);
-                _messageReturn.Data = userDTO;
+                _messageReturn.Data = user;
             }
             catch (InvalidUserTypeException ex)
             {
@@ -98,8 +97,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 //validate user type
                 User user = await _userRepository.FindByField<User>("DocumentId", documentId);
-                UserDTO userDTO = new UserDTO(TEnum, user);
-                _messageReturn.Data = userDTO;
+                _messageReturn.Data = user;
             }
             catch (InvalidUserTypeException ex)
             {
@@ -133,8 +131,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 //validate user type
                 User user = await _userRepository.FindByField<User>("Contact.Email", email);
-                UserDTO userDTO = new UserDTO(TEnum, user);
-                _messageReturn.Data = userDTO;
+                _messageReturn.Data = user;
             }
             catch (InvalidUserTypeException ex)
             {
@@ -546,9 +543,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 _emailService.SaveAsync(email);
 
-                UserDTO userDTO = new UserDTO(user);
-
-                _messageReturn.Data = userDTO;
+                _messageReturn.Data = user;
             }
             catch (UserVerifiedException ex)
             {
@@ -572,8 +567,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 //validate user type
                 User user = await _userRepository.FindByField<User>("Contact.Email", email);
-                UserDTO userDTO = new UserDTO(TEnum, user);
-                _messageReturn.Data = userDTO;
+                _messageReturn.Data = user;
             }
             catch (InvalidUserTypeException ex)
             {

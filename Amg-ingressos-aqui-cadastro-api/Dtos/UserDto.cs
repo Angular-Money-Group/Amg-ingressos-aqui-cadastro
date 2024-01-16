@@ -1,13 +1,96 @@
 
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Utils;
-using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Model;
+using System.Text.Json.Serialization;
+using Amg_ingressos_aqui_cadastro_api.Enum;
 
 namespace Amg_ingressos_aqui_cadastro_api.Dtos
 {
-    public class UserDTO : User
+    public class UserDTO
     {
+        /// <summary>
+        /// Id do usuário
+        /// </summary>
+        public string? Id { get; set; }
+        /// <summary>
+        /// name
+        /// </summary>
+        [JsonPropertyName("name")]
+        public string? Name { get; set; }
+
+        /// <sumary>
+        /// Documento identificação
+        /// </sumary>
+        [JsonPropertyName("documentId")]
+        public string? DocumentId { get; set; }
+
+        /// <sumary>
+        /// Status
+        /// </sumary>
+        [JsonPropertyName("status")]
+        public TypeStatusEnum? Status { get; set; }
+
+        /// <summary>
+        /// Tipo do usuário
+        /// </summary>
+        [JsonPropertyName("type")]
+        public string Type { get; set; }
+
+        /// <summary>
+        /// Endereço do usuário
+        /// </summary>
+        [JsonPropertyName("address")]
+        public Address? Address { get; set; }
+
+        /// <summary>
+        /// Contato do usuário
+        /// </summary>
+        [JsonPropertyName("contact")]
+        public Contact? Contact { get; set; }
+
+        /// <summary>
+        /// Confirmação do usuário
+        /// </summary>
+        [JsonPropertyName("userConfirmation")]
+        public UserConfirmation? UserConfirmation { get; set; }
+
+        /// <summary>
+        /// Senha de acesso
+        /// </summary>
+        [JsonPropertyName("password")]
+        public string? Password { get; set; }
+
+        /// <summary>
+        /// Senha de acesso
+        /// </summary>
+        [JsonPropertyName("idAssociate")]
+        public string? IdAssociate { get; set; }
+
+        /// <summary>
+        /// Senha de acesso
+        /// </summary>
+        [JsonPropertyName("updatedAt")]
+        public DateTime? updatedAt { get; set; }
+
+        /// <summary>
+        /// Atualização do usuário
+        /// </summary>
+        [JsonPropertyName("UpdateAt")]
+        public DateTime? UpdateAt { get; set; }
+
+        /// <summary>
+        /// Atualização do usuário
+        /// </summary>
+        [JsonPropertyName("sex")]
+        public string Sex { get; set; }
+
+        /// <summary>
+        /// Atualização do usuário
+        /// </summary>
+        [JsonPropertyName("birthDate")]
+        public string BirthDate { get; set; }
+
         // CONSTRUCTORS
         public UserDTO()
         {
@@ -25,7 +108,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
 
         public UserDTO(System.Enum TEnum, UserDTO userDTO)
         {
-            ValidateUserType(TEnum, userDTO.Type);
+            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),userDTO.Type,true);
+            ValidateUserType(TEnum, type);
             this.Id = userDTO.Id;
             this.Name = userDTO.Name;
             this.DocumentId = userDTO.DocumentId;
@@ -38,19 +122,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             this.IdAssociate = userDTO.IdAssociate;
         }
 
-        public UserDTO(System.Enum TEnum, User user) : base(user)
-        {
-            ValidateUserType(TEnum, user.Type);
-        }
-
-        public UserDTO(User user) : base(user)
-        {
-        }
-
         // USER FACTORY FUNCTIONS
         public User makeUser()
         {
-            return new User(this.Id, this.Name, this.DocumentId, this.Status, this.Type, this.Address,
+            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),this.Type,true);
+            return new User(this.Id, this.Name, this.DocumentId, this.Status, type , this.Address,
                     this.Contact, this.UserConfirmation, this.Password);
         }
 
@@ -62,7 +138,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             this.Status = TypeStatusEnum.Active;
 
             this.ValidateBasicUserFormat();
-            switch (this.Type)
+            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),this.Type,true);
+            switch (type)
             {
                 case TypeUserEnum.Admin:
                     this.ValidateAdminFormat();
@@ -83,8 +160,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             //this.ValidateStatusFormat();
 
             this.ValidateBasicUserUpdateFormat();
-            
-            switch (this.Type)
+            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),this.Type,true);
+            switch (type)
             {
                 case TypeUserEnum.Admin:
                     this.ValidateAdminFormat();
@@ -118,17 +195,20 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         }
         public void ValidateAdminFormat()
         {
-            ValidateUserType(TypeUserEnum.Admin, Type);
+            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),this.Type,true);
+            ValidateUserType(TypeUserEnum.Admin, type);
             this.ValidateDocumentIdFormat();
         }
         public void ValidateCustomerFormat()
         {
-            ValidateUserType(TypeUserEnum.Customer, this.Type);
+            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),this.Type,true);
+            ValidateUserType(TypeUserEnum.Customer, type);
             this.ValidateCpfFormat();
         }
         public void ValidateProducerFormat()
         {
-            ValidateUserType(TypeUserEnum.Organizer, this.Type);
+            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),this.Type,true);
+            ValidateUserType(TypeUserEnum.Organizer, type);
             this.ValidateCnpjFormat();
         }
 
