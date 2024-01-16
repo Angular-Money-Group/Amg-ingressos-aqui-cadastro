@@ -322,5 +322,75 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 return StatusCode(500, MessageLogErrors.saveUserMessage);
             }
         }
+
+        /// <summary>
+        /// Grava usuario
+        /// </summary>
+        /// <param name="idAssociate">id de associação entre colaborador e evento</param>
+        /// <returns>200 usuario criado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpPost]
+        [Route("userApiData/event")]
+        public async Task<IActionResult> AssociateUserApiDataToEventAsync([FromBody]  UserApiDataEventDto data)
+        {
+            try
+            {
+                MessageReturn result = await _associateService.AssociateUserApiDataToEventAsync(data.IdEvent,data.IdUser);
+                if (result.hasRunnedSuccessfully())
+                    return Ok(result.Data);
+                else
+                    throw new SaveUserException(result.Message);
+            }
+            catch (EmailAlreadyExists ex)
+            {
+                throw ex;
+            }
+            catch (SaveUserException ex)
+            {
+                _logger.LogInformation(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
+                return StatusCode(500, MessageLogErrors.saveUserMessage);
+            }
+        }
+
+        /// <summary>
+        /// Grava usuario
+        /// </summary>
+        /// <param name="idAssociate">id de associação entre colaborador e evento</param>
+        /// <returns>200 usuario criado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpGet]
+        [Route("userApiData/event/{idEvent}")]
+        public async Task<IActionResult> GetUserApiDataToEventAsync([FromRoute] string idEvent)
+        {
+            try
+            {
+                MessageReturn result = await _associateService.GetUserApiDataToEventAsync(idEvent);
+                if (result.hasRunnedSuccessfully())
+                    return Ok(result.Data);
+                else
+                    throw new SaveUserException(result.Message);
+            }
+            catch (EmailAlreadyExists ex)
+            {
+                throw ex;
+            }
+            catch (SaveUserException ex)
+            {
+                _logger.LogInformation(ex.Message);
+                return BadRequest(ex.Message);
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
+                return StatusCode(500, MessageLogErrors.saveUserMessage);
+            }
+        }
+
+
     }
 }
