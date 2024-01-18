@@ -38,7 +38,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 idOrganizer.ValidateIdMongo();
                 var listUser =
-                    (List<UserDTO>)
+                    (List<User>)
                         _userService
                             .GetAsync(new FiltersUser() { Type = Enum.TypeUserEnum.Collaborator })
                             .Result.Data;
@@ -92,7 +92,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 idUserOrganizer.ValidateIdMongo();
                 //list de usuarios collaborator
                 var listUser =
-                    (IEnumerable<UserDTO>)
+                    (IEnumerable<User>)
                         _userService
                             .GetAsync(new FiltersUser() { Type = Enum.TypeUserEnum.Collaborator })
                             .Result.Data;
