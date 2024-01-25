@@ -1,10 +1,5 @@
-using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using System.Text.RegularExpressions;
-using Amg_ingressos_aqui_cadastro_api.Model;
 
 namespace Amg_ingressos_aqui_cadastro_api.Utils
 {
@@ -22,16 +17,16 @@ namespace Amg_ingressos_aqui_cadastro_api.Utils
             try {
                 idUser.ValidateIdMongo();
             } catch (IdMongoException ex) {
-                throw new InvalidFormatException("Em IdUser: " + ex.Message);
+                throw new RuleException("Em IdUser: " + ex.Message);
             }
         }
         
         public static void ValidateDocumentIdFormat(this string documentId) {
             if (string.IsNullOrEmpty(documentId))
-                throw new EmptyFieldsException("Documento de Identificação é Obrigatório.");
+                throw new RuleException("Documento de Identificação é Obrigatório.");
             var DocumentIdLength = documentId.Length;
             if (!((DocumentIdLength == 11) || (DocumentIdLength == 13)))
-                throw new InvalidFormatException("Formato de CPF/CNPJ inválido.");
+                throw new RuleException("Formato de CPF/CNPJ inválido.");
         }
 
         public static bool ValidateTextFormat(this string str ) {
@@ -76,10 +71,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Utils
         
         public static void ValidateCpfFormat(this string cpf) {
             if(string.IsNullOrEmpty(cpf))
-                throw new EmptyFieldsException("Documento de CPF é Obrigatório.");
+                throw new RuleException("Documento de CPF é Obrigatório.");
             cpf = string.Join("", cpf.ToCharArray().Where(Char.IsDigit));
             if(cpf.Length != 11)
-                throw new EmptyFieldsException("Formato de Documento de CPF inválido.");
+                throw new RuleException("Formato de Documento de CPF inválido.");
         }
         
         public static bool IsNullOrEmpty(this object obj)
@@ -99,9 +94,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Utils
 
         public static void ValidateObjectEnumType(this System.Enum TEnum, System.Enum classObjectEnum) {
             if (classObjectEnum.IsNullOrEmpty())
-                throw new EmptyFieldsException();
+                throw new RuleException();
             if(!classObjectEnum.Equals(TEnum))
-                throw new InvalidUserTypeException();
+                throw new RuleException();
         }
     }
 }

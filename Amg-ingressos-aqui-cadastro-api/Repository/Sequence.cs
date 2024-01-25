@@ -1,11 +1,6 @@
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
-using Amg_ingressos_aqui_cadastro_api.Exceptions;
-using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Infra;
 using MongoDB.Driver;
-using Amg_ingressos_aqui_cadastro_api.Enum;
-using System;
-using MongoDB.Bson;
 
 namespace Amg_ingressos_aqui_cadastro_api.Repository
 {
@@ -15,7 +10,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
 
         public SequenceRepository(IDbConnection<Sequence> dbConnection)
         {
-            this._sequenceCollection = dbConnection.GetConnection("sequence");
+            _sequenceCollection = dbConnection.GetConnection("sequence");
         }
 
         public async Task<long> GetNextSequenceValue(string sequenceName)

@@ -1,7 +1,5 @@
 using Amg_ingressos_aqui_cadastro_api.Enum;
-using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
-using System.Text.Json.Serialization;
 
 namespace Amg_ingressos_aqui_cadastro_api.Model
 {

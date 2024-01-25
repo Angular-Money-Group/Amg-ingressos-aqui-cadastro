@@ -1,7 +1,5 @@
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Enum;
-using Newtonsoft.Json.Linq;
-using Amg_ingressos_aqui_cadastro_api.Dtos;
 
 namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
 {

@@ -4,8 +4,6 @@ using NUnit.Framework;
 using Moq;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Model;
-using Amg_ingressos_aqui_cadastro_api.Enum;
-using Amg_ingressos_aqui_cadastro_api.Infra;
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
@@ -16,11 +14,12 @@ namespace Prime.UnitTests.Services
     public class ReceiptAccountServiceTest
     {
         private UserService _userService;
-        private Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
-        private Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
-        private Mock<ILogger<UserService>> _loggerMockUserService = new Mock<ILogger<UserService>>();
+        private readonly Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
+        private readonly Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
+        private readonly Mock<ILogger<UserService>> _loggerMockUserService = new Mock<ILogger<UserService>>();
+        private readonly Mock<ILogger<ReceiptAccountService>> _loggerMockReceiptAccountService = new Mock<ILogger<ReceiptAccountService>>();
         private ReceiptAccountService _receiptAccountService;
-        private Mock<IReceiptAccountRepository> _receiptAccountRepositoryMock = new Mock<IReceiptAccountRepository>();
+        private readonly Mock<IReceiptAccountRepository> _receiptAccountRepositoryMock = new Mock<IReceiptAccountRepository>();
         private ReceiptAccount receiptAccountComplet;
         private ReceiptAccountDTO receiptAccountDTO;
 
@@ -31,7 +30,7 @@ namespace Prime.UnitTests.Services
         public void SetUp()
         {
             this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object,_loggerMockUserService.Object);
-            this._receiptAccountService = new ReceiptAccountService(_receiptAccountRepositoryMock.Object, _userService);
+            this._receiptAccountService = new ReceiptAccountService(_receiptAccountRepositoryMock.Object, _userService,_loggerMockReceiptAccountService.Object);
             this.receiptAccountComplet = FactoryReceiptAccount.SimpleReceiptAccount();
             this.receiptAccountDTO = new ReceiptAccountDTO(this.receiptAccountComplet);
                         this.listReceiptAccountComplet = FactoryReceiptAccount.ListSimpleReceiptAccount();
@@ -68,7 +67,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var expectedMessage = "Usuários não encontradas";
             _receiptAccountRepositoryMock.Setup(x => x.GetAllReceiptAccounts<object>())
-                .Throws(new GetAllReceiptAccountException(expectedMessage));
+                .Throws(new RuleException(expectedMessage));
 
             //Act
             var resultTask = _receiptAccountService.GetAllReceiptAccountsAsync();
@@ -153,7 +152,7 @@ namespace Prime.UnitTests.Services
             var idReceiptAccount = "6442dcb6523d52533aeb1ae4";
             var messageReturn = "Usuario nao encontrada por Id.";
             _receiptAccountRepositoryMock.Setup(x => x.FindByField<object>("Id", idReceiptAccount))
-                .Throws(new ReceiptAccountNotFound(messageReturn));
+                .Throws(new RuleException(messageReturn));
 
             //Act
             var result = _receiptAccountService.FindByIdAsync(idReceiptAccount);
@@ -307,7 +306,7 @@ namespace Prime.UnitTests.Services
             _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
                 .Returns(Task.FromResult(this.listReceiptAccountComplet));
             _receiptAccountRepositoryMock.Setup(x => x.Save<ReceiptAccount>(It.IsAny<ReceiptAccount>()))
-                .Throws(new SaveReceiptAccountException(expectedMessage));
+                .Throws(new RuleException(expectedMessage));
 
             // Act
             var result = _receiptAccountService.SaveAsync(receiptAccountDTO);
@@ -452,7 +451,7 @@ namespace Prime.UnitTests.Services
 
             //Act
             _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
-            .Throws(new ReceiptAccountNotFound(expectedMessage));
+            .Throws(new RuleException(expectedMessage));
             
             var result = _receiptAccountService.DeleteAsync(id, receiptAccountComplet.IdUser);
 
@@ -474,7 +473,7 @@ namespace Prime.UnitTests.Services
                 .Returns(Task.FromResult(this.listReceiptAccountComplet));
 
             _receiptAccountRepositoryMock.Setup(x => x.Delete<object>(id))
-            .Throws(new DeleteReceiptAccountException(expectedMessage));
+            .Throws(new EditException(expectedMessage));
             
             var result = _receiptAccountService.DeleteAsync(id, receiptAccountComplet.IdUser);
 

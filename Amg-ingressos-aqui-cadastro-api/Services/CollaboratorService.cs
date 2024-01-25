@@ -1,5 +1,5 @@
+using Amg_ingressos_aqui_cadastro_api.Consts;
 using Amg_ingressos_aqui_cadastro_api.Dtos;
-using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
@@ -9,19 +9,21 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 {
     public class CollaboratorService : ICollaboratorService
     {
-        private IAssociateColabOrganizerRepository _organizerRepository;
-        private IAssociateColabEventRepository _associateColabEventRepository;
-        private IEventRepository _eventRepository;
-        private IUserService _userService;
-        private IEmailService _emailService;
-        private MessageReturn? _messageReturn;
+        private readonly IAssociateColabOrganizerRepository _organizerRepository;
+        private readonly IAssociateColabEventRepository _associateColabEventRepository;
+        private readonly IEventRepository _eventRepository;
+        private readonly IUserService _userService;
+        private readonly IEmailService _emailService;
+        private readonly MessageReturn? _messageReturn;
+        private readonly ILogger<CollaboratorService> _logger;
 
         public CollaboratorService(
             IAssociateColabOrganizerRepository organizerRepository,
             IEventRepository eventRepository,
             IAssociateColabEventRepository associateColabEventRepository,
             IUserService userService,
-            IEmailService emailService
+            IEmailService emailService,
+            ILogger<CollaboratorService> logger
         )
         {
             _organizerRepository = organizerRepository;
@@ -29,6 +31,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             _eventRepository = eventRepository;
             _userService = userService;
             _emailService = emailService;
+            _logger = logger;
             _messageReturn = new MessageReturn();
         }
 
@@ -63,19 +66,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 _messageReturn.Data = result;
             }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (ProducerColabNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(GetAllCollaboratorOfOrganizerAsync), ex));
+                throw;
             }
 
             return _messageReturn;
@@ -133,19 +127,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     };
                 _messageReturn.Data = result;
             }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (ProducerColabNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(GetAllCollaboratorOfEventAssignedAsync), ex));
+                throw;
             }
 
             return _messageReturn;
@@ -185,23 +170,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         Password = user.Password,
                         UserName = user.Name
                     };
-                if(listEmail.Any())
+                if (listEmail.Any())
                     _messageReturn.Data = await _emailService.ProcessEmail(listEmail.ToList());
-                
-            }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (ProducerColabNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(SendEmailCollaborator), ex));
+                throw;
             }
 
             return _messageReturn;
@@ -217,7 +193,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         _userService
                             .GetAsync(new FiltersUser() { Type = Enum.TypeUserEnum.Collaborator })
                             .Result.Data;
-                    //lista associada ao evento
+                //lista associada ao evento
                 var listAssociate =
                     (IEnumerable<AssociateCollaboratorEvent>)
                         _associateColabEventRepository
@@ -240,7 +216,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(GetCollaboratorByEvent), ex));
+                throw;
             }
 
             return _messageReturn;

@@ -6,21 +6,21 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
     public class EventColab
     {
         public EventColab() {
-            this.Id = null;
-            this.IdEvent = null;
-            this.IdColab = null;
+            Id = null;
+            IdEvent = null;
+            IdColab = null;
         }
         
         public EventColab(EventColab EventColab) {
-            this.Id = EventColab.Id;
-            this.IdEvent = EventColab.IdEvent;
-            this.IdColab = EventColab.IdColab;
+            Id = EventColab.Id;
+            IdEvent = EventColab.IdEvent;
+            IdColab = EventColab.IdColab;
         }
         
         public EventColab(string? id, string? idEvent, string? idColab) {
-            this.Id = id;
-            this.IdEvent = idEvent;
-            this.IdColab = idColab;
+            Id = id;
+            IdEvent = idEvent;
+            IdColab = idColab;
         }
 
         /// <summary>

@@ -1,21 +1,21 @@
 using Amg_ingressos_aqui_cadastro_api.Dtos;
-using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Utils;
+using Amg_ingressos_aqui_cadastro_api.Consts;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
     public class SupportService : ISupportService
     {
-        private ISupportRepository _supportRepository;
-        private IUserRepository _userRepository;
-        private ISequenceRepository _sequenceRepository;
-        private IEmailService _emailService;
+        private readonly ISupportRepository _supportRepository;
+        private readonly IUserRepository _userRepository;
+        private readonly ISequenceRepository _sequenceRepository;
+        private readonly IEmailService _emailService;
         private MessageReturn? _messageReturn;
-        private ILogger<SupportService> _logger;
+        private readonly ILogger<SupportService> _logger;
 
         public SupportService(
             IUserRepository userRepository,
@@ -34,28 +34,24 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<MessageReturn> GetAllAsync()
         {
-            this._messageReturn = new MessageReturn();
+            _messageReturn = new MessageReturn();
             try
             {
                 var result = await _supportRepository.GetAll<List<TicketSupport>>();
 
                 _messageReturn.Data = result;
             }
-            catch (GetAllUserException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(GetAllAsync), ex));
+                throw;
             }
             return _messageReturn;
         }
 
         public async Task<MessageReturn> FindByIdAsync(string id)
         {
-            this._messageReturn = new MessageReturn();
+            _messageReturn = new MessageReturn();
             try
             {
                 id.ValidateIdMongo();
@@ -64,14 +60,15 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             catch (Exception ex)
             {
-                _messageReturn.Message = ex.Message;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByIdAsync), ex));
+                throw;
             }
             return _messageReturn;
         }
 
         public async Task<MessageReturn> SaveAsync(SupportDTO supportSave)
         {
-            this._messageReturn = new MessageReturn();
+            _messageReturn = new MessageReturn();
             try
             {
                 var support = new TicketSupport()
@@ -94,14 +91,15 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             catch (Exception ex)
             {
-                _messageReturn.Message = ex.Message;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(SaveAsync), ex));
+                throw;
             }
             return _messageReturn;
         }
 
         public async Task<MessageReturn> UpdateByIdAsync(string id, SupportDTO ticketSupport)
         {
-            this._messageReturn = new MessageReturn();
+            _messageReturn = new MessageReturn();
 
             try
             {
@@ -116,7 +114,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             catch (Exception ex)
             {
-                _messageReturn.Message = ex.Message;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(UpdateByIdAsync), ex));
+                throw;
             }
 
             return _messageReturn;
@@ -124,7 +123,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<MessageReturn> DeleteAsync(string id)
         {
-            this._messageReturn = new MessageReturn();
+            _messageReturn = new MessageReturn();
             try
             {
                 id.ValidateIdMongo();
@@ -133,9 +132,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             catch (Exception ex)
             {
-                _messageReturn.Message = ex.Message;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(DeleteAsync), ex));
+                throw;
             }
-
             return _messageReturn;
         }
 
@@ -143,7 +142,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             var email = new EmailTicketSupportDto
             {
-                UserPhone= user.Contact.PhoneNumber,
+                UserPhone = user.Contact.PhoneNumber,
                 UserName = user.Name,
                 UserEmail = user.Contact.Email,
                 Message = support.Message,

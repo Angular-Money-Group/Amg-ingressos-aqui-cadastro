@@ -4,15 +4,13 @@ using NUnit.Framework;
 using Moq;
 using Amg_ingressos_aqui_cadastro_api.Controllers;
 using Amg_ingressos_aqui_cadastro_api.Model;
-using Amg_ingressos_aqui_cadastro_api.Enum;
-using Amg_ingressos_aqui_cadastro_api.Infra;
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
-using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Consts;
 using Microsoft.Extensions.Logging;
 using Microsoft.AspNetCore.Mvc;
+using Amg_ingressos_aqui_cadastro_api.Exceptions;
 
 
 namespace Prime.UnitTests.Controllers
@@ -21,10 +19,9 @@ namespace Prime.UnitTests.Controllers
     {
         private UserController _userController;
         private UserService _userService;
-        private Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
-        private Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
-        private Mock<ILogger<UserController>> _loggerMock = new Mock<ILogger<UserController>>();
-        private Mock<ILogger<UserService>> _loggerMockUserService = new Mock<ILogger<UserService>>();
+        private readonly Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
+        private readonly Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
+        private readonly Mock<ILogger<UserService>> _loggerMockUserService = new Mock<ILogger<UserService>>();
         private User userComplet;
         private UserDTO userDTO;
 
@@ -32,15 +29,15 @@ namespace Prime.UnitTests.Controllers
         [SetUp]
         public void SetUp()
         {
-            this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object,_loggerMockUserService.Object);
-            this._userController = new UserController(_loggerMock.Object, this._userService);
+            this._userService = new UserService(_userRepositoryMock.Object, _emailServiceMock.Object, _loggerMockUserService.Object);
+            this._userController = new UserController(this._userService);
             this.userComplet = FactoryUser.SimpleUser();
             this.userDTO = new UserDTO();
         }
 
 
-          /************/
-         /*   SAVE   */
+        /************/
+        /*   SAVE   */
         /************/
 
         [Test]
@@ -57,7 +54,7 @@ namespace Prime.UnitTests.Controllers
 
             // Act
             var result = (await _userController.SaveUserAsync(this.userDTO) as ObjectResult);
-            
+
             Assert.AreEqual(messageReturn, result?.Value);
             Assert.AreEqual(200, result?.StatusCode);
         }
@@ -101,7 +98,7 @@ namespace Prime.UnitTests.Controllers
         public async Task Given_user_When_SaveUserAsync_has_internal_error_Then_return_status_code_500_Async()
         {
             // Arrange
-            var expectedMessage = MessageLogErrors.saveUserMessage;
+            var expectedMessage = MessageLogErrors.Save;
 
             _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", userComplet.Contact.Email))
                 .Throws(new Exception("Erro ao conectar-se ao banco, qualque frase aqui cabe"));
@@ -115,8 +112,8 @@ namespace Prime.UnitTests.Controllers
         }
 
 
-          /**************/
-         /*   GET ALL  */
+        /**************/
+        /*   GET ALL  */
         /**************/
 
         [Test]
@@ -129,10 +126,11 @@ namespace Prime.UnitTests.Controllers
             //Act
             var result = await _userController.GetAsync(new FiltersUser()) as ObjectResult;
             var list = result.Value as IEnumerable<UserDTO>;
-            
+
             //Assert
             Assert.AreEqual(200, result?.StatusCode);
-            foreach (object user in list) {
+            foreach (object user in list)
+            {
                 Assert.IsInstanceOf<UserDTO>(user);
             }
         }
@@ -143,7 +141,7 @@ namespace Prime.UnitTests.Controllers
             //Arrange
             var expectedResult = new NoContentResult();
             _userRepositoryMock.Setup(x => x.Get<User>(new FiltersUser()))
-                .Throws(new GetAllUserException("Usuários não encontrados"));
+                .Throws(new RuleException("Usuários não encontrados"));
 
             //Act
             var result = await _userController.GetAsync(new FiltersUser());
@@ -157,7 +155,7 @@ namespace Prime.UnitTests.Controllers
         public async Task Given_Users_When_GetAsync_has_internal_error_Then_return_status_code_500_Async()
         {
             //Arrange
-            var expectedMessage = MessageLogErrors.GetAllUserMessage;
+            var expectedMessage = MessageLogErrors.Get;
             _userRepositoryMock.Setup(x => x.Get<User>(new FiltersUser()))
                 .Throws(new Exception("Erro ao conectar-se ao banco"));
 
@@ -170,8 +168,8 @@ namespace Prime.UnitTests.Controllers
         }
 
 
-          /*****************/
-         /*   GET BY ID   */
+        /*****************/
+        /*   GET BY ID   */
         /*****************/
 
         [Test]
@@ -232,7 +230,7 @@ namespace Prime.UnitTests.Controllers
             var idUser = "6442dcb6523d52533aeb1ae4";
             var expectedMessage = "Usuario nao encontrado por Id.";
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", idUser))
-                .Throws(new UserNotFound(expectedMessage));
+                .Throws(new RuleException(expectedMessage));
 
             //Act
             var result = await _userController.FindByIdAsync(idUser) as ObjectResult;
@@ -247,8 +245,8 @@ namespace Prime.UnitTests.Controllers
         {
             //Arrange
             var idUser = userComplet.Id;
-            
-            var expectedMessage = MessageLogErrors.FindByIdUserMessage;
+
+            var expectedMessage = MessageLogErrors.GetById;
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", idUser))
                 .Throws(new Exception("Erro ao se conectar com o banco"));
 
@@ -262,8 +260,8 @@ namespace Prime.UnitTests.Controllers
         }
 
 
-          /********************/
-         /*   UPDATE BY ID   */
+        /********************/
+        /*   UPDATE BY ID   */
         /********************/
 
         [Test]
@@ -292,7 +290,7 @@ namespace Prime.UnitTests.Controllers
 
 
         [Test]
-        public async Task Given_user_with_Empty_Field_When_UbpdateUserById_Then_return_EmptyFieldsException()
+        public async Task Given_user_with_Empty_Field_When_UbpdateUserById_Then_return_RuleException()
         {
             //Arrange
             var id = this.userDTO.Id;
@@ -305,7 +303,7 @@ namespace Prime.UnitTests.Controllers
             //Act
             _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
             .Returns(Task.FromResult(true));
-            
+
             var result = await _userController.UpdateAsync(id, userUpdated) as ObjectResult;
 
             //Assert
@@ -322,7 +320,7 @@ namespace Prime.UnitTests.Controllers
             User userUpdated = this.userComplet;
             userUpdated.DocumentId = "111.111.111-11";
 
-            var expectedMessage = MessageLogErrors.updateUserMessage;
+            var expectedMessage = MessageLogErrors.Edit;
 
             //Act
             _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
@@ -377,8 +375,8 @@ namespace Prime.UnitTests.Controllers
         }
 
 
-          /**************/
-         /*   DELETE   */
+        /**************/
+        /*   DELETE   */
         /**************/
 
         [Test]
@@ -395,7 +393,7 @@ namespace Prime.UnitTests.Controllers
 
             _userRepositoryMock.Setup(x => x.Delete<object>(id))
             .Returns(Task.FromResult(expectedMessage as object));
-            
+
             var result = await _userController.DeleteAsync(id) as ObjectResult;
 
             //Assert
@@ -408,7 +406,7 @@ namespace Prime.UnitTests.Controllers
         {
             //Arrange
             var id = "123";
-            
+
             var expectedMessage = "Id é obrigatório e está menor que 24 digitos.";
 
             //Act
@@ -418,7 +416,7 @@ namespace Prime.UnitTests.Controllers
             _userRepositoryMock.Setup(x => x.Delete<object>(id))
             .Returns(Task.FromResult(expectedMessage as object));
 
-            
+
             var result = await _userController.DeleteAsync(id) as ObjectResult;
 
             //Assert
@@ -431,7 +429,7 @@ namespace Prime.UnitTests.Controllers
         {
             //Arrange
             var id = string.Empty;
-            
+
             var expectedMessage = "Id é Obrigatório.";
 
             //Act
@@ -441,7 +439,7 @@ namespace Prime.UnitTests.Controllers
             _userRepositoryMock.Setup(x => x.Delete<object>(id))
             .Returns(Task.FromResult(expectedMessage as object));
 
-            
+
             var result = await _userController.DeleteAsync(id) as ObjectResult;
 
             //Assert
@@ -454,14 +452,14 @@ namespace Prime.UnitTests.Controllers
         {
             //Arrange
             var id = userComplet.Id;
-            
-            var expectedMessage = MessageLogErrors.deleteUserMessage;
+
+            var expectedMessage = MessageLogErrors.Delete;
 
             //Act
             _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
                 .Throws(new Exception(expectedMessage));
 
-            
+
             var result = await _userController.DeleteAsync(id) as ObjectResult;
 
             //Assert

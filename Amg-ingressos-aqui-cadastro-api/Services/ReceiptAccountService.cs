@@ -1,202 +1,157 @@
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
-using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Utils;
-using System;
-using System.Text.RegularExpressions;
+using Amg_ingressos_aqui_cadastro_api.Consts;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
     public class ReceiptAccountService : IReceiptAccountService
     {
-        private IReceiptAccountRepository _receiptAccountRepository;
-        private IUserService _userService;
+        private readonly IReceiptAccountRepository _receiptAccountRepository;
+        private readonly IUserService _userService;
         private MessageReturn? _messageReturn;
+        private readonly ILogger<ReceiptAccountService> _logger;
 
-        public ReceiptAccountService(IReceiptAccountRepository receiptAccountRepository, IUserService userService)
+        public ReceiptAccountService(IReceiptAccountRepository receiptAccountRepository,
+         IUserService userService,
+         ILogger<ReceiptAccountService> logger)
         {
-            this._receiptAccountRepository = receiptAccountRepository;
-            this._userService = userService;
+            _receiptAccountRepository = receiptAccountRepository;
+            _userService = userService;
+            _logger = logger;
         }
-        
+
         public async Task<MessageReturn> GetAllReceiptAccountsAsync()
         {
-            this._messageReturn = new MessageReturn();
+            _messageReturn = new MessageReturn();
             try
             {
                 var result = await _receiptAccountRepository.GetAllReceiptAccounts<ReceiptAccount>();
 
                 List<ReceiptAccountDTO> list = new List<ReceiptAccountDTO>();
-                foreach (ReceiptAccount receiptAccount in result) {
+                foreach (ReceiptAccount receiptAccount in result)
+                {
                     list.Add(new ReceiptAccountDTO(receiptAccount));
                 }
                 _messageReturn.Data = list;
             }
-            catch (GetAllReceiptAccountException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(GetAllReceiptAccountsAsync), ex));
+                throw;
             }
             return _messageReturn;
         }
-        
+
         public async Task<MessageReturn> FindByIdAsync(string idReceiptAccount)
         {
-            this._messageReturn = new MessageReturn();
+            _messageReturn = new MessageReturn();
             try
             {
                 idReceiptAccount.ValidateIdMongo();
                 var receiptAccountDTOList = new List<ReceiptAccountDTO>();
                 List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<List<ReceiptAccount>>("_id", idReceiptAccount);
 
-                for(var i = 0; i < receiptAccount.Count; i++){
+                for (var i = 0; i < receiptAccount.Count; i++)
+                {
                     receiptAccountDTOList.Add(new ReceiptAccountDTO(receiptAccount[i]));
                 }
                 _messageReturn.Data = receiptAccountDTOList.FirstOrDefault();
 
             }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (ReceiptAccountNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByIdAsync), ex));
+                throw;
             }
 
             return _messageReturn;
         }
-        
+
         public async Task<MessageReturn> FindByIdUserAsync(string idUser)
         {
-            this._messageReturn = new MessageReturn();
+            _messageReturn = new MessageReturn();
             try
             {
                 idUser.ValidateIdMongo();
                 var receiptAccountDTOList = new List<ReceiptAccountDTO>();
                 List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<List<ReceiptAccount>>("IdUser", idUser);
 
-                for(var i = 0; i < receiptAccount.Count; i++){
+                for (var i = 0; i < receiptAccount.Count; i++)
+                {
                     receiptAccountDTOList.Add(new ReceiptAccountDTO(receiptAccount[i]));
                 }
                 _messageReturn.Data = receiptAccountDTOList;
 
             }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (ReceiptAccountNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByIdUserAsync), ex));
+                throw;
             }
 
             return _messageReturn;
         }
-        public async Task<MessageReturn> SaveAsync(ReceiptAccountDTO receiptAccountSave) {
-            this._messageReturn = new MessageReturn();
+        public async Task<MessageReturn> SaveAsync(ReceiptAccountDTO receiptAccountSave)
+        {
+            _messageReturn = new MessageReturn();
             try
             {
                 ReceiptAccount receiptAccount = receiptAccountSave.makeReceiptAccountSave();
 
                 _messageReturn = await _userService.FindByIdAsync(receiptAccountSave.IdUser);
                 if (!_messageReturn.hasRunnedSuccessfully())
-                    throw new SavePaymentMethodException("O campo IdUser nao tem nenhum usuario correspondente.");   
-                
+                    throw new SaveException("O campo IdUser nao tem nenhum usuario correspondente.");
+
                 var id = await _receiptAccountRepository.Save<ReceiptAccount>(receiptAccount);
                 _messageReturn.Data = id;
             }
-            catch (UserNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (EmptyFieldsException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (InvalidFormatException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (SaveReceiptAccountException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(SaveAsync), ex));
+                throw;
             }
 
             return _messageReturn;
         }
 
-        public async Task<bool> DoesIdExists(string idReceiptAccount) {
-            this._messageReturn = new MessageReturn();
-            try {
+        public async Task<bool> DoesIdExists(string idReceiptAccount)
+        {
+            _messageReturn = new MessageReturn();
+            try
+            {
                 return await _receiptAccountRepository.DoesValueExistsOnField<ReceiptAccount>("Id", idReceiptAccount);
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(DoesIdExists), ex));
+                throw;
             }
         }
 
-        public async Task<MessageReturn> DeleteAsync(string id, string idUser) {
-            this._messageReturn = new MessageReturn();
+        public async Task<MessageReturn> DeleteAsync(string id, string idUser)
+        {
+            _messageReturn = new MessageReturn();
             try
             {
                 idUser.ValidateIdMongo();
-                
+
                 _messageReturn = await FindByIdAsync(id);
                 if (!_messageReturn.hasRunnedSuccessfully())
-                    throw new DeleteReceiptAccountException(_messageReturn.Message);
-                
+                    throw new EditException(_messageReturn.Message);
+
                 if ((_messageReturn.Data as ReceiptAccountDTO).IdUser != idUser)
-                    throw new DeleteReceiptAccountException("Id de conta bancaria nao corresponde ao id de usuario.");
+                    throw new EditException("Id de conta bancaria nao corresponde ao id de usuario.");
 
                 _messageReturn.Data = await _receiptAccountRepository.Delete<ReceiptAccount>(id) as string;
             }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (ReceiptAccountNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (DeleteReceiptAccountException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(DeleteAsync), ex));
+                throw;
             }
             return _messageReturn;
         }

@@ -1,4 +1,3 @@
-using Amg_ingressos_aqui_cadastro_api.Consts;
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
@@ -12,12 +11,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
     [Produces("application/json")]
     public class SupportController : ControllerBase
     {
-        private readonly ILogger<UserController> _logger;
         private readonly ISupportService _supportService;
 
-        public SupportController(ILogger<UserController> logger, ISupportService supportService)
+        public SupportController( ISupportService supportService)
         {
-            _logger = logger;
             _supportService = supportService;
         }
 
@@ -30,24 +27,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveAsync([FromBody] SupportDTO support)
         {
-            try
-            {
-                MessageReturn result = await _supportService.SaveAsync(support);
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new SaveUserException(result.Message);
-            }
-            catch (SaveUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.saveUserMessage);
-            }
+            MessageReturn result = await _supportService.SaveAsync(support);
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new SaveException(result.Message);
+
         }
 
         /// <summary>
@@ -60,25 +45,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> GetAll()
         {
-            try
-            {
-                var result = await _supportService.GetAllAsync();
+            var result = await _supportService.GetAllAsync();
 
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new GetAllUserException(result.Message);
-            }
-            catch (GetAllUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.GetAllUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.GetAllUserMessage);
-            }
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new GetException(result.Message);
         }
 
         /// <summary>
@@ -92,25 +64,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> FindById([FromRoute] string id)
         {
-            try
-            {
-                var result = await _supportService.FindByIdAsync(id);
+            var result = await _supportService.FindByIdAsync(id);
 
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new GetAllUserException(result.Message);
-            }
-            catch (GetAllUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.GetAllUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.GetAllUserMessage);
-            }
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new GetException(result.Message);
         }
 
         /// <summary>
@@ -122,27 +81,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpPut]
         [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateById([FromRoute] string id,[FromBody] SupportDTO support)
+        public async Task<IActionResult> UpdateById([FromRoute] string id, [FromBody] SupportDTO support)
         {
-            try
-            {
-                var result = await _supportService.UpdateByIdAsync(id, support);
+            var result = await _supportService.UpdateByIdAsync(id, support);
 
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new GetAllUserException(result.Message);
-            }
-            catch (GetAllUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.GetAllUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.GetAllUserMessage);
-            }
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new EditException(result.Message);
         }
 
         /// <summary>
@@ -156,25 +102,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> DeleteAsync([FromRoute] string id)
         {
-            try
-            {
-                var result = await _supportService.DeleteAsync(id);
 
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new GetAllUserException(result.Message);
-            }
-            catch (GetAllUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.GetAllUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.GetAllUserMessage);
-            }
+            var result = await _supportService.DeleteAsync(id);
+
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new DeleteException(result.Message);
         }
     }
 }

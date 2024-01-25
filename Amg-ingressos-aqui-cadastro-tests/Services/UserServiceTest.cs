@@ -7,17 +7,17 @@ using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
-using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Microsoft.Extensions.Logging;
+using Amg_ingressos_aqui_cadastro_api.Exceptions;
 
 namespace Prime.UnitTests.Services
 {
     public class UserServiceTest
     {
         private UserService _userService;
-        private Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
-        private Mock<ILogger<UserService>> _loggerMockUserService = new Mock<ILogger<UserService>>();
-        private Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
+        private readonly Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
+        private readonly Mock<ILogger<UserService>> _loggerMockUserService = new Mock<ILogger<UserService>>();
+        private readonly Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
         
         private User userComplet;
         private UserDTO userDTO;
@@ -61,7 +61,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var expectedMessage = "Usuários não encontrados";
             _userRepositoryMock.Setup(x => x.Get<object>(new FiltersUser()))
-                .Throws(new GetAllUserException(expectedMessage));
+                .Throws(new RuleException(expectedMessage));
 
             //Act
             var resultTask = _userService.GetAsync(new FiltersUser());
@@ -146,7 +146,7 @@ namespace Prime.UnitTests.Services
             var idUser = "6442dcb6523d52533aeb1ae4";
             var messageReturn = "Usuario nao encontrado por Id.";
             _userRepositoryMock.Setup(x => x.FindByField<object>("Id", idUser))
-                .Throws(new UserNotFound(messageReturn));
+                .Throws(new RuleException(messageReturn));
 
             //Act
             var result = _userService.FindByIdAsync(idUser);
@@ -234,7 +234,7 @@ namespace Prime.UnitTests.Services
             var email = this.userComplet.Contact.Email;
             var messageReturn = "Usuario nao encontrado por Email.";
             _userRepositoryMock.Setup(x => x.FindByField<object>("Contact.Email", email))
-                .Throws(new UserNotFound(messageReturn));
+                .Throws(new RuleException(messageReturn));
 
             //Act
             var result = _userService.FindByEmailAsync(TypeUserEnum.Admin, email);
@@ -610,7 +610,7 @@ namespace Prime.UnitTests.Services
             _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", userComplet.Contact.Email))
                 .Returns(Task.FromResult(false));
             _userRepositoryMock.Setup(x => x.Save<User>(It.IsAny<User>()))
-                .Throws(new SaveUserException(expectedMessage));
+                .Throws(new RuleException(expectedMessage));
 
             // Act
             var result = _userService.SaveAsync(userDTO);
@@ -1182,7 +1182,7 @@ namespace Prime.UnitTests.Services
 
             //Act
             _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
-                .Throws(new UpdateUserException(expectedMessage));
+                .Throws(new RuleException(expectedMessage));
 
             var result = _userService.UpdateByIdAsync(userUpdated);
 
@@ -1300,7 +1300,7 @@ namespace Prime.UnitTests.Services
             .Returns(Task.FromResult(true));
 
             _userRepositoryMock.Setup(x => x.Delete<object>(id))
-            .Throws(new DeleteUserException(expectedMessage));
+            .Throws(new DeleteException(expectedMessage));
             
             var result = _userService.DeleteAsync(id);
 

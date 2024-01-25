@@ -1,5 +1,3 @@
-using System.ComponentModel.DataAnnotations;
-using Amg_ingressos_aqui_cadastro_api.Enum;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 

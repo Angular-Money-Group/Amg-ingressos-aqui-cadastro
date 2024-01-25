@@ -6,7 +6,6 @@ using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using Newtonsoft.Json;
 
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
@@ -14,20 +13,17 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
     [Produces("application/json")]
     public class AssociateController : ControllerBase
     {
-        private readonly ILogger<AssociateController> _logger;
         private readonly IAssociateService _associateService;
         private readonly IUserService _userService;
         private readonly IAssociateColabOrganizerRepository _organizerRepository;
         private readonly IUserRepository _userRepository;
 
         public AssociateController(
-            ILogger<AssociateController> logger, 
-            IAssociateService associateService, 
-            IUserService userService, 
+            IAssociateService associateService,
+            IUserService userService,
             IUserRepository userRepository,
             IAssociateColabOrganizerRepository organizerRepository)
         {
-            _logger = logger;
             _associateService = associateService;
             _userService = userService;
             _userRepository = userRepository;
@@ -42,105 +38,73 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
         [Route("organizer/{idUserOrganizer}")]
-        public async Task<IActionResult> AssociateColabWithOrganizerAsync([FromRoute] string idUserOrganizer,[FromBody] UserDTO user)
+        public async Task<IActionResult> AssociateColabWithOrganizerAsync([FromRoute] string idUserOrganizer, [FromBody] UserDTO user)
         {
             var idUserCollaborator = string.Empty;
             User userSave = new User();
-            try
+
+            //Consulta todos os colaboradores vinculados ao Organizador do evento
+            var listAssociate = (List<AssociateCollaboratorOrganizer>)_organizerRepository.FindAllColabsOfProducer<AssociateCollaboratorOrganizer>(idUserOrganizer).Result;
+
+            //Se o Id do user, estiver vazio, consulta se email ou documentId (cpf) já existe para o tipo colaborador
+            if (string.IsNullOrEmpty(user.Id))
             {
-                //Consulta todos os colaboradores vinculados ao Organizador do evento
-                var listAssociate = (List<AssociateCollaboratorOrganizer>)_organizerRepository.FindAllColabsOfProducer<AssociateCollaboratorOrganizer>(idUserOrganizer).Result;
-
-                //Se o Id do user, estiver vazio, consulta se email ou documentId (cpf) já existe para o tipo colaborador
-                if (string.IsNullOrEmpty(user.Id))
+                //TypeUserEnum.Collaborator = 3
+                //Consulta se user do email, é colaborador e se já esta vinculado ao organizador do evento
+                User userData = await _userRepository.FindByGenericField<User>("Contact.Email", user.Contact.Email);
+                if (userData != null && userData.Type == TypeUserEnum.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userData.Id))
                 {
-                    //TypeUserEnum.Collaborator = 3
-                    //Consulta se user do email, é colaborador e se já esta vinculado ao organizador do evento
-                    User userData = await _userRepository.FindByGenericField<User>("Contact.Email", user.Contact.Email);
-                    if (userData != null && userData.Type == TypeUserEnum.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userData.Id))
+                    return BadRequest(MessageLogErrors.Get);
+                }
+                else if (userData == null)
+                {
+                    //Consulta se user do documentId, é colaborador e se já esta vinculado ao organizador do evento
+                    User userLocal = await _userRepository.FindByGenericField<User>("DocumentId", user.DocumentId);
+                    if (userLocal != null && userLocal.Type == TypeUserEnum.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userLocal.Id))
                     {
-                        return BadRequest(MessageLogErrors.FindUserAssociateColab);
+                        return BadRequest(MessageLogErrors.Get);
                     }
-                    else if(userData == null)
+                    else if (userLocal != null)
                     {
-                        //Consulta se user do documentId, é colaborador e se já esta vinculado ao organizador do evento
-                        User userLocal = await _userRepository.FindByGenericField<User>("DocumentId", user.DocumentId);
-                        if (userLocal != null && userLocal.Type == TypeUserEnum.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userLocal.Id))
-                        {
-                            return BadRequest(MessageLogErrors.FindUserAssociateColab);
-                        }
-                        else if(userLocal != null)
-                        {
-                            idUserCollaborator = userLocal.Id;
-                        }
-                    }
-                    else
-                    {
-                        idUserCollaborator = userData.Id;
-                    }
-
-                    //Se não encontrar os dados user colaborador, cadastra ele
-                    if (string.IsNullOrEmpty(idUserCollaborator))
-                    {
-                        //Insere o colaborador
-                        var userSaveLocal = await _userService.SaveAsync(user);
-
-                        if (userSaveLocal != null && userSaveLocal.Data != null)
-                        {
-                            userSave = (User)userSaveLocal.Data;
-                        }
-
-                        idUserCollaborator = userSave.Id;
+                        idUserCollaborator = userLocal.Id;
                     }
                 }
                 else
                 {
-                    idUserCollaborator = user.Id;
-                    
-                    //Consulta se o colaborador ja está vinculado ao organizador do evento
-                    if (listAssociate.Any() && listAssociate.Exists(x => x.IdUserCollaborator == user.Id))
-                    {
-                        return BadRequest(MessageLogErrors.FindUserAssociateColab);
-                    }
-                }
-
-                /*
-                var userData = (UserDTO)_userService.FindByEmailAsync(TypeUserEnum.Collaborator,user.Contact.Email).Result.Data;
-                var idUserCollaborator = string.Empty;
-                if(userData != null){
-                    //Pega o id do colaborador
                     idUserCollaborator = userData.Id;
                 }
-                else{
+
+                //Se não encontrar os dados user colaborador, cadastra ele
+                if (string.IsNullOrEmpty(idUserCollaborator))
+                {
                     //Insere o colaborador
-                    var userSave = (UserDTO)_userService.SaveAsync(user).Result.Data;
+                    var userSaveLocal = await _userService.SaveAsync(user);
+
+                    if (userSaveLocal != null && userSaveLocal.Data != null)
+                    {
+                        userSave = (User)userSaveLocal.Data;
+                    }
+
                     idUserCollaborator = userSave.Id;
                 }
-                */
+            }
+            else
+            {
+                idUserCollaborator = user.Id;
 
-                //Executa o vinculo do organizador de evento ao user colaborador
-                MessageReturn result = await _associateService.AssociateColabOrganizerAsync(idUserOrganizer, idUserCollaborator);
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new SaveUserException(result.Message);
+                //Consulta se o colaborador ja está vinculado ao organizador do evento
+                if (listAssociate.Any() && listAssociate.Exists(x => x.IdUserCollaborator == user.Id))
+                {
+                    return BadRequest(MessageLogErrors.Get);
+                }
             }
-            catch (EmailAlreadyExists ex)
-            {
-                throw ex;
-                //_logger.LogInformation(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
-                //return BadRequest(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
-            }
-            catch (SaveUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.saveUserMessage);
-            }
+
+            //Executa o vinculo do organizador de evento ao user colaborador
+            MessageReturn result = await _associateService.AssociateColabOrganizerAsync(idUserOrganizer, idUserCollaborator);
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new SaveException(result.Message);
         }
 
         /// <summary>
@@ -153,33 +117,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [Route("event/collaborator/")]
         public async Task<IActionResult> AssociateColabWithEventAsync([FromBody] AssociateCollaboratorEvent colabEvent)
         {
-            try
-            {
-                MessageReturn result = await _associateService.AssociateCollaboratorEventAsync(colabEvent);
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new SaveUserException(result.Message);
-            }
-            catch (EmailAlreadyExists ex)
-            {
-                throw ex;
-                //_logger.LogInformation(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
-                //return BadRequest(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
-            }
-            catch (SaveUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.saveUserMessage);
-            }
+            MessageReturn result = await _associateService.AssociateCollaboratorEventAsync(colabEvent);
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new SaveException(result.Message);
         }
 
-        
+
         /// <summary>
         /// Grava usuario
         /// </summary>
@@ -190,33 +135,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [Route("organizer/collaborators/")]
         public async Task<IActionResult> AssociateManyColabWithOrganizerAsync([FromBody] List<AssociateCollaboratorOrganizer> collaboratorsOrganizer)
         {
-            try
-            {
-                if(!ModelState.IsValid)
-                    throw new SaveUserException("dados invalidos");
-                    
-                MessageReturn result = await _associateService.AssociateManyColabWithOrganizerAsync(collaboratorsOrganizer);
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new SaveUserException(result.Message);
-            }
-            catch (EmailAlreadyExists ex)
-            {
-                throw ex;
-                //_logger.LogInformation(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
-                //return BadRequest(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
-            }
-            catch (SaveUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.saveUserMessage);
-            }
+            if (!ModelState.IsValid)
+                throw new SaveException("dados invalidos");
+
+            MessageReturn result = await _associateService.AssociateManyColabWithOrganizerAsync(collaboratorsOrganizer);
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new SaveException(result.Message);
         }
 
         /// <summary>
@@ -229,30 +155,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [Route("event/collaborators/")]
         public async Task<IActionResult> AssociateManyColabWithEventAsync([FromBody] List<AssociateCollaboratorEvent> collaboratorsEvent)
         {
-            try
-            {
-                MessageReturn result = await _associateService.AssociateManyColabWithEventAsync(collaboratorsEvent);
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new SaveUserException(result.Message);
-            }
-            catch (EmailAlreadyExists ex)
-            {
-                throw ex;
-                //_logger.LogInformation(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
-                //return BadRequest(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
-            }
-            catch (SaveUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.saveUserMessage);
-            }
+            MessageReturn result = await _associateService.AssociateManyColabWithEventAsync(collaboratorsEvent);
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new SaveException(result.Message);
         }
 
         /// <summary>
@@ -265,28 +172,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [Route("organizer/collaborator/{idAssociate}")]
         public async Task<IActionResult> DeleteAssociateColabOrganizerAsync([FromRoute] string idAssociate)
         {
-            try
-            {
-                MessageReturn result = await _associateService.DeleteAssociateColabOrganizerAsync(idAssociate);
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new SaveUserException(result.Message);
-            }
-            catch (EmailAlreadyExists ex)
-            {
-                throw ex;
-            }
-            catch (SaveUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.saveUserMessage);
-            }
+            MessageReturn result = await _associateService.DeleteAssociateColabOrganizerAsync(idAssociate);
+            if (!result.hasRunnedSuccessfully())
+                throw new DeleteException(result.Message);
+
+            return Ok(result.Data);
         }
 
         /// <summary>
@@ -299,28 +189,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [Route("event/collaborator/{idAssociate}")]
         public async Task<IActionResult> DeleteAssociateColabEventAsync([FromRoute] string idAssociate)
         {
-            try
-            {
-                MessageReturn result = await _associateService.DeleteAssociateColabEventAsync(idAssociate);
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new SaveUserException(result.Message);
-            }
-            catch (EmailAlreadyExists ex)
-            {
-                throw ex;
-            }
-            catch (SaveUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.saveUserMessage);
-            }
+            MessageReturn result = await _associateService.DeleteAssociateColabEventAsync(idAssociate);
+            if (!result.hasRunnedSuccessfully())
+                throw new SaveException(result.Message);
+
+            return Ok(result.Data);
         }
 
         /// <summary>
@@ -331,30 +204,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
         [Route("userApiData/event")]
-        public async Task<IActionResult> AssociateUserApiDataToEventAsync([FromBody]  UserApiDataEventDto data)
+        public async Task<IActionResult> AssociateUserApiDataToEventAsync([FromBody] UserApiDataEventDto data)
         {
-            try
-            {
-                MessageReturn result = await _associateService.AssociateUserApiDataToEventAsync(data.IdEvent,data.IdUser);
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new SaveUserException(result.Message);
-            }
-            catch (EmailAlreadyExists ex)
-            {
-                throw ex;
-            }
-            catch (SaveUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.saveUserMessage);
-            }
+            MessageReturn result = await _associateService.AssociateUserApiDataToEventAsync(data.IdEvent, data.IdUser);
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new SaveException(result.Message);
         }
 
         /// <summary>
@@ -367,30 +223,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [Route("userApiData/event/{idEvent}")]
         public async Task<IActionResult> GetUserApiDataToEventAsync([FromRoute] string idEvent)
         {
-            try
-            {
-                MessageReturn result = await _associateService.GetUserApiDataToEventAsync(idEvent);
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new SaveUserException(result.Message);
-            }
-            catch (EmailAlreadyExists ex)
-            {
-                throw ex;
-            }
-            catch (SaveUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.saveUserMessage);
-            }
+            MessageReturn result = await _associateService.GetUserApiDataToEventAsync(idEvent);
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new GetException(result.Message);
         }
-
-
     }
 }

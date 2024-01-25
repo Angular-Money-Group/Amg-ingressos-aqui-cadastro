@@ -1,5 +1,3 @@
-// using Amg_ingressos_aqui_cadastro_api.Consts;
-using Amg_ingressos_aqui_cadastro_api.Consts;
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
@@ -12,12 +10,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
     [Produces("application/json")]
     public class ReceiptAccountController : ControllerBase
     {
-        private readonly ILogger<ReceiptAccountController> _logger;
         private readonly IReceiptAccountService _receiptAccountService;
 
-        public ReceiptAccountController(ILogger<ReceiptAccountController> logger, IReceiptAccountService receiptAccountService)
+        public ReceiptAccountController(IReceiptAccountService receiptAccountService)
         {
-            _logger = logger;
             _receiptAccountService = receiptAccountService;
         }
 
@@ -29,25 +25,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpPost]
         public async Task<IActionResult> SaveReceiptAccountAsync([FromBody] ReceiptAccountDTO receiptAccountObject)
         {
-            try
-            {
-                MessageReturn result = await _receiptAccountService.SaveAsync(receiptAccountObject);
-                // receiptAccountDTOObject.Password = hashPassword;
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new SaveReceiptAccountException(result.Message);
-            }
-            catch (SaveReceiptAccountException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.saveReceiptAccountMessage, ex);
-                return StatusCode(500, MessageLogErrors.saveReceiptAccountMessage);
-            }
+            MessageReturn result = await _receiptAccountService.SaveAsync(receiptAccountObject);
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new SaveException(result.Message);
         }
 
         /// <summary>
@@ -61,24 +43,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> GetAllReceiptAccountsAsync()
         {
-            try
-            {
-                var result = await _receiptAccountService.GetAllReceiptAccountsAsync();
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data as List<ReceiptAccountDTO>);
-                else
-                    throw new GetAllReceiptAccountException(result.Message);
-            }
-            catch (GetAllReceiptAccountException ex)
-            {
-                    _logger.LogInformation(ex.Message);
-                    return NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.GetAllReceiptAccountMessage, ex);
-                return StatusCode(500, MessageLogErrors.GetAllReceiptAccountMessage);
-            }
+
+            var result = await _receiptAccountService.GetAllReceiptAccountsAsync();
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data as List<ReceiptAccountDTO>);
+            else
+                throw new GetException(result.Message);
         }
 
         /// <summary>
@@ -93,23 +63,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [Produces("application/json")]
         public async Task<IActionResult> FindByIdReceiptAccountAsync([FromRoute] string idUser)
         {
-            try
-            {
-                var result = await _receiptAccountService.FindByIdUserAsync(idUser);
-                if(result.hasRunnedSuccessfully())
-                    return Ok(result.Data as List<ReceiptAccountDTO>);
-                else
-                    throw new ReceiptAccountNotFound(result.Message);
-            }
-            catch (ReceiptAccountNotFound ex)
-            {
-                return NoContent();
-            }
-            catch (Exception ex)    
-            {
-                _logger.LogError(MessageLogErrors.FindByIdReceiptAccountMessage, ex);
-                return StatusCode(500, MessageLogErrors.FindByIdReceiptAccountMessage);
-            }
+
+            var result = await _receiptAccountService.FindByIdUserAsync(idUser);
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data as List<ReceiptAccountDTO>);
+            else
+                throw new GetException(result.Message);
         }
 
         /// <summary>
@@ -123,24 +82,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpDelete]
         public async Task<IActionResult> DeleteReceiptAccountAsync([FromRoute] string id, [FromRoute] string idUser)
         {
-            try
-            {
-                var result = await _receiptAccountService.DeleteAsync(id, idUser);
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new DeleteReceiptAccountException(result.Message);
-            }
-            catch (DeleteReceiptAccountException ex)
-            {
-                _logger.LogInformation(MessageLogErrors.deleteReceiptAccountMessage, ex);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.deleteReceiptAccountMessage, ex);
-                return StatusCode(500, MessageLogErrors.deleteReceiptAccountMessage);
-            }
+            var result = await _receiptAccountService.DeleteAsync(id, idUser);
+            if (result.hasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new DeleteException(result.Message);
         }
     }
 }

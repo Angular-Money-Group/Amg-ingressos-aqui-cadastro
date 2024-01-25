@@ -1,5 +1,7 @@
+using Amg_ingressos_aqui_cadastro_api.Consts;
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Enum;
+using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
@@ -9,22 +11,25 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 {
     public class AssociateService : IAssociateService
     {
-        private MessageReturn _messageReturn;
-        private IAssociateColabOrganizerRepository _associateColabOrganizerRepository;
-        private IAssociateColabEventRepository _associateColabEventRepository;
-        private IAssociateUserApiDataEventRepository _associateUserApiDataEventRepository;
-        private IUserService _userService;
+        private readonly MessageReturn _messageReturn;
+        private readonly IAssociateColabOrganizerRepository _associateColabOrganizerRepository;
+        private readonly IAssociateColabEventRepository _associateColabEventRepository;
+        private readonly IAssociateUserApiDataEventRepository _associateUserApiDataEventRepository;
+        private readonly IUserService _userService;
+        private readonly ILogger<AssociateService> _logger;
 
         public AssociateService(
             IAssociateColabOrganizerRepository associateColabOrganizerRepository,
             IAssociateColabEventRepository associateColabEventRepository,
             IAssociateUserApiDataEventRepository associateUserApiDataEventRepository,
-            IUserService userService)
+            IUserService userService,
+            ILogger<AssociateService> logger)
         {
             _associateColabOrganizerRepository = associateColabOrganizerRepository;
             _associateColabEventRepository = associateColabEventRepository;
             _associateUserApiDataEventRepository = associateUserApiDataEventRepository;
             _userService = userService;
+            _logger = logger;
             _messageReturn = new MessageReturn();
         }
 
@@ -36,7 +41,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(AssociateCollaboratorEventAsync), ex));
+                throw;
             }
 
             return _messageReturn;
@@ -55,7 +61,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(AssociateColabOrganizerAsync), ex));
+                throw;
             }
 
             return _messageReturn;
@@ -69,7 +76,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(AssociateManyColabWithEventAsync), ex));
+                throw;
             }
 
             return _messageReturn;
@@ -84,7 +92,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(DeleteAssociateColabEventAsync), ex));
+                throw;
             }
 
             return _messageReturn;
@@ -101,7 +110,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(DeleteAssociateColabOrganizerAsync), ex));
+                throw;
             }
 
             return _messageReturn;
@@ -116,7 +126,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(AssociateManyColabWithOrganizerAsync), ex));
+                throw;
             }
 
             return _messageReturn;
@@ -129,19 +140,20 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 idEvent.ValidateIdMongo();
                 idUser.ValidateIdMongo();
                 var user = (UserDTO)_userService.FindByIdAsync(idUser).Result.Data;
-                if(user == null)
-                    throw new Exception("Usário não cadastrado."); 
-                TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),user.Type,true);
-                if (type != Enum.TypeUserEnum.ApiData)
-                    throw new Exception("Usário não está no perfil de ApiData."); 
-                
+                if (user == null)
+                    throw new RuleException("Usário não cadastrado.");
+                TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum), user.Type, true);
+                if (type != TypeUserEnum.ApiData)
+                    throw new RuleException("Usário não está no perfil de ApiData.");
+
 
                 _messageReturn.Data = await _associateUserApiDataEventRepository
                 .AssociateUserApiDataToEventAsync(new AssociateUserApiDataEvent() { IdEvent = idEvent, IdUser = idUser });
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(AssociateUserApiDataToEventAsync), ex));
+                throw;
             }
 
             return _messageReturn;
@@ -158,7 +170,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(GetUserApiDataToEventAsync), ex));
+                throw;
             }
 
             return _messageReturn;

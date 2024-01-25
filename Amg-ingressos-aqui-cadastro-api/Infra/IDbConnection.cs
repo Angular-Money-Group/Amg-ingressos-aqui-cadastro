@@ -1,4 +1,3 @@
-using Amg_ingressos_aqui_cadastro_api.Model;
 using MongoDB.Driver;
 
 namespace Amg_ingressos_aqui_cadastro_api.Infra

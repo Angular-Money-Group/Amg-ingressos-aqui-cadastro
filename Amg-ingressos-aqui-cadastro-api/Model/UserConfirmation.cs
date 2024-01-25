@@ -1,9 +1,9 @@
-﻿using Microsoft.VisualBasic;
-using MongoDB.Bson.Serialization.Attributes;
+﻿using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
 
-namespace Amg_ingressos_aqui_cadastro_api.Model {
+namespace Amg_ingressos_aqui_cadastro_api.Model
+{
     public class UserConfirmation 
     {
         /// <summary>

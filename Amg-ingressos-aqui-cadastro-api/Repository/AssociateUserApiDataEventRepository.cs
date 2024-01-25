@@ -14,15 +14,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
         }
         public async Task<object?> AssociateUserApiDataToEventAsync(AssociateUserApiDataEvent data)
         {
-            try
-            {
-                await _associateCollection.InsertOneAsync(data);
-                return data;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            await _associateCollection.InsertOneAsync(data);
+            return data;
         }
 
         public async Task<object?> GetUserApiDataToEventAsync(string idEvent)

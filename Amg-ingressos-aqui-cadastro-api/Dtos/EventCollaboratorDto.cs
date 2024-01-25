@@ -1,23 +1,22 @@
 
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Utils;
-using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Model;
 
-namespace Amg_ingressos_aqui_cadastro_api.Dtos 
+namespace Amg_ingressos_aqui_cadastro_api.Dtos
 {
     public class EventCollaboratorDto : EventColab
     {
         public EventCollaboratorDto() {
-            this.Id = null;
-            this.IdEvent = null;
-            this.IdColab = null;
+            Id = null;
+            IdEvent = null;
+            IdColab = null;
         }
         
         public EventCollaboratorDto (EventCollaboratorDto eventColabDTO) {
-            this.Id = eventColabDTO.Id;
-            this.IdEvent = eventColabDTO.IdEvent;
-            this.IdColab = eventColabDTO.IdColab;
+            Id = eventColabDTO.Id;
+            IdEvent = eventColabDTO.IdEvent;
+            IdColab = eventColabDTO.IdColab;
         }
 
         public EventCollaboratorDto (EventColab eventColabToValidate)
@@ -26,30 +25,30 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         }
         
         public EventCollaboratorDto(string? idUser, string? documentId) {
-            this.IdEvent = idUser;
-            this.IdColab = documentId;
+            IdEvent = idUser;
+            IdColab = documentId;
         }
         
         // RECEIPT ACCOUNT FACTORY FUNCTIONS
         public EventColab makeEventColab() {
-            return new EventColab(this.Id, this.IdEvent, this.IdColab);
+            return new EventColab(Id, IdEvent, IdColab);
         }
 
         public EventColab makeEventColabSave()
         {
-            if (this.Id is not null)
-                this.Id = null;
-            ValidateIdEventFormat(this.IdEvent);
-            ValidateIdColabFormat(this.IdColab);
-            return this.makeEventColab();
+            if (Id is not null)
+                Id = null;
+            ValidateIdEventFormat(IdEvent);
+            ValidateIdColabFormat(IdColab);
+            return makeEventColab();
         }
 
         public EventColab makeEventColabUpdate()
         {
-            this.Id.ValidateIdMongo();
-            ValidateIdEventFormat(this.IdEvent);
-            ValidateIdColabFormat(this.IdColab);
-            return this.makeEventColab();
+            Id.ValidateIdMongo();
+            ValidateIdEventFormat(IdEvent);
+            ValidateIdColabFormat(IdColab);
+            return makeEventColab();
         }
                 
         // PUBLIC FUNCTIONS
@@ -57,7 +56,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             try {
                 idEvent.ValidateIdMongo();
             } catch (IdMongoException ex) {
-                throw new InvalidFormatException("Em IdEvent: " + ex.Message);
+                throw new IdMongoException("Em IdEvent: " + ex.Message);
             }
         }
 
@@ -65,7 +64,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             try {
                 idColab.ValidateIdMongo();
             } catch (IdMongoException ex) {
-                throw new InvalidFormatException("Em IdColab: " + ex.Message);
+                throw new IdMongoException("Em IdColab: " + ex.Message);
             }
         }
     }

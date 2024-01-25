@@ -1,9 +1,8 @@
-using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
-namespace Amg_ingressos_aqui_cadastro_api.Dtos 
+namespace Amg_ingressos_aqui_cadastro_api.Dtos
 {
     public class GetCollaboratorProducerDto
     {

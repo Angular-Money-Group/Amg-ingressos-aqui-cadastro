@@ -4,16 +4,16 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
     {
 
         public MessageReturn() {
-            this.Message = string.Empty;
-            this.Data = null;
+            Message = string.Empty;
+            Data = null;
         }
         public MessageReturn(string message) {
-            this.Message = message;
-            this.Data = null;
+            Message = message;
+            Data = null;
         }
         public MessageReturn(object data) {
-            this.Message = string.Empty;
-            this.Data = data;
+            Message = string.Empty;
+            Data = data;
         }
 
         /// <summary>
@@ -28,7 +28,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
 
         // METHODS
         public bool hasRunnedSuccessfully() {
-            return string.IsNullOrEmpty(this.Message) && (this.Data is not null);
+            return string.IsNullOrEmpty(Message) && (Data is not null);
         }
     }
 }

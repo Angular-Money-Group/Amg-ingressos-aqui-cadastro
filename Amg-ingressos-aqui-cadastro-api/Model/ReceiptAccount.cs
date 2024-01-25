@@ -1,45 +1,40 @@
-﻿using Amg_ingressos_aqui_cadastro_api.Enum;
-using System.ComponentModel.DataAnnotations;
-using MongoDB.Bson;
+﻿using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
-using Amg_ingressos_aqui_cadastro_api.Exceptions;
-using System.Text.RegularExpressions;
-using Amg_ingressos_aqui_cadastro_api.Utils;
 
-namespace Amg_ingressos_aqui_cadastro_api.Model 
+namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class ReceiptAccount 
     {
         public ReceiptAccount() {
-            this.Id = null;
-            this.IdUser = null;
-            this.FullName = null;
-            this.Bank = null;
-            this.BankAgency = null;
-            this.BankAccount = null;
-            this.BankDigit = null;
+            Id = null;
+            IdUser = null;
+            FullName = null;
+            Bank = null;
+            BankAgency = null;
+            BankAccount = null;
+            BankDigit = null;
         }
         
         public ReceiptAccount(ReceiptAccount receiptAccount) {
-            this.Id = receiptAccount.Id;
-            this.IdUser = receiptAccount.IdUser;
-            this.FullName = receiptAccount.FullName;
-            this.Bank = receiptAccount.Bank;
-            this.BankAgency = receiptAccount.BankAgency;
-            this.BankAccount = receiptAccount.BankAccount;
-            this.BankDigit = receiptAccount.BankDigit;
+            Id = receiptAccount.Id;
+            IdUser = receiptAccount.IdUser;
+            FullName = receiptAccount.FullName;
+            Bank = receiptAccount.Bank;
+            BankAgency = receiptAccount.BankAgency;
+            BankAccount = receiptAccount.BankAccount;
+            BankDigit = receiptAccount.BankDigit;
         }
         
         public ReceiptAccount(string? id, string? idUser, string? fullName, string? bank, string? bankAgency,
             string? bankAccount, string? bankDigit) {
-            this.Id = id;
-            this.IdUser = idUser;
-            this.FullName = fullName;
-            this.Bank = bank;
-            this.BankAgency = bankAgency;
-            this.BankAccount = bankAccount;
-            this.BankDigit = bankDigit;
+            Id = id;
+            IdUser = idUser;
+            FullName = fullName;
+            Bank = bank;
+            BankAgency = bankAgency;
+            BankAccount = bankAccount;
+            BankDigit = bankDigit;
         }
 
         /// <summary>

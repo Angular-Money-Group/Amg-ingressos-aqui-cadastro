@@ -2,18 +2,17 @@ using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
-using Amg_ingressos_aqui_cadastro_api.Dtos;
 
 namespace Amg_ingressos_aqui_cadastro_api.Model.Querys
 {
     public class GetCollaboratorEvent
     {
         public GetCollaboratorEvent(string id, string name, string documentId, string email, bool isOnEvent) {
-            this.Id = id;
-            this.Name = name;
-            this.CPF = documentId;
-            this.Email = email;
-            this.IsOnEvent = isOnEvent;
+            Id = id;
+            Name = name;
+            CPF = documentId;
+            Email = email;
+            IsOnEvent = isOnEvent;
         }
 
         /// <summary>

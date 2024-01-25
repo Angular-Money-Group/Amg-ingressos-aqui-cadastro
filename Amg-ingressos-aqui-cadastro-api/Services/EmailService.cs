@@ -10,9 +10,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 {
     public class EmailService : IEmailService
     {
-        private MessageReturn _messageReturn;
-        private HttpClient _HttpClient;
-        private ILogger<EmailService> _logger;
+        private readonly MessageReturn _messageReturn;
+        private readonly HttpClient _HttpClient;
+        private readonly ILogger<EmailService> _logger;
 
         public EmailService(ILogger<EmailService> logger)
         {
@@ -30,7 +30,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var url = Settings.EmailServiceApi;
                 var uri = Settings.UriEmailVerifyAccount;
 
-                _logger.LogInformation(string.Format("Call PostAsync - Send: {0}",this.GetType().Name));
+                _logger.LogInformation(string.Format("Call PostAsync - Send: {0}",GetType().Name));
                 var result = _HttpClient.PostAsync(url + uri, jsonBody);
                 if(result.Result.IsSuccessStatusCode)
                 {
@@ -38,12 +38,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     _messageReturn.Message = response.Result;
                 }
 
-                _logger.LogInformation(string.Format("Finished - Save: {0}",this.GetType().Name));
+                _logger.LogInformation(string.Format("Finished - Save: {0}",GetType().Name));
                 return _messageReturn;
             }
-            catch (Exception ex)
+           catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(SaveAsync), ex));
+                throw;
             }
         }
 
@@ -57,9 +58,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 });
                 return "processado";
             }
-            catch (System.Exception ex)
+            catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(ProcessEmail), ex));
+                throw;
             }
         }
     }

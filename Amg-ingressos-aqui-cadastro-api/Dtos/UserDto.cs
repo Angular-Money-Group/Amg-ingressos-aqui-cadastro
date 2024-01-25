@@ -1,9 +1,8 @@
-
-using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Utils;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using System.Text.Json.Serialization;
 using Amg_ingressos_aqui_cadastro_api.Enum;
+using Amg_ingressos_aqui_cadastro_api.Exceptions;
 
 namespace Amg_ingressos_aqui_cadastro_api.Dtos
 {
@@ -94,128 +93,128 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         // CONSTRUCTORS
         public UserDTO()
         {
-            this.Id = null;
-            this.Name = null;
-            this.DocumentId = null;
-            this.Status = null;
-            this.Type = null;
-            this.Address = null;
-            this.Contact = null;
-            this.UserConfirmation = null;
-            this.Password = null;
-            this.IdAssociate = null;
+            Id = null;
+            Name = null;
+            DocumentId = null;
+            Status = null;
+            Type = null;
+            Address = null;
+            Contact = null;
+            UserConfirmation = null;
+            Password = null;
+            IdAssociate = null;
         }
 
         public UserDTO(System.Enum TEnum, UserDTO userDTO)
         {
             TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),userDTO.Type,true);
             ValidateUserType(TEnum, type);
-            this.Id = userDTO.Id;
-            this.Name = userDTO.Name;
-            this.DocumentId = userDTO.DocumentId;
-            this.Status = userDTO.Status;
-            this.Type = userDTO.Type;
-            this.Address = userDTO.Address;
-            this.Contact = userDTO.Contact;
-            this.UserConfirmation = userDTO.UserConfirmation;
-            this.Password = userDTO.Password;
-            this.IdAssociate = userDTO.IdAssociate;
+            Id = userDTO.Id;
+            Name = userDTO.Name;
+            DocumentId = userDTO.DocumentId;
+            Status = userDTO.Status;
+            Type = userDTO.Type;
+            Address = userDTO.Address;
+            Contact = userDTO.Contact;
+            UserConfirmation = userDTO.UserConfirmation;
+            Password = userDTO.Password;
+            IdAssociate = userDTO.IdAssociate;
         }
 
         // USER FACTORY FUNCTIONS
         public User makeUser()
         {
-            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),this.Type,true);
-            return new User(this.Id, this.Name, this.DocumentId, this.Status, type , this.Address,
-                    this.Contact, this.UserConfirmation, this.Password);
+            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),Type,true);
+            return new User(Id, Name, DocumentId, Status, type , Address,
+                    Contact, UserConfirmation, Password);
         }
 
         public User makeUserSave()
         {
-            if (this.Id is not null)
-                this.Id = null;
+            if (Id is not null)
+                Id = null;
 
-            this.Status = TypeStatusEnum.Active;
+            Status = TypeStatusEnum.Active;
 
-            this.ValidateBasicUserFormat();
-            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),this.Type,true);
+            ValidateBasicUserFormat();
+            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),Type,true);
             switch (type)
             {
                 case TypeUserEnum.Admin:
-                    this.ValidateAdminFormat();
+                    ValidateAdminFormat();
                     break;
                 case TypeUserEnum.Organizer:
-                    this.ValidateProducerFormat();
+                    ValidateProducerFormat();
                     break;
                 case TypeUserEnum.Customer:
-                    this.ValidateCustomerFormat();
+                    ValidateCustomerFormat();
                     break;
             }
-            return this.makeUser();
+            return makeUser();
         }
 
         public User makeUserUpdate()
         {
-            this.Id.ValidateIdMongo();
+            Id.ValidateIdMongo();
             //this.ValidateStatusFormat();
 
-            this.ValidateBasicUserUpdateFormat();
-            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),this.Type,true);
+            ValidateBasicUserUpdateFormat();
+            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),Type,true);
             switch (type)
             {
                 case TypeUserEnum.Admin:
-                    this.ValidateAdminFormat();
+                    ValidateAdminFormat();
                     break;
                 case TypeUserEnum.Organizer:
-                    this.ValidateProducerFormat();
+                    ValidateProducerFormat();
                     break;
                 case TypeUserEnum.Customer:
-                    this.ValidateCustomerFormat();
+                    ValidateCustomerFormat();
                     break;
             }
-            return this.makeUser();
+            return makeUser();
         }
 
         public void ValidateBasicUserFormat()
         {
 
-            this.ValidateNameFormat();
-            this.validatePasswordFormat();
+            ValidateNameFormat();
+            validatePasswordFormat();
             // this.ValidateAdressFormat();
-            this.validateConctact();
+            validateConctact();
             // this.validateUserConfirmation();
         }
 
         public void ValidateBasicUserUpdateFormat()
         {
-            this.ValidateNameFormat();
-            if(this.Password is not null){
-                this.validatePasswordFormat();
+            ValidateNameFormat();
+            if(Password is not null){
+                validatePasswordFormat();
             }
         }
         public void ValidateAdminFormat()
         {
-            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),this.Type,true);
+            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),Type,true);
             ValidateUserType(TypeUserEnum.Admin, type);
-            this.ValidateDocumentIdFormat();
+            ValidateDocumentIdFormat();
         }
         public void ValidateCustomerFormat()
         {
-            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),this.Type,true);
+            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),Type,true);
             ValidateUserType(TypeUserEnum.Customer, type);
-            this.ValidateCpfFormat();
+            ValidateCpfFormat();
         }
         public void ValidateProducerFormat()
         {
-            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),this.Type,true);
+            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum),Type,true);
             ValidateUserType(TypeUserEnum.Organizer, type);
-            this.ValidateCnpjFormat();
+            ValidateCnpjFormat();
         }
 
         /*public void ValidateColabFormat()
         {
             if (this.Contact is null)
-                throw new EmptyFieldsException("Contato é Obrigatório.");
+                throw new RuleException("Contato é Obrigatório.");
             ValidateEmailFormat(this.Contact.Email);
             this.ValidateCpfFormat();
             this.Address = null;
@@ -229,18 +228,18 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         public static void ValidateEmailFormat(string email)
         {
             if (string.IsNullOrEmpty(email))
-                throw new EmptyFieldsException("Email é Obrigatório.");
+                throw new RuleException("Email é Obrigatório.");
             if (!email.ValidateEmailFormat())
-                throw new InvalidFormatException("Formato de email inválido.");
+                throw new RuleException("Formato de email inválido.");
         }
 
         public static void ValidatePhoneNumberFormat(string? phoneNumber)
         {
             if (string.IsNullOrEmpty(phoneNumber))
-                throw new EmptyFieldsException("Telefone de Contato é Obrigatório.");
+                throw new RuleException("Telefone de Contato é Obrigatório.");
             phoneNumber = string.Join("", phoneNumber.ToCharArray().Where(Char.IsDigit));
             if (string.IsNullOrEmpty(phoneNumber))
-                throw new EmptyFieldsException("Formato de Telefone de Contato inválido.");
+                throw new RuleException("Formato de Telefone de Contato inválido.");
         }
 
         public static void ValidateUserType(System.Enum typeExpected, System.Enum userType)
@@ -249,122 +248,118 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             {
                 userType.ValidateObjectEnumType(typeExpected);
             }
-            catch (EmptyFieldsException)
+            catch (RuleException)
             {
-                throw new EmptyFieldsException("Tipo de Usuario é obrigatório.");
-            }
-            catch (InvalidUserTypeException)
-            {
-                throw new InvalidUserTypeException("Tipo de Usuário não corresponde ao esperado");
+                throw new RuleException("Tipo de Usuario é obrigatório.");
             }
         }
 
         // PUBLIC FUNCTIONS
         public void ValidateNameFormat()
         {
-            if (string.IsNullOrEmpty(this.Name))
-                throw new EmptyFieldsException("Nome é Obrigatório.");
-            if (!this.Name.ValidateTextFormat())
-                throw new InvalidFormatException("Formato de nome inválido.");
+            if (string.IsNullOrEmpty(Name))
+                throw new RuleException("Nome é Obrigatório.");
+            if (!Name.ValidateTextFormat())
+                throw new RuleException("Formato de nome inválido.");
         }
 
         public void ValidateStatusFormat()
         {
-            if (this.Status is null)
-                throw new EmptyFieldsException("Status de Usuário é Obrigatório.");
+            if (Status is null)
+                throw new RuleException("Status de Usuário é Obrigatório.");
         }
 
         public void ValidateDocumentIdFormat()
         {
-            if (string.IsNullOrEmpty(this.DocumentId))
-                throw new EmptyFieldsException("Documento de Identificação é Obrigatório.");
-            this.DocumentId = string.Join("", this.DocumentId.ToCharArray().Where(Char.IsDigit));
-            if (this.DocumentId.Length != 11 && this.DocumentId.Length != 13)
-                throw new EmptyFieldsException("Formato de Documento de Identificação inválido.");
+            if (string.IsNullOrEmpty(DocumentId))
+                throw new RuleException("Documento de Identificação é Obrigatório.");
+            DocumentId = string.Join("", DocumentId.ToCharArray().Where(Char.IsDigit));
+            if (DocumentId.Length != 11 && DocumentId.Length != 13)
+                throw new RuleException("Formato de Documento de Identificação inválido.");
         }
 
         public void ValidateCpfFormat()
         {
-            this.DocumentId.ValidateCpfFormat();
+            DocumentId.ValidateCpfFormat();
         }
 
         public void ValidateCnpjFormat()
         {
-            if (string.IsNullOrEmpty(this.DocumentId))
-                throw new EmptyFieldsException("Documento de CNPJ é Obrigatório.");
-            this.DocumentId = string.Join("", this.DocumentId.ToCharArray().Where(Char.IsDigit));
-            if (this.DocumentId.Length < 11 && this.DocumentId.Length > 14)
-                throw new EmptyFieldsException("Formato de Documento de CNPJ inválido.");
+            if (string.IsNullOrEmpty(DocumentId))
+                throw new RuleException("Documento de CNPJ é Obrigatório.");
+            DocumentId = string.Join("", DocumentId.ToCharArray().Where(Char.IsDigit));
+            if (DocumentId.Length < 11 && DocumentId.Length > 14)
+                throw new RuleException("Formato de Documento de CNPJ inválido.");
         }
 
         public void ValidateAdressFormat()
         {
-            if (this.Address is not null)
+            if (Address is not null)
             {
 
-                if (string.IsNullOrEmpty(this.Address.Cep))
-                    throw new EmptyFieldsException("Em Endereço, CEP é Obrigatório.");
-                this.Address.Cep = string.Join("", this.Address.Cep.ToCharArray().Where(Char.IsDigit));
-                if (this.Address.Cep.Length != 8)
-                    throw new InvalidFormatException("Em Endereço, formato de CEP inválido.");
+                if (string.IsNullOrEmpty(Address.Cep))
+                    throw new RuleException("Em Endereço, CEP é Obrigatório.");
+                Address.Cep = string.Join("", Address.Cep.ToCharArray().Where(Char.IsDigit));
+                if (Address.Cep.Length != 8)
+                    throw new RuleException("Em Endereço, formato de CEP inválido.");
 
-                if (string.IsNullOrEmpty(this.Address.AddressDescription))
-                    throw new EmptyFieldsException("Em Endereço, Logradouro é Obrigatório.");
-                if (!this.Address.AddressDescription.ValidateTextFormat())
-                    throw new InvalidFormatException("Em de Endereço, formato de Logradouro inválido.");
+                if (string.IsNullOrEmpty(Address.AddressDescription))
+                    throw new RuleException("Em Endereço, Logradouro é Obrigatório.");
+                if (!Address.AddressDescription.ValidateTextFormat())
+                    throw new RuleException("Em de Endereço, formato de Logradouro inválido.");
 
-                if (string.IsNullOrEmpty(this.Address.Number))
-                    throw new EmptyFieldsException("Em Endereço, Número é Obrigatório.");
-                if (!this.Address.Number.ValidateSimpleTextFormat())
-                    throw new InvalidFormatException("Em de Endereço, formato de Número inválido.");
+                if (string.IsNullOrEmpty(Address.Number))
+                    throw new RuleException("Em Endereço, Número é Obrigatório.");
+                if (!Address.Number.ValidateSimpleTextFormat())
+                    throw new RuleException("Em de Endereço, formato de Número inválido.");
 
-                if (string.IsNullOrEmpty(this.Address.Neighborhood))
-                    throw new EmptyFieldsException("Em Endereço, Bairro é Obrigatório.");
-                if (!this.Address.Neighborhood.ValidateTextFormat())
-                    throw new InvalidFormatException("Em Endereço, formato de Bairro inválido.");
+                if (string.IsNullOrEmpty(Address.Neighborhood))
+                    throw new RuleException("Em Endereço, Bairro é Obrigatório.");
+                if (!Address.Neighborhood.ValidateTextFormat())
+                    throw new RuleException("Em Endereço, formato de Bairro inválido.");
 
-                if (string.IsNullOrEmpty(this.Address.City))
-                    throw new EmptyFieldsException("Em endereço, Cidade é Obrigatório.");
-                if (!this.Address.City.ValidateTextFormat())
-                    throw new InvalidFormatException("Uma tentativa de cadastro pode ter vindo de fora. [User.Adress.City]");
+                if (string.IsNullOrEmpty(Address.City))
+                    throw new RuleException("Em endereço, Cidade é Obrigatório.");
+                if (!Address.City.ValidateTextFormat())
+                    throw new RuleException("Uma tentativa de cadastro pode ter vindo de fora. [User.Adress.City]");
 
-                if (string.IsNullOrEmpty(this.Address.State))
-                    throw new EmptyFieldsException("Em endereço, Estado é Obrigatório.");
-                if (!this.Address.State.ValidateTextFormat())
-                    throw new InvalidFormatException("Uma tentativa de cadastro pode ter vindo de fora. [User.Adress.State]");
+                if (string.IsNullOrEmpty(Address.State))
+                    throw new RuleException("Em endereço, Estado é Obrigatório.");
+                if (!Address.State.ValidateTextFormat())
+                    throw new RuleException("Uma tentativa de cadastro pode ter vindo de fora. [User.Adress.State]");
             }
         }
 
         public void validateConctact()
         {
-            if (this.Contact is null)
-                throw new EmptyFieldsException("Contato é Obrigatório.");
-            ValidateEmailFormat(this.Contact.Email);
+            if (Contact is null)
+                throw new RuleException("Contato é Obrigatório.");
+            ValidateEmailFormat(Contact.Email);
             // ValidatePhoneNumberFormat(this.Contact.PhoneNumber);
         }
 
         public void validateUserConfirmation()
         {
-            if (this.UserConfirmation is null)
-                throw new EmptyFieldsException("UserConfirmation é Obrigatório.");
-            if (string.IsNullOrEmpty(this.UserConfirmation.EmailConfirmationCode))
-                throw new EmptyFieldsException("Código de Confirmação de Email é Obrigatório.");
-            if (!this.UserConfirmation.EmailConfirmationExpirationDate.HasValue)
-                throw new EmptyFieldsException("Data de Expiração de Código de Confirmação de Email é Obrigatório.");
-            if (!this.UserConfirmation.EmailVerified.HasValue)
-                throw new EmptyFieldsException("Status de Verificação de Email é Obrigatório.");
-            if (!this.UserConfirmation.PhoneVerified.HasValue)
-                throw new EmptyFieldsException("Status de Verificação de Telefone é Obrigatório.");
+            if (UserConfirmation is null)
+                throw new RuleException("UserConfirmation é Obrigatório.");
+            if (string.IsNullOrEmpty(UserConfirmation.EmailConfirmationCode))
+                throw new RuleException("Código de Confirmação de Email é Obrigatório.");
+            if (!UserConfirmation.EmailConfirmationExpirationDate.HasValue)
+                throw new RuleException("Data de Expiração de Código de Confirmação de Email é Obrigatório.");
+            if (!UserConfirmation.EmailVerified.HasValue)
+                throw new RuleException("Status de Verificação de Email é Obrigatório.");
+            if (!UserConfirmation.PhoneVerified.HasValue)
+                throw new RuleException("Status de Verificação de Telefone é Obrigatório.");
         }
 
         public void validatePasswordFormat()
         {
-            if (string.IsNullOrEmpty(this.Password))
-                throw new EmptyFieldsException("Senha é Obrigatório.");
-            if (this.Password.Length < 8 || this.Password.Length > 16)
-                throw new InvalidFormatException("Formato de Senha inválido, mínimo de 8, máximo de 16 caracteres.");
-            if (!this.Password.ValidateStrongPasswordFormat())
-                throw new InvalidFormatException("Senha deve conter letra minúscula e maiúscula, número e caractere especial(!#$%&*+-?@_) apenas.");
+            if (string.IsNullOrEmpty(Password))
+                throw new RuleException("Senha é Obrigatório.");
+            if (Password.Length < 8 || Password.Length > 16)
+                throw new RuleException("Formato de Senha inválido, mínimo de 8, máximo de 16 caracteres.");
+            if (!Password.ValidateStrongPasswordFormat())
+                throw new RuleException("Senha deve conter letra minúscula e maiúscula, número e caractere especial(!#$%&*+-?@_) apenas.");
         }
     }
 }

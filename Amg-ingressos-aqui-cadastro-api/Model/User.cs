@@ -1,5 +1,4 @@
 ﻿using Amg_ingressos_aqui_cadastro_api.Enum;
-using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
@@ -11,43 +10,43 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
     {
         public User()
         {
-            this.Id = null;
-            this.Name = null;
-            this.DocumentId = null;
-            this.Status = null;
-            this.Type = null;
-            this.Address = null;
-            this.Contact = null;
-            this.UserConfirmation = null;
-            this.Password = null;
-            this.IdAssociate = null;
+            Id = null;
+            Name = null;
+            DocumentId = null;
+            Status = null;
+            Type = null;
+            Address = null;
+            Contact = null;
+            UserConfirmation = null;
+            Password = null;
+            IdAssociate = null;
         }
 
         public User(User user)
         {
-            this.Id = user.Id;
-            this.Name = user.Name;
-            this.DocumentId = user.DocumentId;
-            this.Status = user.Status;
-            this.Type = user.Type;
-            this.Address = user.Address;
-            this.Contact = user.Contact;
-            this.UserConfirmation = user.UserConfirmation;
-            this.Password = user.Password;
+            Id = user.Id;
+            Name = user.Name;
+            DocumentId = user.DocumentId;
+            Status = user.Status;
+            Type = user.Type;
+            Address = user.Address;
+            Contact = user.Contact;
+            UserConfirmation = user.UserConfirmation;
+            Password = user.Password;
         }
 
         public User(string? id, string? name, string? documentId, TypeStatusEnum? status, TypeUserEnum? type, Address? address,
                     Contact? contact, UserConfirmation? userConfirmation, string? password)
         {
-            this.Id = id;
-            this.Name = name;
-            this.DocumentId = documentId;
-            this.Status = status;
-            this.Type = type;
-            this.Address = address;
-            this.Contact = contact;
-            this.UserConfirmation = userConfirmation;
-            this.Password = password;
+            Id = id;
+            Name = name;
+            DocumentId = documentId;
+            Status = status;
+            Type = type;
+            Address = address;
+            Contact = contact;
+            UserConfirmation = userConfirmation;
+            Password = password;
         }
 
         /// <summary>

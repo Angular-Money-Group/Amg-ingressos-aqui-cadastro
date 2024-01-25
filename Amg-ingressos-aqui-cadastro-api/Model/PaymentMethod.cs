@@ -1,48 +1,44 @@
 ﻿using Amg_ingressos_aqui_cadastro_api.Enum;
-using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
-using Amg_ingressos_aqui_cadastro_api.Exceptions;
-using System.Text.RegularExpressions;
-using Amg_ingressos_aqui_cadastro_api.Utils;
 
-namespace Amg_ingressos_aqui_cadastro_api.Model 
+namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class PaymentMethod 
     {
         public PaymentMethod() {
-            this.Id = null;
-            this.IdUser = null;
-            this.DocumentId = null;
-            this.typePayment = null;
-            this.CardNumber = null;
-            this.NameOnCard = null;
-            this.ExpirationDate = null;
-            this.SecureCode = null;
+            Id = null;
+            IdUser = null;
+            DocumentId = null;
+            typePayment = null;
+            CardNumber = null;
+            NameOnCard = null;
+            ExpirationDate = null;
+            SecureCode = null;
         }
         
         public PaymentMethod(PaymentMethod paymentMethod) {
-            this.Id = paymentMethod.Id;
-            this.IdUser = paymentMethod.IdUser;
-            this.DocumentId = paymentMethod.DocumentId;
-            this.typePayment = paymentMethod.typePayment;
-            this.CardNumber = paymentMethod.CardNumber;
-            this.NameOnCard = paymentMethod.NameOnCard;
-            this.ExpirationDate = paymentMethod.ExpirationDate;
-            this.SecureCode = paymentMethod.SecureCode;
+            Id = paymentMethod.Id;
+            IdUser = paymentMethod.IdUser;
+            DocumentId = paymentMethod.DocumentId;
+            typePayment = paymentMethod.typePayment;
+            CardNumber = paymentMethod.CardNumber;
+            NameOnCard = paymentMethod.NameOnCard;
+            ExpirationDate = paymentMethod.ExpirationDate;
+            SecureCode = paymentMethod.SecureCode;
         }
         
         public PaymentMethod(string? id, string? idUser, string? documentId, TypePaymentEnum? typePayment,
             string? cardNumber, string? nameOnCard, DateTime? expirationDate, string? secureCode) {
-            this.Id = id;
-            this.IdUser = idUser;
-            this.DocumentId = documentId;
+            Id = id;
+            IdUser = idUser;
+            DocumentId = documentId;
             this.typePayment = typePayment;
-            this.CardNumber = cardNumber;
-            this.NameOnCard = nameOnCard;
-            this.ExpirationDate = expirationDate;
-            this.SecureCode = secureCode;
+            CardNumber = cardNumber;
+            NameOnCard = nameOnCard;
+            ExpirationDate = expirationDate;
+            SecureCode = secureCode;
         }
 
         /// <summary>

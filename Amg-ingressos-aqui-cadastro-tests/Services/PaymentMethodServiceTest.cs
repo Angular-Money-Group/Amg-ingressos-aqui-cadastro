@@ -4,8 +4,6 @@ using NUnit.Framework;
 using Moq;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Model;
-using Amg_ingressos_aqui_cadastro_api.Enum;
-using Amg_ingressos_aqui_cadastro_api.Infra;
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
@@ -16,11 +14,12 @@ namespace Prime.UnitTests.Services
     public class PaymentMethodServiceTest
     {
         private UserService _userService;
-        private Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
-        private Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
-        private Mock<ILogger<UserService>> _loggerMockUserService = new Mock<ILogger<UserService>>();
+        private readonly Mock<IUserRepository> _userRepositoryMock = new Mock<IUserRepository>();
+        private readonly Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
+        private readonly Mock<ILogger<UserService>> _loggerMockUserService = new Mock<ILogger<UserService>>();
+        private readonly Mock<ILogger<PaymentMethodService>> _loggerMockPaymentMethodService = new Mock<ILogger<PaymentMethodService>>();
         private PaymentMethodService _paymentMethodService;
-        private Mock<IPaymentMethodRepository> _paymentMethodRepositoryMock = new Mock<IPaymentMethodRepository>();
+        private readonly Mock<IPaymentMethodRepository> _paymentMethodRepositoryMock = new Mock<IPaymentMethodRepository>();
         private PaymentMethod paymentMethodComplet;
         private PaymentMethodDTO paymentMethodDTO;
 
@@ -29,7 +28,7 @@ namespace Prime.UnitTests.Services
         public void SetUp()
         {
             this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object,_loggerMockUserService.Object);
-            this._paymentMethodService = new PaymentMethodService(_paymentMethodRepositoryMock.Object, _userService);
+            this._paymentMethodService = new PaymentMethodService(_paymentMethodRepositoryMock.Object, _userService,_loggerMockPaymentMethodService.Object);
             this.paymentMethodComplet = FactoryPaymentMethod.SimplePaymentMethod();
             this.paymentMethodDTO = new PaymentMethodDTO(this.paymentMethodComplet);
         }
@@ -64,7 +63,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var expectedMessage = "Usuários não encontrados";
             _paymentMethodRepositoryMock.Setup(x => x.GetAllPaymentMethods<object>())
-                .Throws(new GetAllPaymentMethodException(expectedMessage));
+                .Throws(new RuleException(expectedMessage));
 
             //Act
             var resultTask = _paymentMethodService.GetAllPaymentMethodsAsync();
@@ -149,7 +148,7 @@ namespace Prime.UnitTests.Services
             var idPaymentMethod = "6442dcb6523d52533aeb1ae4";
             var messageReturn = "Usuario nao encontrado por Id.";
             _paymentMethodRepositoryMock.Setup(x => x.FindByField<object>("Id", idPaymentMethod))
-                .Throws(new PaymentMethodNotFound(messageReturn));
+                .Throws(new RuleException(messageReturn));
 
             //Act
             var result = _paymentMethodService.FindByIdAsync(idPaymentMethod);
@@ -312,7 +311,7 @@ namespace Prime.UnitTests.Services
             //     .Returns(Task.FromResult(false));
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", paymentMethodComplet.IdUser)).Returns(Task.FromResult(FactoryUser.CustomerUser()));
             _paymentMethodRepositoryMock.Setup(x => x.Save<PaymentMethod>(It.IsAny<PaymentMethod>()))
-                .Throws(new SavePaymentMethodException(expectedMessage));
+                .Throws(new SaveException(expectedMessage));
 
             // Act
             var result = _paymentMethodService.SaveAsync(paymentMethodDTO);
@@ -458,7 +457,7 @@ namespace Prime.UnitTests.Services
 
             //Act
             _paymentMethodRepositoryMock.Setup(x => x.FindByField<PaymentMethod>("Id", id))
-            .Throws(new PaymentMethodNotFound(expectedMessage));
+            .Throws(new RuleException(expectedMessage));
             
             var result = _paymentMethodService.DeleteAsync(id, paymentMethodComplet.IdUser);
 
@@ -480,7 +479,7 @@ namespace Prime.UnitTests.Services
             .Returns(Task.FromResult(FactoryPaymentMethod.SimplePaymentMethod()));
 
             _paymentMethodRepositoryMock.Setup(x => x.Delete<object>(id))
-            .Throws(new DeletePaymentMethodException(expectedMessage));
+            .Throws(new DeleteException(expectedMessage));
             
             var result = _paymentMethodService.DeleteAsync(id, paymentMethodComplet.IdUser);
 

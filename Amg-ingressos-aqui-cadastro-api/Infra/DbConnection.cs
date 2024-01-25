@@ -5,7 +5,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Infra
 {
     public class DbConnection<T> : IDbConnection<T>
     {
-        private IOptions<CadastroDatabaseSettings> _config;
+        private readonly IOptions<CadastroDatabaseSettings> _config;
         public DbConnection(IOptions<CadastroDatabaseSettings> transactionDatabaseSettings)
         {
             _config = transactionDatabaseSettings;
