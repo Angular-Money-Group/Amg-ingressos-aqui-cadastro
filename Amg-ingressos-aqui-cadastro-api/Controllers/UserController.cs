@@ -25,7 +25,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        public async Task<IActionResult> SaveUserAsync([FromBody] UserDTO user)
+        public async Task<IActionResult> SaveUserAsync([FromBody] UserDto user)
         {
             MessageReturn result = await _userService.SaveAsync(user);
             if (result.hasRunnedSuccessfully())
@@ -86,7 +86,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpPut]
         [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromBody] UserDTO usuarioUpdated)
+        public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromBody] UserDto usuarioUpdated)
         {
             if (usuarioUpdated is null)
                 throw new RuleException("Json de Usuario veio Nulo.");
@@ -110,7 +110,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpPut]
         [Route("resetpassword/{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdatePassowordAsync([FromRoute] string id, [FromBody] UserDTO userPassword)
+        public async Task<IActionResult> UpdatePassowordAsync([FromRoute] string id, [FromBody] UserDto userPassword)
         {
             if (userPassword is null)
                 throw new RuleException("Json de Usuario veio Nulo.");

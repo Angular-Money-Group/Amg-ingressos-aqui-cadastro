@@ -31,11 +31,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 var result = await _paymentMethodRepository.GetAllPaymentMethods<PaymentMethod>();
 
-                List<PaymentMethodDTO> list = new List<PaymentMethodDTO>();
-                foreach (PaymentMethod paymentMethod in result)
+                List<PaymentMethodDto> list = new List<PaymentMethodDto>();
+                /*foreach (PaymentMethod paymentMethod in result)
                 {
                     list.Add(new PaymentMethodDTO(paymentMethod));
-                }
+                }*/
                 _messageReturn.Data = list;
             }
             catch (Exception ex)
@@ -54,7 +54,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 idPaymentMethod.ValidateIdMongo();
 
                 PaymentMethod paymentMethod = await _paymentMethodRepository.FindByField<PaymentMethod>("Id", idPaymentMethod);
-                _messageReturn.Data = new PaymentMethodDTO(paymentMethod);
+                _messageReturn.Data = paymentMethod;
 
             }
             catch (Exception ex)
@@ -66,7 +66,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        public async Task<MessageReturn> SaveAsync(PaymentMethodDTO paymentMethodSave)
+        public async Task<MessageReturn> SaveAsync(PaymentMethodDto paymentMethodSave)
         {
             _messageReturn = new MessageReturn();
             try
@@ -114,7 +114,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 if (!_messageReturn.hasRunnedSuccessfully())
                     throw new DeleteException(_messageReturn.Message);
 
-                if ((_messageReturn.Data as PaymentMethodDTO).IdUser != idUser)
+                if ((_messageReturn.Data as PaymentMethodDto).IdUser != idUser)
                     throw new DeleteException("Id de metodo de pagamento nao corresponde ao id de usuario.");
 
                 _messageReturn.Data = await _paymentMethodRepository.Delete<PaymentMethod>(id) as string;

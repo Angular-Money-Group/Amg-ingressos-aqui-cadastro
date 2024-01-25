@@ -26,7 +26,7 @@ namespace Prime.UnitTests.Controllers
         private readonly Mock<IPaymentMethodRepository> _paymentMethodRepositoryMock = new Mock<IPaymentMethodRepository>();
         private readonly Mock<ILogger<PaymentMethodService>> _loggerMock = new Mock<ILogger<PaymentMethodService>>();
         private PaymentMethod paymentMethodComplet;
-        private PaymentMethodDTO paymentMethodDTO;
+        private PaymentMethodDto paymentMethodDTO;
 
 
         [SetUp]
@@ -36,7 +36,7 @@ namespace Prime.UnitTests.Controllers
             this._paymentMethodService = new PaymentMethodService(_paymentMethodRepositoryMock.Object, _userService, _loggerMock.Object);
             this._paymentMethodController = new PaymentMethodController(this._paymentMethodService);
             this.paymentMethodComplet = FactoryPaymentMethod.SimplePaymentMethod();
-            this.paymentMethodDTO = new PaymentMethodDTO(this.paymentMethodComplet);
+            //this.paymentMethodDTO = new PaymentMethodDTO(this.paymentMethodComplet);
         }
 
 
@@ -106,13 +106,13 @@ namespace Prime.UnitTests.Controllers
 
             //Act
             var result = await _paymentMethodController.GetAllPaymentMethodsAsync() as ObjectResult;
-            var list = result.Value as IEnumerable<PaymentMethodDTO>;
+            var list = result.Value as IEnumerable<PaymentMethodDto>;
 
             //Assert
             Assert.AreEqual(200, result?.StatusCode);
             foreach (object paymentMethod in list)
             {
-                Assert.IsInstanceOf<PaymentMethodDTO>(paymentMethod);
+                Assert.IsInstanceOf<PaymentMethodDto>(paymentMethod);
             }
         }
 
@@ -166,7 +166,7 @@ namespace Prime.UnitTests.Controllers
             var result = await _paymentMethodController.FindByIdPaymentMethodAsync(id) as ObjectResult;
 
             //Assert
-            Assert.IsInstanceOf<PaymentMethodDTO>(result?.Value);
+            Assert.IsInstanceOf<PaymentMethodDto>(result?.Value);
             Assert.AreEqual(200, result?.StatusCode);
         }
 

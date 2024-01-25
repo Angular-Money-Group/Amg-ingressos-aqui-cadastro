@@ -154,7 +154,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var eventDetails = eventDetailsTask.Result;
                 var listUserEvent =
                     (IEnumerable<AssociateCollaboratorEvent>)listUserEventTask.Result;
-                var listUser = ((List<UserDTO>)listUserTask.Result.Data).ToDictionary(u => u.Id);
+                var listUser = ((List<UserDto>)listUserTask.Result.Data).ToDictionary(u => u.Id);
 
                 var listEmail =
                     from usersEvent in listUserEvent
@@ -166,7 +166,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         To = user.Contact.Email,
                         EventDate = eventDetails.FirstOrDefault().StartDate.ToString(),
                         EventName = eventDetails.FirstOrDefault().Name,
-                        LinkQrCode = "https://qrcode.ingressosaqui.com/auth?idEvento=" + eventDetails.FirstOrDefault()._Id,
+                        LinkQrCode = "https://qrcode.ingressosaqui.com/auth?idEvento=" + eventDetails.FirstOrDefault().Id,
                         Password = user.Password,
                         UserName = user.Name
                     };
@@ -189,7 +189,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 idEvent.ValidateIdMongo();
                 var listUser =
-                    (List<UserDTO>)
+                    (List<UserDto>)
                         _userService
                             .GetAsync(new FiltersUser() { Type = Enum.TypeUserEnum.Collaborator })
                             .Result.Data;

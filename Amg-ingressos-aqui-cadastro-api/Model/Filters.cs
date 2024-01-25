@@ -5,16 +5,23 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class FiltersUser
     {
+        public FiltersUser()
+        {
+            this.Email = string.Empty;
+            this.Name = string.Empty;
+            this.PhoneNumber = string.Empty;
+        }
+
         [JsonProperty("email")]
-        public string? Email { get; set; }
+        public string Email { get; set; }
 
         [JsonProperty("name")]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         [JsonProperty("phoneNumber")]
-        public string? PhoneNumber { get; set; }
+        public string PhoneNumber { get; set; }
 
         [JsonProperty("type")]
-        public TypeUserEnum? Type { get; set; }
+        public TypeUserEnum Type { get; set; }
     }
 }

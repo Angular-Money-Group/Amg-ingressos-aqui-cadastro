@@ -131,9 +131,9 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
         internal static List<User> ListSimpleUser()
         {
             List<User> listUser = new List<User>();
-            listUser.Add(new User(SimpleUser()));
-            listUser.Add(new User(ProducerUser()));
-            listUser.Add(new User(ColabUser()));
+            listUser.Add(SimpleUser());
+            listUser.Add(ProducerUser());
+            listUser.Add(ColabUser());
 
             return listUser;
         }
@@ -141,7 +141,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
         internal static List<User> ListCloab()
         {
             List<User> listColab = new List<User>();
-            listColab.Add(new User(ColabUser()));
+            listColab.Add(ColabUser());
 
             return listColab;
         }
@@ -149,7 +149,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
         internal static List<User> ListProducer()
         {
             List<User> listProducer = new List<User>();
-            listProducer.Add(new User(ProducerUser()));
+            listProducer.Add(ProducerUser());
 
             return listProducer;
         }

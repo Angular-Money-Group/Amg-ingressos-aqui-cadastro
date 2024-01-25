@@ -139,7 +139,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 idEvent.ValidateIdMongo();
                 idUser.ValidateIdMongo();
-                var user = (UserDTO)_userService.FindByIdAsync(idUser).Result.Data;
+                var user = (UserDto)_userService.FindByIdAsync(idUser).Result.Data;
                 if (user == null)
                     throw new RuleException("Usário não cadastrado.");
                 TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum), user.Type, true);

@@ -23,7 +23,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
         internal static List<PaymentMethod> ListSimplePaymentMethod()
         {
             List<PaymentMethod> listPaymentMethod = new List<PaymentMethod>();
-            listPaymentMethod.Add(new PaymentMethod(SimplePaymentMethod()));
+            listPaymentMethod.Add(SimplePaymentMethod());
 
             return listPaymentMethod;
         }

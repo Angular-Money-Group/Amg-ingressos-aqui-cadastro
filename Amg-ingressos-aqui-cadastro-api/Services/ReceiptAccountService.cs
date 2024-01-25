@@ -31,11 +31,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 var result = await _receiptAccountRepository.GetAllReceiptAccounts<ReceiptAccount>();
 
-                List<ReceiptAccountDTO> list = new List<ReceiptAccountDTO>();
-                foreach (ReceiptAccount receiptAccount in result)
+                List<ReceiptAccountDto> list = new List<ReceiptAccountDto>();
+                /*foreach (ReceiptAccount receiptAccount in result)
                 {
                     list.Add(new ReceiptAccountDTO(receiptAccount));
-                }
+                }*/
                 _messageReturn.Data = list;
             }
             catch (Exception ex)
@@ -52,13 +52,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 idReceiptAccount.ValidateIdMongo();
-                var receiptAccountDTOList = new List<ReceiptAccountDTO>();
+                var receiptAccountDTOList = new List<ReceiptAccountDto>();
                 List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<List<ReceiptAccount>>("_id", idReceiptAccount);
 
-                for (var i = 0; i < receiptAccount.Count; i++)
+                /*for (var i = 0; i < receiptAccount.Count; i++)
                 {
                     receiptAccountDTOList.Add(new ReceiptAccountDTO(receiptAccount[i]));
-                }
+                }*/
                 _messageReturn.Data = receiptAccountDTOList.FirstOrDefault();
 
             }
@@ -77,13 +77,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 idUser.ValidateIdMongo();
-                var receiptAccountDTOList = new List<ReceiptAccountDTO>();
+                var receiptAccountDTOList = new List<ReceiptAccountDto>();
                 List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<List<ReceiptAccount>>("IdUser", idUser);
 
-                for (var i = 0; i < receiptAccount.Count; i++)
+                /*for (var i = 0; i < receiptAccount.Count; i++)
                 {
                     receiptAccountDTOList.Add(new ReceiptAccountDTO(receiptAccount[i]));
-                }
+                }*/
                 _messageReturn.Data = receiptAccountDTOList;
 
             }
@@ -95,7 +95,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
             return _messageReturn;
         }
-        public async Task<MessageReturn> SaveAsync(ReceiptAccountDTO receiptAccountSave)
+        public async Task<MessageReturn> SaveAsync(ReceiptAccountDto receiptAccountSave)
         {
             _messageReturn = new MessageReturn();
             try
@@ -143,7 +143,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 if (!_messageReturn.hasRunnedSuccessfully())
                     throw new EditException(_messageReturn.Message);
 
-                if ((_messageReturn.Data as ReceiptAccountDTO).IdUser != idUser)
+                if ((_messageReturn.Data as ReceiptAccountDto).IdUser != idUser)
                     throw new EditException("Id de conta bancaria nao corresponde ao id de usuario.");
 
                 _messageReturn.Data = await _receiptAccountRepository.Delete<ReceiptAccount>(id) as string;

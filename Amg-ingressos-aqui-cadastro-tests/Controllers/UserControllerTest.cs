@@ -23,7 +23,7 @@ namespace Prime.UnitTests.Controllers
         private readonly Mock<IEmailService> _emailServiceMock = new Mock<IEmailService>();
         private readonly Mock<ILogger<UserService>> _loggerMockUserService = new Mock<ILogger<UserService>>();
         private User userComplet;
-        private UserDTO userDTO;
+        private UserDto userDTO;
 
 
         [SetUp]
@@ -32,7 +32,7 @@ namespace Prime.UnitTests.Controllers
             this._userService = new UserService(_userRepositoryMock.Object, _emailServiceMock.Object, _loggerMockUserService.Object);
             this._userController = new UserController(this._userService);
             this.userComplet = FactoryUser.SimpleUser();
-            this.userDTO = new UserDTO();
+            this.userDTO = new UserDto();
         }
 
 
@@ -125,13 +125,13 @@ namespace Prime.UnitTests.Controllers
 
             //Act
             var result = await _userController.GetAsync(new FiltersUser()) as ObjectResult;
-            var list = result.Value as IEnumerable<UserDTO>;
+            var list = result.Value as IEnumerable<UserDto>;
 
             //Assert
             Assert.AreEqual(200, result?.StatusCode);
             foreach (object user in list)
             {
-                Assert.IsInstanceOf<UserDTO>(user);
+                Assert.IsInstanceOf<UserDto>(user);
             }
         }
 
@@ -185,7 +185,7 @@ namespace Prime.UnitTests.Controllers
             var result = await _userController.FindByIdAsync(id) as ObjectResult;
 
             //Assert
-            Assert.IsInstanceOf<UserDTO>(result?.Value);
+            Assert.IsInstanceOf<UserDto>(result?.Value);
             Assert.AreEqual(200, result?.StatusCode);
         }
 
@@ -269,7 +269,7 @@ namespace Prime.UnitTests.Controllers
         {
             //Arrange
             var id = this.userDTO.Id;
-            UserDTO userUpdated = this.userDTO;
+            UserDto userUpdated = this.userDTO;
             userUpdated.Name = "nome atualizado";
 
             var expectedResult = "Usuário Atualizado.";
@@ -294,7 +294,7 @@ namespace Prime.UnitTests.Controllers
         {
             //Arrange
             var id = this.userDTO.Id;
-            UserDTO userUpdated = this.userDTO;
+            UserDto userUpdated = this.userDTO;
             userUpdated.Name = string.Empty;
             userUpdated.DocumentId = "111.111.111-11";
 

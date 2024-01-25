@@ -8,6 +8,7 @@ using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Microsoft.Extensions.Logging;
+using Amg_ingressos_aqui_cadastro_api.Enum;
 
 namespace Prime.UnitTests.Services
 {
@@ -21,7 +22,7 @@ namespace Prime.UnitTests.Services
         private PaymentMethodService _paymentMethodService;
         private readonly Mock<IPaymentMethodRepository> _paymentMethodRepositoryMock = new Mock<IPaymentMethodRepository>();
         private PaymentMethod paymentMethodComplet;
-        private PaymentMethodDTO paymentMethodDTO;
+        private PaymentMethodDto paymentMethodDTO;
 
 
         [SetUp]
@@ -30,7 +31,7 @@ namespace Prime.UnitTests.Services
             this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object,_loggerMockUserService.Object);
             this._paymentMethodService = new PaymentMethodService(_paymentMethodRepositoryMock.Object, _userService,_loggerMockPaymentMethodService.Object);
             this.paymentMethodComplet = FactoryPaymentMethod.SimplePaymentMethod();
-            this.paymentMethodDTO = new PaymentMethodDTO(this.paymentMethodComplet);
+            this.paymentMethodDTO = new PaymentMethodDto();
         }
 
 
@@ -48,12 +49,12 @@ namespace Prime.UnitTests.Services
 
             //Act
             var result = _paymentMethodService.GetAllPaymentMethodsAsync();
-            var list = result.Result.Data as IEnumerable<PaymentMethodDTO>;
+            var list = result.Result.Data as IEnumerable<PaymentMethodDto>;
 
             //Assert
             Assert.IsEmpty(result.Result.Message);
             foreach (object paymentMethod in list) {
-                Assert.IsInstanceOf<PaymentMethodDTO>(paymentMethod);
+                Assert.IsInstanceOf<PaymentMethodDto>(paymentMethod);
             }
         }
 
@@ -103,7 +104,7 @@ namespace Prime.UnitTests.Services
             var result = _paymentMethodService.FindByIdAsync(id);
 
             //Assert
-            Assert.IsInstanceOf<PaymentMethodDTO>(result.Result.Data);
+            Assert.IsInstanceOf<PaymentMethodDto>(result.Result.Data);
             Assert.IsEmpty(result.Result.Message);
         }
 
@@ -198,7 +199,7 @@ namespace Prime.UnitTests.Services
         public void Given_PaymentMethod_Without_IdUser_When_save_Then_Return_message_Miss_IdUser()
         {
             //Arrange
-            PaymentMethodDTO paymentMethod = new PaymentMethodDTO(this.paymentMethodComplet);
+            PaymentMethodDto paymentMethod = new PaymentMethodDto();
             paymentMethod.IdUser = string.Empty;
             var expectedMessage = new MessageReturn() { Message = "Em IdUser: Id é Obrigatório." };
 
@@ -214,7 +215,7 @@ namespace Prime.UnitTests.Services
         public void Given_PaymentMethod_Without_DocumentId_When_save_Then_Return_message_Miss_DocumentId()
         {
             //Arrange
-            PaymentMethodDTO paymentMethod = new PaymentMethodDTO(this.paymentMethodComplet);
+            PaymentMethodDto paymentMethod = new PaymentMethodDto();
             paymentMethod.DocumentId = string.Empty;
             var expectedMessage = new MessageReturn() { Message = "Documento de Identificação é Obrigatório." };
 
@@ -230,11 +231,11 @@ namespace Prime.UnitTests.Services
         public void Given_PaymentMethod_Without_typePayment_When_save_Then_Return_Message_Miss_typePayment()
         {
             //Arrange
-            this.paymentMethodComplet.typePayment = null;
+            this.paymentMethodComplet.typePayment = TypePaymentEnum.CreditCard;
             var expectedMessage = new MessageReturn() { Message = "Tipo de Pagamento é Obrigatório." };
 
             //Act
-            var result = _paymentMethodService.SaveAsync(new PaymentMethodDTO(this.paymentMethodComplet));
+            var result = _paymentMethodService.SaveAsync(new PaymentMethodDto());
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -249,7 +250,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn() { Message = "Número de Cartão é Obrigatório." };
 
             //Act
-            var result = _paymentMethodService.SaveAsync(new PaymentMethodDTO(this.paymentMethodComplet));
+            var result = _paymentMethodService.SaveAsync(new PaymentMethodDto());
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -264,7 +265,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn() { Message = "Nome impresso no cartão é Obrigatório." };
 
             //Act
-            var result = _paymentMethodService.SaveAsync(new PaymentMethodDTO(this.paymentMethodComplet));
+            var result = _paymentMethodService.SaveAsync(new PaymentMethodDto());
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -275,11 +276,11 @@ namespace Prime.UnitTests.Services
         public void Given_PaymentMethod_Without_ExpirationDate_When_save_Then_Return_Message_Miss_ExpirationDate()
         {
             //Arrange
-            this.paymentMethodComplet.ExpirationDate = null;
+            this.paymentMethodComplet.ExpirationDate = DateTime.Now;
             var expectedMessage = new MessageReturn() { Message = "Data de validade do cartão é Obrigatório." };
 
             //Act
-            var result = _paymentMethodService.SaveAsync(new PaymentMethodDTO(this.paymentMethodComplet));
+            var result = _paymentMethodService.SaveAsync(new PaymentMethodDto());
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -294,7 +295,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn() { Message = "Código de segurança do cartão é Obrigatório." };
 
             //Act
-            var result = _paymentMethodService.SaveAsync(new PaymentMethodDTO(this.paymentMethodComplet));
+            var result = _paymentMethodService.SaveAsync(new PaymentMethodDto());
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -331,7 +332,7 @@ namespace Prime.UnitTests.Services
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
-            var exception = Assert.ThrowsAsync<Exception>(() =>_paymentMethodService.SaveAsync(new PaymentMethodDTO(paymentMethodComplet)));
+            var exception = Assert.ThrowsAsync<Exception>(() =>_paymentMethodService.SaveAsync(new PaymentMethodDto()));
             Assert.AreEqual(expectedMessage, exception.Message);
         }
 

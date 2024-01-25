@@ -38,7 +38,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
         [Route("organizer/{idUserOrganizer}")]
-        public async Task<IActionResult> AssociateColabWithOrganizerAsync([FromRoute] string idUserOrganizer, [FromBody] UserDTO user)
+        public async Task<IActionResult> AssociateColabWithOrganizerAsync([FromRoute] string idUserOrganizer, [FromBody] UserDto user)
         {
             var idUserCollaborator = string.Empty;
             User userSave = new User();

@@ -7,7 +7,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
     {
         Task<MessageReturn> GetAllPaymentMethodsAsync();
         Task<MessageReturn> FindByIdAsync(string idPaymentMethod);
-        Task<MessageReturn> SaveAsync(PaymentMethodDTO paymentMethodSave);
+        Task<MessageReturn> SaveAsync(PaymentMethodDto paymentMethodSave);
         Task<bool> DoesIdExists(string idPaymentMethod);
         Task<MessageReturn> DeleteAsync(string id, string idUser);
     }

@@ -7,6 +7,15 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class TicketSupport
     {
+
+        public TicketSupport()
+        {
+            this.Id = string.Empty;
+            this.IdPerson = string.Empty;
+            this.Subject = string.Empty;
+            this.Message = string.Empty;
+        }
+
         /// <summary>
         /// Id mongo
         /// </summary>

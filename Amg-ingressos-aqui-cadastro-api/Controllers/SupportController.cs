@@ -25,7 +25,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        public async Task<IActionResult> SaveAsync([FromBody] SupportDTO support)
+        public async Task<IActionResult> SaveAsync([FromBody] SupportDto support)
         {
             MessageReturn result = await _supportService.SaveAsync(support);
             if (result.hasRunnedSuccessfully())
@@ -81,7 +81,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpPut]
         [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateById([FromRoute] string id, [FromBody] SupportDTO support)
+        public async Task<IActionResult> UpdateById([FromRoute] string id, [FromBody] SupportDto support)
         {
             var result = await _supportService.UpdateByIdAsync(id, support);
 

@@ -6,35 +6,45 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
 {
     public class GetCollaboratorProducerDto
     {
+        public GetCollaboratorProducerDto()
+        {
+            Id = string.Empty;
+            Name = string.Empty;
+            DocumentId = string.Empty;
+            Email = string.Empty;
+            IdAssociate = string.Empty;
+        }
+
+
         /// <summary>
         /// Nome do usuário
         /// </summary>
         [BsonElement("Id")]
         [JsonPropertyName("id")]
-        public string? Id { get; set; }
-        
+        public string Id { get; set; }
+
         /// <summary>
         /// name
         /// </summary>
         [JsonPropertyName("name")]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         /// <sumary>
         /// Documento identificação
         /// </sumary>
         [JsonPropertyName("documentId")]
-        public string? DocumentId { get; set; }
+        public string DocumentId { get; set; }
 
         /// <summary>
         /// Email do usuário
         /// </summary>
         [JsonPropertyName("email")]
-        public string? Email { get; set; }
+        public string Email { get; set; }
 
         /// <summary>
         /// Email do usuário
         /// </summary>
         [JsonPropertyName("idAssociate")]
-        public string? IdAssociate { get; set; }
+        public string IdAssociate { get; set; }
     }
 }

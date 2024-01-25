@@ -6,10 +6,17 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class AssociateUserApiDataEvent
     {
+        public AssociateUserApiDataEvent()
+        {
+            Id = string.Empty;
+            IdUser = string.Empty;
+            IdEvent = string.Empty;
+        }
+
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         [BsonElement("_id")]
-        public string? Id { get; set; }
+        public string Id { get; set; }
 
         [Required]
         [BsonRepresentation(BsonType.ObjectId)]

@@ -98,5 +98,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Utils
             if(!classObjectEnum.Equals(TEnum))
                 throw new RuleException();
         }
+
+        public static void ValidateEmail(string email)
+        {
+            if (string.IsNullOrEmpty(email))
+                throw new RuleException("Email é Obrigatório.");
+            if (!email.ValidateEmailFormat())
+                throw new RuleException("Formato de email inválido.");
+        }
     }
 }

@@ -1,26 +1,18 @@
+using Amg_ingressos_aqui_cadastro_api.Exceptions;
+using Amg_ingressos_aqui_cadastro_api.Utils;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
-namespace Amg_ingressos_aqui_cadastro_api.Model {
+namespace Amg_ingressos_aqui_cadastro_api.Model
+{
     public class EventColab
     {
-        public EventColab() {
-            Id = null;
-            IdEvent = null;
-            IdColab = null;
-        }
-        
-        public EventColab(EventColab EventColab) {
-            Id = EventColab.Id;
-            IdEvent = EventColab.IdEvent;
-            IdColab = EventColab.IdColab;
-        }
-        
-        public EventColab(string? id, string? idEvent, string? idColab) {
-            Id = id;
-            IdEvent = idEvent;
-            IdColab = idColab;
+        public EventColab()
+        {
+            Id = string.Empty;
+            IdEvent = string.Empty;
+            IdColab = string.Empty;
         }
 
         /// <summary>
@@ -38,12 +30,54 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         [BsonElement("IdEvent")]
         [JsonPropertyName("IdEvent")]
         public string? IdEvent { get; set; }
-        
+
         /// <summary>
         /// Id do Colaborador
         /// </summary>
         [BsonElement("IdColab")]
         [JsonPropertyName("IdColab")]
         public string? IdColab { get; set; }
+
+        public EventColab makeEventColabSave()
+        {
+            if (Id is not null)
+                Id = null;
+            ValidateIdEventFormat(IdEvent);
+            ValidateIdColabFormat(IdColab);
+            return new EventColab();
+        }
+
+        public EventColab makeEventColabUpdate()
+        {
+            Id.ValidateIdMongo();
+            ValidateIdEventFormat(IdEvent);
+            ValidateIdColabFormat(IdColab);
+            return new EventColab();
+        }
+
+        // PUBLIC FUNCTIONS
+        public static void ValidateIdEventFormat(string idEvent)
+        {
+            try
+            {
+                idEvent.ValidateIdMongo();
+            }
+            catch (IdMongoException ex)
+            {
+                throw new IdMongoException("Em IdEvent: " + ex.Message);
+            }
+        }
+
+        public static void ValidateIdColabFormat(string idColab)
+        {
+            try
+            {
+                idColab.ValidateIdMongo();
+            }
+            catch (IdMongoException ex)
+            {
+                throw new IdMongoException("Em IdColab: " + ex.Message);
+            }
+        }
     }
 }

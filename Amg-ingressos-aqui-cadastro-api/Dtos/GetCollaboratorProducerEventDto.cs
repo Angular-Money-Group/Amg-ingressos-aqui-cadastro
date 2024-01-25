@@ -6,30 +6,42 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
 {
     public class GetCollaboratorProducerEventDto
     {
+
+        public GetCollaboratorProducerEventDto()
+        {
+            this.Id = string.Empty;
+            this.Name = string.Empty;
+            this.DocumentId = string.Empty;
+            this.Email = string.Empty;
+            this.IdAssociateEvent = string.Empty;
+
+        }
+
+
         /// <summary>
         /// Nome do usuário
         /// </summary>
         [BsonElement("Id")]
         [JsonPropertyName("id")]
-        public string? Id { get; set; }
-        
+        public string Id { get; set; }
+
         /// <summary>
         /// name
         /// </summary>
         [JsonPropertyName("name")]
-        public string? Name { get; set; }
+        public string Name { get; set; }
 
         /// <sumary>
         /// Documento identificação
         /// </sumary>
         [JsonPropertyName("documentId")]
-        public string? DocumentId { get; set; }
+        public string DocumentId { get; set; }
 
         /// <summary>
         /// Email do usuário
         /// </summary>
         [JsonPropertyName("email")]
-        public string? Email { get; set; }
+        public string Email { get; set; }
 
         /// <summary>
         /// Assignado ao evento
@@ -41,6 +53,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         /// Email do usuário
         /// </summary>
         [JsonPropertyName("idAssociateEvent")]
-        public string? IdAssociateEvent { get; set; }
+        public string IdAssociateEvent { get; set; }
     }
 }

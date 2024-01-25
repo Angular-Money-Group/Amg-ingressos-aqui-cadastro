@@ -26,7 +26,7 @@ namespace Prime.UnitTests.Controllers
         private readonly Mock<IReceiptAccountRepository> _receiptAccountRepositoryMock = new Mock<IReceiptAccountRepository>();
         private readonly Mock<ILogger<ReceiptAccountService>> _loggerMock = new Mock<ILogger<ReceiptAccountService>>();
         private ReceiptAccount receiptAccountComplet;
-        private ReceiptAccountDTO receiptAccountDTO;
+        private ReceiptAccountDto receiptAccountDTO;
         private List<ReceiptAccount> listReceiptAccountComplet;
         private List<ReceiptAccount> receiptAccountListDTO;
 
@@ -38,7 +38,7 @@ namespace Prime.UnitTests.Controllers
             this._receiptAccountService = new ReceiptAccountService(_receiptAccountRepositoryMock.Object, _userService, _loggerMock.Object);
             this._receiptAccountController = new ReceiptAccountController(this._receiptAccountService);
             this.receiptAccountComplet = FactoryReceiptAccount.SimpleReceiptAccount();
-            this.receiptAccountDTO = new ReceiptAccountDTO(this.receiptAccountComplet);
+            //this.receiptAccountDTO = new ReceiptAccountDTO(this.receiptAccountComplet);
             this.listReceiptAccountComplet = FactoryReceiptAccount.ListSimpleReceiptAccount();
             this.receiptAccountListDTO = new List<ReceiptAccount>(this.listReceiptAccountComplet);
         }
@@ -112,13 +112,13 @@ namespace Prime.UnitTests.Controllers
 
             //Act
             var result = await _receiptAccountController.GetAllReceiptAccountsAsync() as ObjectResult;
-            var list = result.Value as IEnumerable<ReceiptAccountDTO>;
+            var list = result.Value as IEnumerable<ReceiptAccountDto>;
 
             //Assert
             Assert.AreEqual(200, result?.StatusCode);
             foreach (object receiptAccount in list)
             {
-                Assert.IsInstanceOf<ReceiptAccountDTO>(receiptAccount);
+                Assert.IsInstanceOf<ReceiptAccountDto>(receiptAccount);
             }
         }
 
@@ -172,7 +172,7 @@ namespace Prime.UnitTests.Controllers
             var result = await _receiptAccountController.FindByIdReceiptAccountAsync(id) as ObjectResult;
 
             //Assert
-            Assert.IsInstanceOf<ReceiptAccountDTO>(result?.Value);
+            Assert.IsInstanceOf<ReceiptAccountDto>(result?.Value);
             Assert.AreEqual(200, result?.StatusCode);
         }
 

@@ -4,8 +4,15 @@ using MongoDB.Bson.Serialization.Attributes;
 
 namespace Amg_ingressos_aqui_cadastro_api.Model
 {
-    public class AssociateCollaboratorOrganizer 
+    public class AssociateCollaboratorOrganizer
     {
+        public AssociateCollaboratorOrganizer()
+        {
+            Id = string.Empty;
+            IdUserOrganizer = string.Empty;
+            IdUserCollaborator = string.Empty;
+        }
+
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         [BsonElement("_id")]

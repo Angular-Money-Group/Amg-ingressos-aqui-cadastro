@@ -21,7 +21,7 @@ namespace Prime.UnitTests.Services
         private ReceiptAccountService _receiptAccountService;
         private readonly Mock<IReceiptAccountRepository> _receiptAccountRepositoryMock = new Mock<IReceiptAccountRepository>();
         private ReceiptAccount receiptAccountComplet;
-        private ReceiptAccountDTO receiptAccountDTO;
+        private ReceiptAccountDto receiptAccountDTO;
 
         private List<ReceiptAccount> listReceiptAccountComplet;
         private List<ReceiptAccount> receiptAccountListDTO;
@@ -32,7 +32,7 @@ namespace Prime.UnitTests.Services
             this._userService = new UserService(_userRepositoryMock.Object,_emailServiceMock.Object,_loggerMockUserService.Object);
             this._receiptAccountService = new ReceiptAccountService(_receiptAccountRepositoryMock.Object, _userService,_loggerMockReceiptAccountService.Object);
             this.receiptAccountComplet = FactoryReceiptAccount.SimpleReceiptAccount();
-            this.receiptAccountDTO = new ReceiptAccountDTO(this.receiptAccountComplet);
+            this.receiptAccountDTO = new ReceiptAccountDto();
                         this.listReceiptAccountComplet = FactoryReceiptAccount.ListSimpleReceiptAccount();
             this.receiptAccountListDTO = new List<ReceiptAccount>(this.listReceiptAccountComplet);
         }
@@ -52,12 +52,12 @@ namespace Prime.UnitTests.Services
 
             //Act
             var result = _receiptAccountService.GetAllReceiptAccountsAsync();
-            var list = result.Result.Data as IEnumerable<ReceiptAccountDTO>;
+            var list = result.Result.Data as IEnumerable<ReceiptAccountDto>;
 
             //Assert
             Assert.IsEmpty(result.Result.Message);
             foreach (object receiptAccount in list) {
-                Assert.IsInstanceOf<ReceiptAccountDTO>(receiptAccount);
+                Assert.IsInstanceOf<ReceiptAccountDto>(receiptAccount);
             }
         }
 
@@ -107,7 +107,7 @@ namespace Prime.UnitTests.Services
             var result = _receiptAccountService.FindByIdAsync(id);
 
             //Assert
-            Assert.IsInstanceOf<ReceiptAccountDTO>(result.Result.Data);
+            Assert.IsInstanceOf<ReceiptAccountDto>(result.Result.Data);
             Assert.IsEmpty(result.Result.Message);
         }
 
@@ -206,7 +206,7 @@ namespace Prime.UnitTests.Services
         public void Given_ReceiptAccount_Without_IdUser_When_save_Then_Return_message_Miss_IdUser()
         {
             //Arrange
-            ReceiptAccountDTO receiptAccount = new ReceiptAccountDTO(this.receiptAccountComplet);
+            ReceiptAccountDto receiptAccount = new ReceiptAccountDto();
             receiptAccount.IdUser = string.Empty;
             var expectedMessage = new MessageReturn() { Message = "Em IdUser: Id é Obrigatório." };
 
@@ -222,7 +222,7 @@ namespace Prime.UnitTests.Services
         public void Given_ReceiptAccount_Without_name_When_save_Then_Return_message_Miss_FullName()
         {
             //Arrange
-            ReceiptAccountDTO receiptAccount = new ReceiptAccountDTO(this.receiptAccountComplet);
+            ReceiptAccountDto receiptAccount = new ReceiptAccountDto();
             receiptAccount.FullName = string.Empty;
             var expectedMessage = new MessageReturn() { Message = "Nome é Obrigatório." };
 
@@ -242,7 +242,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn() { Message = "Banco é Obrigatório." };
 
             //Act
-            var result = _receiptAccountService.SaveAsync(new ReceiptAccountDTO(this.receiptAccountComplet));
+            var result = _receiptAccountService.SaveAsync(new ReceiptAccountDto());
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -257,7 +257,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn() { Message = "Agência Bancária é Obrigatório." };
 
             //Act
-            var result = _receiptAccountService.SaveAsync(new ReceiptAccountDTO(this.receiptAccountComplet));
+            var result = _receiptAccountService.SaveAsync(new ReceiptAccountDto());
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -272,7 +272,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn() { Message = "Conta Bancária é Obrigatório." };
 
             //Act
-            var result = _receiptAccountService.SaveAsync(new ReceiptAccountDTO(this.receiptAccountComplet));
+            var result = _receiptAccountService.SaveAsync(new ReceiptAccountDto());
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -287,7 +287,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = new MessageReturn() { Message = "Dígito da Conta Bancária é Obrigatório." };
 
             //Act
-            var result = _receiptAccountService.SaveAsync(new ReceiptAccountDTO(this.receiptAccountComplet));
+            var result = _receiptAccountService.SaveAsync(new ReceiptAccountDto());
 
             //Assert
             Assert.AreEqual(expectedMessage.Message, result.Result.Message);
@@ -327,7 +327,7 @@ namespace Prime.UnitTests.Services
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
-            var exception = Assert.ThrowsAsync<Exception>(() =>_receiptAccountService.SaveAsync(new ReceiptAccountDTO(receiptAccountComplet)));
+            var exception = Assert.ThrowsAsync<Exception>(() =>_receiptAccountService.SaveAsync(new ReceiptAccountDto()));
             Assert.AreEqual(expectedMessage, exception.Message);
         }
 

@@ -47,10 +47,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             return ticketSupport;
         }
 
-        public async Task<TicketSupport> UpdateByIdAsync<T>(string id, SupportDTO ticketSupport)
+        public async Task<TicketSupport> UpdateByIdAsync<T>(string id, SupportDto ticketSupport)
         {
             var update = Builders<TicketSupport>.Update
-                .Set(userMongo => userMongo.Status, ticketSupport.Status ?? StatusSupport.Active)
+                .Set(userMongo => userMongo.Status, ticketSupport.Status)
                 .Set(userMongo => userMongo.Message, ticketSupport.Message)
                 .Set(userMongo => userMongo.Subject, ticketSupport.Subject);
 

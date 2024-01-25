@@ -66,7 +66,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        public async Task<MessageReturn> SaveAsync(SupportDTO supportSave)
+        public async Task<MessageReturn> SaveAsync(SupportDto supportSave)
         {
             _messageReturn = new MessageReturn();
             try
@@ -97,7 +97,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        public async Task<MessageReturn> UpdateByIdAsync(string id, SupportDTO ticketSupport)
+        public async Task<MessageReturn> UpdateByIdAsync(string id, SupportDto ticketSupport)
         {
             _messageReturn = new MessageReturn();
 

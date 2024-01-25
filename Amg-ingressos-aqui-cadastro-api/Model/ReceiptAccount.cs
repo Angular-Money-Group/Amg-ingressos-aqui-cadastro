@@ -1,40 +1,22 @@
-﻿using MongoDB.Bson;
+﻿using Amg_ingressos_aqui_cadastro_api.Exceptions;
+using Amg_ingressos_aqui_cadastro_api.Utils;
+using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
 namespace Amg_ingressos_aqui_cadastro_api.Model
 {
-    public class ReceiptAccount 
+    public class ReceiptAccount
     {
-        public ReceiptAccount() {
-            Id = null;
-            IdUser = null;
-            FullName = null;
-            Bank = null;
-            BankAgency = null;
-            BankAccount = null;
-            BankDigit = null;
-        }
-        
-        public ReceiptAccount(ReceiptAccount receiptAccount) {
-            Id = receiptAccount.Id;
-            IdUser = receiptAccount.IdUser;
-            FullName = receiptAccount.FullName;
-            Bank = receiptAccount.Bank;
-            BankAgency = receiptAccount.BankAgency;
-            BankAccount = receiptAccount.BankAccount;
-            BankDigit = receiptAccount.BankDigit;
-        }
-        
-        public ReceiptAccount(string? id, string? idUser, string? fullName, string? bank, string? bankAgency,
-            string? bankAccount, string? bankDigit) {
-            Id = id;
-            IdUser = idUser;
-            FullName = fullName;
-            Bank = bank;
-            BankAgency = bankAgency;
-            BankAccount = bankAccount;
-            BankDigit = bankDigit;
+        public ReceiptAccount()
+        {
+            Id = string.Empty;
+            IdUser = string.Empty;
+            FullName = string.Empty;
+            Bank = string.Empty;
+            BankAgency = string.Empty;
+            BankAccount = string.Empty;
+            BankDigit = string.Empty;
         }
 
         /// <summary>
@@ -44,36 +26,110 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         [BsonRepresentation(BsonType.ObjectId)]
         [BsonElement("Id")]
         [JsonPropertyName("Id")]
-        public string? Id { get; set; }
-        
+        public string Id { get; set; }
+
         /// <summary>
         /// Identificador do Usuário a quem o método de pagamento pertence
         /// </summary>
-        public string? IdUser { get; set; }
-        
+        public string IdUser { get; set; }
+
         /// <summary>
         /// Nome do uruário
         /// </summary>
-        public string? FullName { get; set; }
+        public string FullName { get; set; }
 
         /// <summary>
         /// Instituição Bancária
         /// </summary>
-        public string? Bank { get; set; }
-        
+        public string Bank { get; set; }
+
         /// <summary>
         /// Agência Bancária 
         /// </summary>
-        public string? BankAgency { get; set; }
+        public string BankAgency { get; set; }
 
         /// <summary>
         /// Conta Bancária
         /// </summary>
-        public string? BankAccount { get; set; }
+        public string BankAccount { get; set; }
 
         /// <summary>
         /// Dígito da Conta 
         /// </summary>
-        public string? BankDigit { get; set; }
+        public string BankDigit { get; set; }
+
+
+        // RECEIPT ACCOUNT FACTORY FUNCTIONS
+        public ReceiptAccount makeReceiptAccount()
+        {
+            return new ReceiptAccount();
+        }
+
+        public ReceiptAccount makeReceiptAccountSave()
+        {
+            if (string.IsNullOrEmpty(Id))
+                Id = string.Empty;
+            ValidateIdUserFormat();
+            return makeReceiptAccount();
+        }
+
+        public ReceiptAccount makeReceiptAccountUpdate()
+        {
+            Id.ValidateIdMongo();
+            ValidateIdUserFormat();
+            ValidateFullNameFormat();
+            ValidateBankFormat();
+            ValidateBankAgency();
+            ValidateBankAccount();
+            ValidateBankDigit();
+            return makeReceiptAccount();
+        }
+
+        // PUBLIC FUNCTIONS
+        public void ValidateIdUserFormat()
+        {
+            IdUser.ValidateIdUserFormat();
+        }
+
+        public void ValidateFullNameFormat()
+        {
+            if (string.IsNullOrEmpty(FullName))
+                throw new RuleException("Nome é Obrigatório.");
+            if (!FullName.ValidateFullNameFormat())
+                throw new RuleException("Formato de Nome Completo inválido.");
+        }
+
+        public void ValidateBankFormat()
+        {
+            if (string.IsNullOrEmpty(Bank))
+                throw new RuleException("Banco é Obrigatório.");
+            if (!Bank.ValidateCompanyNameFormat())
+                throw new RuleException("Campo de Banco contém caractere inválido.");
+        }
+
+        public void ValidateBankAgency()
+        {
+            if (string.IsNullOrEmpty(BankAgency))
+                throw new RuleException("Agência Bancária é Obrigatório.");
+            if (!BankAgency.ValidateNumbersWithHyphen())
+                throw new RuleException("Campo de Agência Bancária contém caractere inválido.");
+        }
+
+        public void ValidateBankAccount()
+        {
+            if (string.IsNullOrEmpty(BankAccount))
+                throw new RuleException("Conta Bancária é Obrigatório.");
+            if (!BankAccount.ValidateNumbersWithHyphen())
+                throw new RuleException("Campo de Conta Bancária contém caractere inválido.");
+        }
+
+        public void ValidateBankDigit()
+        {
+            if (string.IsNullOrEmpty(BankDigit))
+                throw new RuleException("Dígito da Conta Bancária é Obrigatório.");
+            if (!BankDigit.ValidateNumbersAndLetters())
+                throw new RuleException("Campo de Dígito Conta Bancária contém caractere inválido.");
+        }
+
     }
 }

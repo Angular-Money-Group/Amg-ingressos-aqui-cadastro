@@ -5,11 +5,19 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class AssociateCollaboratorEvent
     {
+        public AssociateCollaboratorEvent()
+        {
+            Id = string.Empty;
+            IdUserOrganizer = string.Empty;
+            IdUserCollaborator = string.Empty;
+            IdEvent = string.Empty;
+        }
+
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
         [BsonElement("_id")]
-        public string? Id { get; set; }
-        
+        public string Id { get; set; }
+
         [BsonRepresentation(BsonType.ObjectId)]
         public string IdEvent { get; set; }
 

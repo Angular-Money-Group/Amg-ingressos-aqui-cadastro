@@ -23,7 +23,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 conta de recebimento criada</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        public async Task<IActionResult> SaveReceiptAccountAsync([FromBody] ReceiptAccountDTO receiptAccountObject)
+        public async Task<IActionResult> SaveReceiptAccountAsync([FromBody] ReceiptAccountDto receiptAccountObject)
         {
             MessageReturn result = await _receiptAccountService.SaveAsync(receiptAccountObject);
             if (result.hasRunnedSuccessfully())
@@ -46,7 +46,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
 
             var result = await _receiptAccountService.GetAllReceiptAccountsAsync();
             if (result.hasRunnedSuccessfully())
-                return Ok(result.Data as List<ReceiptAccountDTO>);
+                return Ok(result.Data as List<ReceiptAccountDto>);
             else
                 throw new GetException(result.Message);
         }
@@ -66,7 +66,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
 
             var result = await _receiptAccountService.FindByIdUserAsync(idUser);
             if (result.hasRunnedSuccessfully())
-                return Ok(result.Data as List<ReceiptAccountDTO>);
+                return Ok(result.Data as List<ReceiptAccountDto>);
             else
                 throw new GetException(result.Message);
         }
