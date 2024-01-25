@@ -11,9 +11,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
     public class EventRepository : IEventRepository
     {
         private readonly IMongoCollection<Event> _eventCollection;
-        public EventRepository(IDbConnection<Event> dbConnection)
+        public EventRepository(IDbConnection dbConnection)
         {
-            _eventCollection = dbConnection.GetConnection("events");
+            _eventCollection = dbConnection.GetConnection<Event>("events");
         }
 
         public async Task<List<Event>> FindById<T>(string id)

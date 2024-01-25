@@ -1,5 +1,4 @@
 using Amg_ingressos_aqui_cadastro_api.Infra;
-using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Repository;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services;
@@ -42,16 +41,7 @@ builder.Services.AddScoped<IAssociateUserApiDataEventRepository, AssociateUserAp
 
 
 //infra
-builder.Services.AddScoped<IDbConnection<User>, DbConnection<User>>();
-builder.Services.AddScoped<IDbConnection<Event>, DbConnection<Event>>();
-builder.Services.AddScoped<IDbConnection<ReceiptAccount>, DbConnection<ReceiptAccount>>();
-builder.Services.AddScoped<IDbConnection<PaymentMethod>, DbConnection<PaymentMethod>>();
-builder.Services.AddScoped<IDbConnection<TicketSupport>, DbConnection<TicketSupport>>();
-builder.Services.AddScoped<IDbConnection<Sequence>, DbConnection<Sequence>>();
-builder.Services.AddScoped<IDbConnection<Email>, DbConnection<Email>>();
-builder.Services.AddScoped<IDbConnection<AssociateCollaboratorOrganizer>, DbConnection<AssociateCollaboratorOrganizer>>();
-builder.Services.AddScoped<IDbConnection<AssociateCollaboratorEvent>, DbConnection<AssociateCollaboratorEvent>>();
-builder.Services.AddScoped<IDbConnection<AssociateUserApiDataEvent>, DbConnection<AssociateUserApiDataEvent>>();
+builder.Services.AddScoped<IDbConnection, DbConnection>();
 
 builder.Services.AddCors(options =>
 {

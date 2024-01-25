@@ -10,9 +10,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
     {
         private readonly IMongoCollection<PaymentMethod> _paymentMethodCollection;
 
-        public PaymentMethodRepository(IDbConnection<PaymentMethod> dbConnection)
+        public PaymentMethodRepository(IDbConnection dbConnection)
         {
-            _paymentMethodCollection = dbConnection.GetConnection("paymentMethod");
+            _paymentMethodCollection = dbConnection.GetConnection<PaymentMethod>("paymentMethod");
         }
 
         public async Task<object> Save<T>(PaymentMethod paymentMethodComplet)

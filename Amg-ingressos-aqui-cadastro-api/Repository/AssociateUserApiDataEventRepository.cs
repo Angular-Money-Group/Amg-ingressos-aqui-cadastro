@@ -8,9 +8,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
     public class AssociateUserApiDataEventRepository : IAssociateUserApiDataEventRepository
     {
         private readonly IMongoCollection<AssociateUserApiDataEvent> _associateCollection;
-        public AssociateUserApiDataEventRepository(IDbConnection<AssociateUserApiDataEvent> dbconnectionIten)
+        public AssociateUserApiDataEventRepository(IDbConnection dbconnectionIten)
         {
-            _associateCollection = dbconnectionIten.GetConnection("apidatauser_event");
+            _associateCollection = dbconnectionIten.GetConnection<AssociateUserApiDataEvent>("apidatauser_event");
         }
         public async Task<object?> AssociateUserApiDataToEventAsync(AssociateUserApiDataEvent data)
         {

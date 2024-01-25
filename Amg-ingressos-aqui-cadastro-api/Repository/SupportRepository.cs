@@ -12,9 +12,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
     {
         private readonly IMongoCollection<TicketSupport> _supportCollection;
 
-        public SupportRepository(IDbConnection<TicketSupport> dbConnection)
+        public SupportRepository(IDbConnection dbConnection)
         {
-            _supportCollection = dbConnection.GetConnection("ticketsupports");
+            _supportCollection = dbConnection.GetConnection<TicketSupport>("ticketsupports");
         }
 
         public async Task<List<TicketSupport>> GetAll<T>()

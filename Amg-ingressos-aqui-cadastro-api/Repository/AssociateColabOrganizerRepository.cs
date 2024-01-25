@@ -9,9 +9,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
     public class AssociateColabOrganizerRepository : IAssociateColabOrganizerRepository
     {
         private readonly IMongoCollection<AssociateCollaboratorOrganizer> _associateCollection;
-        public AssociateColabOrganizerRepository(IDbConnection<AssociateCollaboratorOrganizer> dbconnectionIten)
+        public AssociateColabOrganizerRepository(IDbConnection dbconnectionIten)
         {
-            _associateCollection = dbconnectionIten.GetConnection("organizer_colaborator");
+            _associateCollection = dbconnectionIten.GetConnection<AssociateCollaboratorOrganizer>("organizer_colaborator");
         }
         public async Task<object> AssociateColabAsync(AssociateCollaboratorOrganizer associateColab)
         {

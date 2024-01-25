@@ -11,9 +11,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
     {
         private readonly IMongoCollection<ReceiptAccount> _receiptAccountCollection;
 
-        public ReceiptAccountRepository(IDbConnection<ReceiptAccount> dbConnection)
+        public ReceiptAccountRepository(IDbConnection dbConnection)
         {
-            _receiptAccountCollection = dbConnection.GetConnection("receiptAccount");
+            _receiptAccountCollection = dbConnection.GetConnection<ReceiptAccount>("receiptAccount");
         }
 
         public async Task<object> Save<T>(ReceiptAccount receiptAccountComplet)

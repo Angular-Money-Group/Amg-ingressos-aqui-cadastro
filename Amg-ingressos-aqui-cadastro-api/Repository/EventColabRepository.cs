@@ -2,7 +2,6 @@ using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Infra;
 using MongoDB.Driver;
-using System.Data;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 
 namespace Amg_ingressos_aqui_cadastro_api.Repository
@@ -11,9 +10,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
     {
         private readonly IMongoCollection<EventColab> _eventColabCollection;
 
-        public EventColabRepository(IDbConnection<EventColab> dbConnection)
+        public EventColabRepository(IDbConnection dbConnection)
         {
-            _eventColabCollection = dbConnection.GetConnection("eventXcolab");
+            _eventColabCollection = dbConnection.GetConnection<EventColab>("eventXcolab");
         }
 
         public async Task<object> Save<T>(EventColab eventColabComplet)

@@ -9,9 +9,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
     {
         private readonly IMongoCollection<Sequence> _sequenceCollection;
 
-        public SequenceRepository(IDbConnection<Sequence> dbConnection)
+        public SequenceRepository(IDbConnection dbConnection)
         {
-            _sequenceCollection = dbConnection.GetConnection("sequence");
+            _sequenceCollection = dbConnection.GetConnection<Sequence>("sequence");
         }
 
         public async Task<long> GetNextSequenceValue(string sequenceName)

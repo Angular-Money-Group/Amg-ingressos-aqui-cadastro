@@ -12,9 +12,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
     {
         private readonly IMongoCollection<User> _userCollection;
 
-        public UserRepository(IDbConnection<User> dbConnection)
+        public UserRepository(IDbConnection dbConnection)
         {
-            _userCollection = dbConnection.GetConnection("user");
+            _userCollection = dbConnection.GetConnection<User>("user");
         }
 
         public async Task<object> Save<T>(User userComplet)

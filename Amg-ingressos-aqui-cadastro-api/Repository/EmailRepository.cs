@@ -8,9 +8,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
     public class EmailRepository : IEmailRepository
     {
         private readonly IMongoCollection<Email> _emailCollection;
-        public EmailRepository(IDbConnection<Email> dbconnectionIten)
+        public EmailRepository(IDbConnection dbconnectionIten)
         {
-            _emailCollection = dbconnectionIten.GetConnection("templateemails");
+            _emailCollection = dbconnectionIten.GetConnection<Email>("templateemails");
         }
         public async Task<object> SaveAsync(object email)
         {
