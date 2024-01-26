@@ -182,10 +182,10 @@ namespace Prime.UnitTests.Services
         public void Given_complet_PaymentMethod_When_save_Then_Return_Ok()
         {
             //Arrange
-            var messageReturn = paymentMethodComplet.Id;
+            var messageReturn = paymentMethodComplet;
 
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", paymentMethodComplet.IdUser)).Returns(Task.FromResult(FactoryUser.CustomerUser()));
-            _paymentMethodRepositoryMock.Setup(x => x.Save<PaymentMethod>(It.IsAny<PaymentMethod>())).Returns(Task.FromResult(messageReturn as object));
+            _paymentMethodRepositoryMock.Setup(x => x.Save<PaymentMethod>(It.IsAny<PaymentMethod>())).Returns(Task.FromResult(messageReturn));
 
             //Act
             var result = _paymentMethodService.SaveAsync(this.paymentMethodDTO);
@@ -399,13 +399,13 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.paymentMethodComplet.Id;
 
-            var expectedMessage = "Usuário Deletado.";
+            var expectedMessage = true;
 
             //Act
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", paymentMethodComplet.IdUser))
                 .Returns(Task.FromResult(FactoryUser.CustomerUser()));
             _paymentMethodRepositoryMock.Setup(x => x.Delete<object>(id))
-                .Returns(Task.FromResult(expectedMessage as object));
+                .Returns(Task.FromResult(expectedMessage));
             _paymentMethodRepositoryMock.Setup(x => x.FindByField<PaymentMethod>("Id", id))
                 .Returns(Task.FromResult(FactoryPaymentMethod.SimplePaymentMethod()));
             

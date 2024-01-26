@@ -15,7 +15,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         private MessageReturn? _messageReturn;
         private readonly ILogger<EventColabService> _logger;
 
-        public EventColabService(IEventColabRepository eventColabRepository, 
+        public EventColabService(IEventColabRepository eventColabRepository,
         IUserService userService,
         ILogger<EventColabService> Logger)
         {
@@ -23,7 +23,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             _userService = userService;
             _logger = Logger;
         }
-        
+
         public async Task<MessageReturn> CheckAllColabsOfEventAsync(string idEvent, List<string> idColabsOfProducer)
         {
             //fazer do postgres para o mongo
@@ -55,15 +55,16 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }*/
             return _messageReturn;
         }
-        
-        public async Task<MessageReturn> SaveAsync(EventCollaboratorDto eventColabSaveDTO) {
+
+        public async Task<MessageReturn> SaveAsync(EventCollaboratorDto eventColabSaveDTO)
+        {
             _messageReturn = new MessageReturn();
             try
             {
                 // controlar o fluxo para nao permitir que o colab entre aqui de primeira
-                EventColab eventColab = eventColabSaveDTO.MakeEventColabSave();       
-                
-                var id = await _eventColabRepository.Save<EventColab>(eventColab);
+                EventColab eventColab = eventColabSaveDTO.MakeEventColabSave();
+
+                var id = await _eventColabRepository.Save(eventColab);
                 _messageReturn.Data = id;
             }
             catch (Exception ex)
@@ -75,9 +76,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        public async Task<bool> DoesIdExists(string idEventColab) {
+        public async Task<bool> DoesIdExists(string idEventColab)
+        {
             _messageReturn = new MessageReturn();
-            try {
+            try
+            {
                 return await _eventColabRepository.DoesValueExistsOnField<EventColab>("Id", idEventColab);
             }
             catch (Exception ex)
@@ -87,16 +90,20 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
         }
 
-        public async Task<MessageReturn> DeleteAsync(string id) {
+        public async Task<MessageReturn> DeleteAsync(string id)
+        {
             _messageReturn = new MessageReturn();
             try
             {
                 id.ValidateIdMongo();
-                
+
                 if (!await DoesIdExists(id))
                     throw new RuleException("Id de eventXcolab não encontrada.");
 
-                _messageReturn.Data = await _eventColabRepository.Delete<EventColab>(id) as string;
+                if (!await _eventColabRepository.Delete(id))
+                    throw new RuleException("Relacao não deletada.");
+
+                _messageReturn.Data = "ok";
             }
             catch (Exception ex)
             {

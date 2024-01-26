@@ -110,21 +110,23 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 idUser.ValidateIdMongo();
 
-                _messageReturn = await FindByIdAsync(id);
-                if (!_messageReturn.hasRunnedSuccessfully())
-                    throw new DeleteException(_messageReturn.Message);
+                var paymentMethod = FindByIdAsync(id).Result.ToObject<PaymentMethodDto>();
 
-                if ((_messageReturn.Data as PaymentMethodDto).IdUser != idUser)
+
+                if (paymentMethod.Id != idUser)
                     throw new DeleteException("Id de metodo de pagamento nao corresponde ao id de usuario.");
 
-                _messageReturn.Data = await _paymentMethodRepository.Delete<PaymentMethod>(id) as string;
+                if (!await _paymentMethodRepository.Delete<PaymentMethod>(id))
+                    throw new RuleException("erro ao deletar meio de pagamento.");
+
+                _messageReturn.Data = "ok";
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(DeleteAsync), ex));
                 throw;
             }
-            return _messageReturn;
         }
     }
 }

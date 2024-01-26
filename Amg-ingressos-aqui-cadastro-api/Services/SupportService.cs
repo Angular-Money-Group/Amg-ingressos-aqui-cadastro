@@ -66,7 +66,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        public async Task<MessageReturn> SaveAsync(SupportDto supportSave)
+        public async Task<MessageReturn> SaveAsync(TicketSupportDto supportSave)
         {
             _messageReturn = new MessageReturn();
             try
@@ -81,7 +81,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     SupportNumber = await _sequenceRepository.GetNextSequenceValue("support")
                 };
 
-                var result = await _supportRepository.Save<TicketSupport>(support);
+                var result = await _supportRepository.Save(support);
 
                 _messageReturn.Data = result;
 
@@ -97,7 +97,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        public async Task<MessageReturn> UpdateByIdAsync(string id, SupportDto ticketSupport)
+        public async Task<MessageReturn> UpdateByIdAsync(string id, TicketSupportDto ticketSupport)
         {
             _messageReturn = new MessageReturn();
 
@@ -105,9 +105,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 id.ValidateIdMongo();
 
-                var support = await _supportRepository.UpdateByIdAsync<TicketSupport>(
+                var support = await _supportRepository.UpdateByIdAsync(
                     id,
-                    ticketSupport
+                    ticketSupport.DtoToModel()
                 );
 
                 _messageReturn.Data = support;
@@ -128,7 +128,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 id.ValidateIdMongo();
 
-                _messageReturn.Data = await _supportRepository.DeleteAsync<TicketSupport>(id);
+                _messageReturn.Data = await _supportRepository.DeleteAsync(id);
             }
             catch (Exception ex)
             {

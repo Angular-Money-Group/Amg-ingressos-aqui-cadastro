@@ -7,8 +7,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
     {
         Task<MessageReturn> GetAllAsync();
         Task<MessageReturn> FindByIdAsync(string id);
-        Task<MessageReturn> SaveAsync(SupportDto supportSave);
-        Task<MessageReturn> UpdateByIdAsync(string id, SupportDto ticketSupport);
+        Task<MessageReturn> SaveAsync(TicketSupportDto supportSave);
+        Task<MessageReturn> UpdateByIdAsync(string id, TicketSupportDto ticketSupport);
         Task<MessageReturn> DeleteAsync(string id);
     }
 }

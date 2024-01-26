@@ -211,7 +211,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 idEvent.ValidateIdMongo();
 
                 _messageReturn.Data = await _associateUserApiDataEventRepository
-                .GetUserApiDataToEventAsync(idEvent);
+                .GetUserApiDataToEventAsync<AssociateUserApiDataEvent>(idEvent);
             }
             catch (Exception ex)
             {

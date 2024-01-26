@@ -7,7 +7,7 @@ using MongoDB.Driver;
 
 namespace Amg_ingressos_aqui_cadastro_api.Repository
 {
-    public class ReceiptAccountRepository<T> : IReceiptAccountRepository
+    public class ReceiptAccountRepository : IReceiptAccountRepository
     {
         private readonly IMongoCollection<ReceiptAccount> _receiptAccountCollection;
 
@@ -16,7 +16,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             _receiptAccountCollection = dbConnection.GetConnection<ReceiptAccount>("receiptAccount");
         }
 
-        public async Task<object> Save<T>(ReceiptAccount receiptAccountComplet)
+        public async Task<ReceiptAccount> Save(ReceiptAccount receiptAccountComplet)
         {
 
             await _receiptAccountCollection.InsertOneAsync(receiptAccountComplet);
@@ -24,7 +24,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             if (receiptAccountComplet.Id is null)
                 throw new RuleException("Erro ao salvar conta de recebimento");
 
-            return receiptAccountComplet.Id;
+            return receiptAccountComplet;
         }
 
         public async Task<bool> DoesValueExistsOnField<T>(string fieldName, object value)
@@ -37,32 +37,38 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             return true;
         }
 
-        public async Task<List<ReceiptAccount>> FindByField<T>(string fieldName, object value)
+        public async Task<List<T>> FindByField<T>(string fieldName, object value)
         {
-            FilterDefinition<ReceiptAccount> filter = null;
+            FilterDefinition<ReceiptAccount> filter;
             if (fieldName == "_id")
                 filter = Builders<ReceiptAccount>.Filter.Eq(fieldName, ObjectId.Parse(value.ToString()));
             else
                 filter = Builders<ReceiptAccount>.Filter.Eq(fieldName, value);
 
-            var receiptAccount = await _receiptAccountCollection.Find(filter).ToListAsync();
+            var receiptAccount = await _receiptAccountCollection
+                                                    .Find(filter)
+                                                    .As<T>()
+                                                    .ToListAsync();
 
             return receiptAccount;
         }
 
-        public async Task<object> Delete<T>(object id)
+        public async Task<bool> Delete(object id)
         {
 
             var result = await _receiptAccountCollection.DeleteOneAsync(x => x.Id == id as string);
-            if (result.DeletedCount >= 1)
-                return "Conta de Recebimento Deletada.";
-            else
+            if (result.DeletedCount <= 0)
                 throw new EditException("Conta de Recebimento não encontrada.");
+
+            return true;
         }
 
-        public async Task<List<ReceiptAccount>> GetAllReceiptAccounts<T>()
+        public async Task<List<T>> GetAllReceiptAccounts<T>()
         {
-            List<ReceiptAccount> result = await _receiptAccountCollection.Find(_ => true).ToListAsync();
+            var result = await _receiptAccountCollection
+                                    .Find(_ => true)
+                                    .As<T>()
+                                    .ToListAsync();
             if (!result.Any())
                 throw new RuleException("Contas de Recebimento não encontradas");
 

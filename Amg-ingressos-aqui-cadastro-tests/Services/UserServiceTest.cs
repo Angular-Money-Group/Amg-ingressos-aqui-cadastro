@@ -271,7 +271,7 @@ namespace Prime.UnitTests.Services
             this.userComplet = FactoryUser.SimpleUser();
             var email = this.userComplet.Contact.Email;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", email))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Contact.Email", email))
                 .Returns(Task.FromResult(false));
 
             //Act
@@ -288,7 +288,7 @@ namespace Prime.UnitTests.Services
             this.userComplet = FactoryUser.SimpleUser();
             var email = this.userComplet.Contact.Email;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", email))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Contact.Email", email))
                 .Returns(Task.FromResult(true));
 
             //Act
@@ -305,7 +305,7 @@ namespace Prime.UnitTests.Services
             var email = userComplet.Contact.Email;
             var expectedMessage = "erro ao conectar na base de dados";
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", email))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Contact.Email", email))
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
@@ -322,13 +322,13 @@ namespace Prime.UnitTests.Services
         public void Given_complet_User_When_save_Then_Return_Ok()
         {
             //Arrange
-            var messageReturn = userComplet.Id;
+            var messageReturn = userComplet;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("DocumentId", userComplet.DocumentId))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("DocumentId", userComplet.DocumentId))
                 .Returns(Task.FromResult(false));
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", userComplet.Contact.Email))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Contact.Email", userComplet.Contact.Email))
                 .Returns(Task.FromResult(false));
-            _userRepositoryMock.Setup(x => x.Save<User>(It.IsAny<User>())).Returns(Task.FromResult(messageReturn as object));
+            _userRepositoryMock.Setup(x => x.Save(It.IsAny<User>())).Returns(Task.FromResult(messageReturn));
 
             //Act
             var result = _userService.SaveAsync(this.userDTO);
@@ -374,13 +374,13 @@ namespace Prime.UnitTests.Services
         {
             //Arrange
             this.userDTO.Status = TypeStatus.Active;
-            var messageReturn = userComplet.Id;
+            var messageReturn = userComplet;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", userComplet.Id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", userComplet.Id))
                 .Returns(Task.FromResult(false));
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", userComplet.Contact.Email))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Contact.Email", userComplet.Contact.Email))
                 .Returns(Task.FromResult(false));
-            _userRepositoryMock.Setup(x => x.Save<User>(It.IsAny<User>())).Returns(Task.FromResult(messageReturn as object));
+            _userRepositoryMock.Setup(x => x.Save(It.IsAny<User>())).Returns(Task.FromResult(messageReturn));
 
             //Act
             var result = _userService.SaveAsync(new UserDto());
@@ -606,11 +606,11 @@ namespace Prime.UnitTests.Services
             //Arrange
             var expectedMessage = "Erro ao salvar usuario";
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", userComplet.Id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", userComplet.Id))
                 .Returns(Task.FromResult(false));
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Contact.Email", userComplet.Contact.Email))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Contact.Email", userComplet.Contact.Email))
                 .Returns(Task.FromResult(false));
-            _userRepositoryMock.Setup(x => x.Save<User>(It.IsAny<User>()))
+            _userRepositoryMock.Setup(x => x.Save(It.IsAny<User>()))
                 .Throws(new RuleException(expectedMessage));
 
             // Act
@@ -627,7 +627,7 @@ namespace Prime.UnitTests.Services
             //Arrange
             var expectedMessage = "Erro ao estabelecer conexao com o banco.";
 
-            _userRepositoryMock.Setup(x => x.Save<User>(It.IsAny<User>()))
+            _userRepositoryMock.Setup(x => x.Save(It.IsAny<User>()))
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
@@ -647,7 +647,7 @@ namespace Prime.UnitTests.Services
             this.userComplet = FactoryUser.SimpleUser();
             var id = this.userComplet.Id;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id)).Returns(Task.FromResult(true));
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id)).Returns(Task.FromResult(true));
 
             //Act
             var result = _userService.DoesIdExists(new User());
@@ -663,7 +663,7 @@ namespace Prime.UnitTests.Services
             this.userComplet = FactoryUser.SimpleUser();
             var id = this.userComplet.Id;
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id)).Returns(Task.FromResult(false));
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id)).Returns(Task.FromResult(false));
 
             //Act
             var result = _userService.DoesIdExists(new User());
@@ -679,7 +679,7 @@ namespace Prime.UnitTests.Services
             var id = userComplet.Id;
             var expectedMessage = "erro ao conectar na base de dados";
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
@@ -700,13 +700,13 @@ namespace Prime.UnitTests.Services
             var id = this.userComplet.Id;
             this.userDTO.Name = "nome atualizado";
 
-            var messageReturn = "Usuário Atualizado.";
+            var messageReturn = new User();
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
             .Returns(Task.FromResult(true));
 
-            _userRepositoryMock.Setup(x => x.UpdateUser<object>(id, It.IsAny<User>()))
-                                .Returns(Task.FromResult(messageReturn as object));
+            _userRepositoryMock.Setup(x => x.UpdateUser(id, It.IsAny<User>()))
+                                .Returns(Task.FromResult(messageReturn));
 
             //Act
             var result = _userService.UpdateByIdAsync(id, this.userDTO);
@@ -1143,7 +1143,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Id de usuário não encontrado.";
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
             .Returns(Task.FromResult(false));
 
             var result = _userService.UpdateByIdAsync(id, userUpdated);
@@ -1182,7 +1182,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Erro ao atualizar usuario.";
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
                 .Throws(new RuleException(expectedMessage));
 
             var result = _userService.UpdateByIdAsync(id, userUpdated);
@@ -1202,7 +1202,7 @@ namespace Prime.UnitTests.Services
 
             var expectedMessage = "Erro ao conectar-se ao banco.";
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
@@ -1221,13 +1221,13 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.userComplet.Id;
 
-            var expectedMessage = "Usuário Deletado.";
+            var expectedMessage = true;
 
             //Act
-            _userRepositoryMock.Setup(x => x.Delete<object>(id))
-            .Returns(Task.FromResult(expectedMessage as object));
+            _userRepositoryMock.Setup(x => x.Delete(id))
+            .Returns(Task.FromResult(expectedMessage));
 
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
             .Returns(Task.FromResult(true));
 
             var result = _userService.DeleteAsync(id);
@@ -1278,7 +1278,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Id de usuário não encontrado.";
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
             .Returns(Task.FromResult(false));
 
             var result = _userService.DeleteAsync(id);
@@ -1297,10 +1297,10 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Id de usuário não encontrado.";
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
             .Returns(Task.FromResult(true));
 
-            _userRepositoryMock.Setup(x => x.Delete<object>(id))
+            _userRepositoryMock.Setup(x => x.Delete(id))
             .Throws(new DeleteException(expectedMessage));
 
             var result = _userService.DeleteAsync(id);
@@ -1319,7 +1319,7 @@ namespace Prime.UnitTests.Services
             var expectedMessage = "Erro ao se conectar ao banco.";
 
             //Act
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", id))
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", id))
             .Throws(new Exception(expectedMessage));
 
 

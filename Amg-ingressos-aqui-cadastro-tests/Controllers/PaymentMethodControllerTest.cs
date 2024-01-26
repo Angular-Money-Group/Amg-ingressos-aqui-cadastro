@@ -48,10 +48,10 @@ namespace Prime.UnitTests.Controllers
         public async Task Given_complet_paymentMethod_When_SavePaymentMethodAsync_Then_return_Ok()
         {
             // Arrange
-            var messageReturn = paymentMethodComplet.Id;
+            var messageReturn = paymentMethodComplet;
 
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", paymentMethodComplet.IdUser)).Returns(Task.FromResult(FactoryUser.CustomerUser()));
-            _paymentMethodRepositoryMock.Setup(x => x.Save<PaymentMethod>(It.IsAny<PaymentMethod>())).Returns(Task.FromResult(messageReturn as object));
+            _paymentMethodRepositoryMock.Setup(x => x.Save<PaymentMethod>(It.IsAny<PaymentMethod>())).Returns(Task.FromResult(messageReturn));
 
             // Act
             var result = (await _paymentMethodController.SavePaymentMethodAsync(this.paymentMethodDTO) as ObjectResult);
@@ -251,14 +251,14 @@ namespace Prime.UnitTests.Controllers
             //Arrange
             var id = this.paymentMethodComplet.Id;
 
-            var expectedMessage = "Método de pagamento Deletado.";
+            var expectedMessage = true;
 
             //Act
             _paymentMethodRepositoryMock.Setup(x => x.FindByField<PaymentMethod>("Id", id))
             .Returns(Task.FromResult(FactoryPaymentMethod.SimplePaymentMethod()));
 
             _paymentMethodRepositoryMock.Setup(x => x.Delete<object>(id))
-            .Returns(Task.FromResult(expectedMessage as object));
+            .Returns(Task.FromResult(expectedMessage));
 
             var result = await _paymentMethodController.DeletePaymentMethodAsync(id, paymentMethodComplet.IdUser) as ObjectResult;
 
@@ -273,7 +273,7 @@ namespace Prime.UnitTests.Controllers
             //Arrange
             var id = "123";
 
-            var expectedMessage = "Id é obrigatório e está menor que 24 digitos.";
+            var expectedMessage = false;
 
             //Act
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", paymentMethodComplet.IdUser))
@@ -282,7 +282,7 @@ namespace Prime.UnitTests.Controllers
                 .Returns(Task.FromResult(paymentMethodComplet));
 
             _paymentMethodRepositoryMock.Setup(x => x.Delete<object>(id))
-            .Returns(Task.FromResult(expectedMessage as object));
+            .Returns(Task.FromResult(expectedMessage));
 
 
             var result = await _paymentMethodController.DeletePaymentMethodAsync(id, paymentMethodComplet.IdUser) as ObjectResult;

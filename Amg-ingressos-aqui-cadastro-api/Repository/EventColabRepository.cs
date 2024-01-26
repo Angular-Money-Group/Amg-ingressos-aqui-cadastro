@@ -6,7 +6,7 @@ using Amg_ingressos_aqui_cadastro_api.Exceptions;
 
 namespace Amg_ingressos_aqui_cadastro_api.Repository
 {
-    public class EventColabRepository<T> : IEventColabRepository
+    public class EventColabRepository : IEventColabRepository
     {
         private readonly IMongoCollection<EventColab> _eventColabCollection;
 
@@ -15,14 +15,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             _eventColabCollection = dbConnection.GetConnection<EventColab>("eventXcolab");
         }
 
-        public async Task<object> Save<T>(EventColab eventColabComplet)
+        public async Task<EventColab> Save(EventColab eventColabComplet)
         {
             await _eventColabCollection.InsertOneAsync(eventColabComplet);
 
             if (eventColabComplet.Id is null)
                 throw new RuleException("Erro ao salvar colab x event do colaborador de id: " + eventColabComplet.IdColab);
 
-            return eventColabComplet.Id;
+            return eventColabComplet;
         }
 
         public async Task<bool> DoesValueExistsOnField<T>(string fieldName, object value)
@@ -34,39 +34,35 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             return true;
         }
 
-        public async Task<EventColab> FindByField<T>(string fieldName, object value)
+        public async Task<T> FindByField<T>(string fieldName, object value)
         {
 
             var filter = Builders<EventColab>.Filter.Eq(fieldName, value);
-            var eventColab = await _eventColabCollection.Find(filter).FirstOrDefaultAsync();
-            if (eventColab is not null)
-                return eventColab;
-            else
+            var eventColab = await _eventColabCollection
+                                        .Find(filter)
+                                        .As<T>()
+                                        .FirstOrDefaultAsync();
+            if (eventColab == null)
                 throw new RuleException(" não encontrado por " + fieldName + ".");
+            return eventColab;
         }
 
-        public async Task<object> Delete<T>(object id)
+        public async Task<bool> Delete(object id)
         {
 
             var result = await _eventColabCollection.DeleteOneAsync(x => x.Id == id as string);
-            if (result.DeletedCount >= 1)
-                return " Deletado.";
-            else
+            if (result.DeletedCount <= 0)
                 throw new RuleException("eventXcolab não encontrado.");
+            return true;
         }
 
-        public async Task<List<string>> FindAllColabsOfEvent<T>(string idEvent)
+        public async Task<List<string>> FindAllColabsOfEvent(string idEvent)
         {
             var filter = Builders<EventColab>.Filter.Eq("IdEvent", idEvent);
             List<EventColab> eventColabs = await _eventColabCollection.Find(filter).ToListAsync();
             List<string> idColabs = new List<string>();
             if (eventColabs is not null)
-            {
-                foreach (EventColab eventColab in eventColabs)
-                {
-                    idColabs.Add(eventColab.IdColab);
-                }
-            }
+                idColabs.AddRange(eventColabs.Select(x => x.IdColab).ToList());
             return idColabs;
         }
     }

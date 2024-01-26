@@ -6,7 +6,7 @@ using MongoDB.Driver;
 
 namespace Amg_ingressos_aqui_cadastro_api.Repository
 {
-    public class PaymentMethodRepository<T> : IPaymentMethodRepository
+    public class PaymentMethodRepository : IPaymentMethodRepository
     {
         private readonly IMongoCollection<PaymentMethod> _paymentMethodCollection;
 
@@ -15,14 +15,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             _paymentMethodCollection = dbConnection.GetConnection<PaymentMethod>("paymentMethod");
         }
 
-        public async Task<object> Save<T>(PaymentMethod paymentMethodComplet)
+        public async Task<PaymentMethod> Save<T>(PaymentMethod paymentMethodComplet)
         {
             await _paymentMethodCollection.InsertOneAsync(paymentMethodComplet);
 
             if (paymentMethodComplet.Id is null)
                 throw new RuleException("Erro ao salvar método de pagamento");
 
-            return paymentMethodComplet.Id;
+            return paymentMethodComplet;
         }
 
         public async Task<bool> DoesValueExistsOnField<T>(string fieldName, object value)
@@ -34,29 +34,34 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             return true;
         }
 
-        public async Task<PaymentMethod> FindByField<T>(string fieldName, object value)
+        public async Task<T> FindByField<T>(string fieldName, object value)
         {
             var filter = Builders<PaymentMethod>.Filter.Eq(fieldName, value);
-            var paymentMethod = await _paymentMethodCollection.Find(filter).FirstOrDefaultAsync();
-            if (paymentMethod is not null)
-                return paymentMethod;
-            else
+            var paymentMethod = await _paymentMethodCollection
+                                            .Find(filter)
+                                            .As<T>()
+                                            .FirstOrDefaultAsync();
+            if (paymentMethod == null)
                 throw new RuleException("Método de Pagamento não encontrado por " + fieldName + ".");
+
+            return paymentMethod;
         }
 
-        public async Task<object> Delete<T>(object id)
+        public async Task<bool> Delete<T>(object id)
         {
-
             var result = await _paymentMethodCollection.DeleteOneAsync(x => x.Id == id as string);
-            if (result.DeletedCount >= 1)
-                return "Método de Pagamento Deletado.";
-            else
+            if (result.DeletedCount <= 0)
                 throw new DeleteException("Método de Pagamento não encontrado.");
+
+            return true;
         }
 
-        public async Task<List<PaymentMethod>> GetAllPaymentMethods<T>()
+        public async Task<List<T>> GetAllPaymentMethods<T>()
         {
-            List<PaymentMethod> result = await _paymentMethodCollection.Find(_ => true).ToListAsync();
+            var result = await _paymentMethodCollection
+                                                    .Find(_ => true)
+                                                    .As<T>()
+                                                    .ToListAsync();
             if (!result.Any())
                 throw new RuleException("Métodos de Pagamento não encontrados");
 

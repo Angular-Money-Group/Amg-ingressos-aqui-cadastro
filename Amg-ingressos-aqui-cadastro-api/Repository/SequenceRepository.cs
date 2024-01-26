@@ -14,7 +14,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             _sequenceCollection = dbConnection.GetConnection<Sequence>("sequence");
         }
 
-        public async Task<long> GetNextSequenceValue(string sequenceName)
+        public Task<long> GetNextSequenceValue(string sequenceName)
         {
             var filter = Builders<Sequence>.Filter.Eq(s => s.Id, sequenceName);
             var update = Builders<Sequence>.Update.Inc(s => s.Value, 1);
@@ -26,7 +26,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
 
             var sequence = _sequenceCollection.FindOneAndUpdate(filter, update, options);
 
-            return sequence.Value;
+            return Task.FromResult(sequence.Value);
         }
     }
 }

@@ -12,16 +12,16 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
         {
             _emailCollection = dbconnectionIten.GetConnection<Email>("templateemails");
         }
-        public async Task<object> SaveAsync(object email)
+        public async Task<Email> SaveAsync(Email email)
         {
-            await _emailCollection.InsertOneAsync((Email)email);
-            return (Email)email;
+            await _emailCollection.InsertOneAsync(email);
+            return email;
         }
 
-        public async Task<object> SaveManyAsync(List<Email> emails)
+        public async Task<List<Email>> SaveManyAsync(List<Email> listEmail)
         {
-            await _emailCollection.InsertManyAsync(emails);
-            return emails;
+            await _emailCollection.InsertManyAsync(listEmail);
+            return listEmail;
         }
     }
 }

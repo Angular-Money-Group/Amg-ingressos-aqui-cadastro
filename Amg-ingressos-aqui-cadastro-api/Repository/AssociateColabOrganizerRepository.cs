@@ -13,31 +13,31 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
         {
             _associateCollection = dbconnectionIten.GetConnection<AssociateCollaboratorOrganizer>("organizer_colaborator");
         }
-        public async Task<object> AssociateColabAsync(AssociateCollaboratorOrganizer associateColab)
+        public async Task<AssociateCollaboratorOrganizer> AssociateColabAsync(AssociateCollaboratorOrganizer associateCollaborator)
         {
-            await _associateCollection.InsertOneAsync(associateColab);
-            return associateColab;
+            await _associateCollection.InsertOneAsync(associateCollaborator);
+            return associateCollaborator;
         }
 
-        public async Task<object> AssociateManyColabWithOrganizerAsync(List<AssociateCollaboratorOrganizer> collaboratorOrganizer)
+        public async Task<List<AssociateCollaboratorOrganizer>> AssociateManyColabWithOrganizerAsync(List<AssociateCollaboratorOrganizer> collaboratorOrganizer)
         {
             await _associateCollection.InsertManyAsync(collaboratorOrganizer);
             return collaboratorOrganizer;
         }
 
-        public async Task<object> DeleteAssociateColabAsync(string idAssociate)
+        public async Task<bool> DeleteAssociateColabAsync(string idAssociate)
         {
             var result = await _associateCollection.DeleteOneAsync(x => x.Id == idAssociate);
-            if (result.DeletedCount >= 1)
-                return "Desassociado";
-            else
-                throw new Exception("erro ao desassociar colaborador");
+            if (result.DeletedCount <= 0)
+                return false;
+
+            return true;
         }
 
-        public async Task<List<T>> FindAllColabsOfProducer<T>(string idUserOrganizer)
+        public async Task<List<T>> FindAllColabsOfProducer<T>(string idProducer)
         {
 
-            var filter = Builders<AssociateCollaboratorOrganizer>.Filter.Eq(x => x.IdUserOrganizer, idUserOrganizer);
+            var filter = Builders<AssociateCollaboratorOrganizer>.Filter.Eq(x => x.IdUserOrganizer, idProducer);
             var producerColabs = await _associateCollection.Find(filter)
                                             .As<T>()
                                             .ToListAsync() ??

@@ -1,5 +1,3 @@
-
-
 using Amg_ingressos_aqui_cadastro_api.Infra;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
@@ -16,11 +14,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             _eventCollection = dbConnection.GetConnection<Event>("events");
         }
 
-        public async Task<List<Event>> FindById<T>(string id)
+        public async Task<List<T>> FindById<T>(string id)
         {
             var filtro = Builders<Event>.Filter.Eq("_id", ObjectId.Parse(id));
 
-            List<Event> pResults = await _eventCollection.Find<Event>(filtro).ToListAsync();
+            var pResults = await _eventCollection
+                                            .Find(filtro)
+                                            .As<T>()
+                                            .ToListAsync();
 
             return pResults;
         }

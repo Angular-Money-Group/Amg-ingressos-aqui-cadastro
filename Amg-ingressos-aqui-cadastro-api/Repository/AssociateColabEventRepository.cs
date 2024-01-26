@@ -13,33 +13,33 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
         {
             _associateCollection = dbconnectionIten.GetConnection<AssociateCollaboratorEvent>("event_collaborator");
         }
-        public async Task<object> AssociateCollaboratorEventAsync(AssociateCollaboratorEvent associateColab)
+        public async Task<AssociateCollaboratorEvent> AssociateCollaboratorEventAsync(AssociateCollaboratorEvent associateCollaborator)
         {
-            await _associateCollection.InsertOneAsync(associateColab);
-            return associateColab;
+            await _associateCollection.InsertOneAsync(associateCollaborator);
+            return associateCollaborator;
         }
 
-        public async Task<object> AssociateManyColabWithEventAsync(List<AssociateCollaboratorEvent> collaboratorEvent)
+        public async Task<List<AssociateCollaboratorEvent>> AssociateManyColabWithEventAsync(List<AssociateCollaboratorEvent> collaboratorEvent)
         {
-
             await _associateCollection.InsertManyAsync(collaboratorEvent);
             return collaboratorEvent;
         }
 
-        public async Task<object> DeleteAssociateCollaboratorEventAsync(string idAssociate)
+        public async Task<bool> DeleteAssociateCollaboratorEventAsync(string idAssociate)
         {
 
             var result = await _associateCollection.DeleteOneAsync(x => x.Id == idAssociate);
-            if (result.DeletedCount >= 1)
-                return "Desassociado";
-            else
-                throw new Exception("erro ao desassociar colaborador");
+            if (result.DeletedCount <= 0)
+                return false;
+
+            return true;
         }
 
-        public async Task<object> FindAllColabsOfEvent<T>(string idEvent)
+        public async Task<List<T>> FindAllColabsOfEvent<T>(string idEvent)
         {
             var filter = Builders<AssociateCollaboratorEvent>.Filter.Eq(x => x.IdEvent, idEvent);
             var eventCollaborator = await _associateCollection.Find(filter)
+                                            .As<T>()
                                             .ToListAsync();
             return eventCollaborator;
         }

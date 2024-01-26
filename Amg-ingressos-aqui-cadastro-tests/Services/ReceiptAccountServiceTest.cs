@@ -185,14 +185,14 @@ namespace Prime.UnitTests.Services
         public void Given_complet_ReceiptAccount_When_save_Then_Return_Ok()
         {
             //Arrange
-            var messageReturn = receiptAccountComplet.Id;
+            var messageReturn = receiptAccountComplet;
             var id = receiptAccountComplet.Id;
 
             _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
                 .Returns(Task.FromResult(this.listReceiptAccountComplet));
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", receiptAccountComplet.IdUser))
                 .Returns(Task.FromResult(FactoryUser.ProducerUser()));
-            _receiptAccountRepositoryMock.Setup(x => x.Save<ReceiptAccount>(It.IsAny<ReceiptAccount>())).Returns(Task.FromResult(messageReturn as object));
+            _receiptAccountRepositoryMock.Setup(x => x.Save(It.IsAny<ReceiptAccount>())).Returns(Task.FromResult(messageReturn));
 
             //Act
             var result = _receiptAccountService.SaveAsync(this.receiptAccountDTO);
@@ -305,7 +305,7 @@ namespace Prime.UnitTests.Services
                 .Returns(Task.FromResult(FactoryUser.ProducerUser()));
             _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
                 .Returns(Task.FromResult(this.listReceiptAccountComplet));
-            _receiptAccountRepositoryMock.Setup(x => x.Save<ReceiptAccount>(It.IsAny<ReceiptAccount>()))
+            _receiptAccountRepositoryMock.Setup(x => x.Save(It.IsAny<ReceiptAccount>()))
                 .Throws(new RuleException(expectedMessage));
 
             // Act
@@ -394,13 +394,13 @@ namespace Prime.UnitTests.Services
             //Arrange
             var id = this.receiptAccountComplet.Id;
 
-            var expectedMessage = "Usuário Deletado.";
+            var expectedMessage = true;
 
             //Act
             _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
                 .Returns(Task.FromResult(this.listReceiptAccountComplet));
-            _receiptAccountRepositoryMock.Setup(x => x.Delete<object>(id))
-            .Returns(Task.FromResult(expectedMessage as object));
+            _receiptAccountRepositoryMock.Setup(x => x.Delete(id))
+            .Returns(Task.FromResult(expectedMessage));
             
             var result = _receiptAccountService.DeleteAsync(id, receiptAccountComplet.IdUser);
 
@@ -472,7 +472,7 @@ namespace Prime.UnitTests.Services
             _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
                 .Returns(Task.FromResult(this.listReceiptAccountComplet));
 
-            _receiptAccountRepositoryMock.Setup(x => x.Delete<object>(id))
+            _receiptAccountRepositoryMock.Setup(x => x.Delete(id))
             .Throws(new EditException(expectedMessage));
             
             var result = _receiptAccountService.DeleteAsync(id, receiptAccountComplet.IdUser);

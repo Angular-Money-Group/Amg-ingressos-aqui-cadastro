@@ -52,12 +52,12 @@ namespace Prime.UnitTests.Controllers
         public async Task Given_complet_receiptAccount_When_SaveReceiptAccountAsync_Then_return_Ok()
         {
             // Arrange
-            var messageReturn = receiptAccountComplet.Id;
+            var messageReturn = receiptAccountComplet;
 
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", receiptAccountComplet.IdUser))
                 .Returns(Task.FromResult(FactoryUser.ProducerUser()));
-            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", receiptAccountComplet.IdUser)).Returns(Task.FromResult(true));
-            _receiptAccountRepositoryMock.Setup(x => x.Save<ReceiptAccount>(It.IsAny<ReceiptAccount>())).Returns(Task.FromResult(messageReturn as object));
+            _userRepositoryMock.Setup(x => x.DoesValueExistsOnField("Id", receiptAccountComplet.IdUser)).Returns(Task.FromResult(true));
+            _receiptAccountRepositoryMock.Setup(x => x.Save(It.IsAny<ReceiptAccount>())).Returns(Task.FromResult(messageReturn));
 
             // Act
             var result = (await _receiptAccountController.SaveReceiptAccountAsync(this.receiptAccountDTO) as ObjectResult);
@@ -257,15 +257,15 @@ namespace Prime.UnitTests.Controllers
             //Arrange
             var id = this.receiptAccountComplet.Id;
 
-            var expectedMessage = "Conta de recebimento Deletada.";
+            var expectedMessage = true;
 
             //Act
             _userRepositoryMock.Setup(x => x.FindByField<User>("Id", receiptAccountComplet.IdUser))
                 .Returns(Task.FromResult(FactoryUser.ProducerUser()));
             _receiptAccountRepositoryMock.Setup(x => x.FindByField<ReceiptAccount>("Id", id))
                 .Returns(Task.FromResult(receiptAccountListDTO));
-            _receiptAccountRepositoryMock.Setup(x => x.Delete<object>(id))
-                .Returns(Task.FromResult(expectedMessage as object));
+            _receiptAccountRepositoryMock.Setup(x => x.Delete(id))
+                .Returns(Task.FromResult(expectedMessage));
 
             var result = await _receiptAccountController.DeleteReceiptAccountAsync(id, receiptAccountComplet.IdUser) as ObjectResult;
 
@@ -280,14 +280,14 @@ namespace Prime.UnitTests.Controllers
             //Arrange
             var id = "123";
 
-            var expectedMessage = "Id é obrigatório e está menor que 24 digitos.";
+            var expectedMessage = false;
 
             //Act
             _receiptAccountRepositoryMock.Setup(x => x.DoesValueExistsOnField<ReceiptAccount>("Id", id))
             .Returns(Task.FromResult(true));
 
-            _receiptAccountRepositoryMock.Setup(x => x.Delete<object>(id))
-            .Returns(Task.FromResult(expectedMessage as object));
+            _receiptAccountRepositoryMock.Setup(x => x.Delete(id))
+            .Returns(Task.FromResult(expectedMessage));
 
 
             var result = await _receiptAccountController.DeleteReceiptAccountAsync(id, receiptAccountComplet.IdUser) as ObjectResult;
@@ -303,14 +303,14 @@ namespace Prime.UnitTests.Controllers
             //Arrange
             var id = string.Empty;
 
-            var expectedMessage = "Id é Obrigatório.";
+            var expectedMessage = false;
 
             //Act
             _receiptAccountRepositoryMock.Setup(x => x.DoesValueExistsOnField<ReceiptAccount>("Id", id))
             .Returns(Task.FromResult(true));
 
-            _receiptAccountRepositoryMock.Setup(x => x.Delete<object>(id))
-            .Returns(Task.FromResult(expectedMessage as object));
+            _receiptAccountRepositoryMock.Setup(x => x.Delete(id))
+            .Returns(Task.FromResult(expectedMessage));
 
 
             var result = await _receiptAccountController.DeleteReceiptAccountAsync(id, receiptAccountComplet.IdUser) as ObjectResult;

@@ -2,12 +2,12 @@ using Amg_ingressos_aqui_cadastro_api.Model;
 
 namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
 {
-    public interface IReceiptAccountRepository 
+    public interface IReceiptAccountRepository
     {
-        Task<object> Save<T>(ReceiptAccount receiptAccountComplet);
+        Task<ReceiptAccount> Save(ReceiptAccount receiptAccountComplet);
         Task<bool> DoesValueExistsOnField<T>(string fieldName, object value);
-        Task<List<ReceiptAccount>> FindByField<T>(string fieldName, object value);
-        Task<object> Delete<T>(object id);
-        Task<List<ReceiptAccount>> GetAllReceiptAccounts<T>();
+        Task<List<T>> FindByField<T>(string fieldName, object value);
+        Task<bool> Delete(object id);
+        Task<List<T>> GetAllReceiptAccounts<T>();
     }
 }

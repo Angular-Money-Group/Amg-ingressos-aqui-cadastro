@@ -112,7 +112,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-                _messageReturn.Data = await _userRepository.DoesValueExistsOnField<User>("Contact.Email", email);
+                _messageReturn.Data = await _userRepository.DoesValueExistsOnField("Contact.Email", email);
                 return _messageReturn;
             }
             catch (Exception ex)
@@ -126,7 +126,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-                _messageReturn.Data = await _userRepository.DoesValueExistsOnField<User>(
+                _messageReturn.Data = await _userRepository.DoesValueExistsOnField(
                     "DocumentId",
                     documentId
                 );
@@ -175,12 +175,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
                     };
 
-                    _emailService.SaveAsync(email);
+                    _ = _emailService.SaveAsync(email);
                 }
 
-                var id = await _userRepository.Save<User>(user) as string;
+                var result = await _userRepository.Save(user);
 
-                user.Id = id;
+                user.Id = result.Id;
 
                 _messageReturn.Data = user;
             }
@@ -196,29 +196,29 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<MessageReturn> SaveColabAsync(UserDto colabSave)
         {
-            string id = string.Empty;
+            User userDb;
             try
             {
                 User user = colabSave.DtoToModel();
-                _messageReturn = await FindByDocumentIdAsync(
+                var result = await FindByDocumentIdAsync(
                     TypeUser.Collaborator,
                     user.DocumentId
                 );
-                if (_messageReturn.hasRunnedSuccessfully())
-                    id = (_messageReturn.Data as UserDto).Id;
+                if (result.hasRunnedSuccessfully())
+                    userDb = result.ToObject<User>();
                 else
                 {
-                    _messageReturn = await FindByEmailAsync(
+                    result = await FindByEmailAsync(
                         TypeUser.Collaborator,
                         user.Contact.Email
                     );
-                    if (_messageReturn.hasRunnedSuccessfully())
-                        id = (_messageReturn.Data as UserDto).Id;
+                    if (result.hasRunnedSuccessfully())
+                        userDb = _messageReturn.ToObject<User>();
                     else
                         _messageReturn = new MessageReturn();
-                    id = await _userRepository.Save<User>(user) as string;
+                    userDb = await _userRepository.Save(user);
                 }
-                _messageReturn.Data = id;
+                _messageReturn.Data = userDb.Id;
             }
             catch (Exception ex)
             {
@@ -229,11 +229,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        public async Task<bool> DoesIdExists(User user)
+        public Task<bool> DoesIdExists(User user)
         {
             try
             {
-                return DoesValueExistsOnField(user);
+                return Task.FromResult(DoesValueExistsOnField(user));
             }
             catch (Exception ex)
             {
@@ -257,12 +257,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
         }
 
-        public async Task<MessageReturn> UpdateByIdAsync(string id,UserDto user)
+        public async Task<MessageReturn> UpdateByIdAsync(string id, UserDto user)
         {
             try
             {
                 User userModel = user.DtoToModel();
-                User userDb = await _userRepository.GetUser(userModel.Id);
+                User userDb = await _userRepository.GetUser<User>(userModel.Id);
 
                 if (!await DoesIdExists(userDb))
                     throw new RuleException("Id de usuário não encontrado.");
@@ -284,7 +284,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 if (userModel.UserConfirmation == null)
                     userModel.UserConfirmation = userDb.UserConfirmation;
 
-                _messageReturn.Data = await _userRepository.UpdateUser<User>(userModel.Id, userModel);
+                _messageReturn.Data = await _userRepository.UpdateUser(userModel.Id, userModel);
             }
             catch (Exception ex)
             {
@@ -298,14 +298,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-                User userDb = await _userRepository.GetUser(id);
+                User userDb = await _userRepository.GetUser<User>(id);
                 if (!await DoesIdExists(userDb))
                     throw new RuleException("Id de usuário não encontrado.");
 
                 var key = "b14ca5898a4e4133bbce2ea2315a2023";
                 password = AesOperation.EncryptString(key, password);
 
-                _messageReturn.Data = await _userRepository.UpdatePasswordUser<object>(
+                _messageReturn.Data = await _userRepository.UpdatePasswordUser(
                     id,
                     password
                 );
@@ -323,11 +323,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 id.ValidateIdMongo();
-                User userDb = await _userRepository.GetUser(id);
+                User userDb = await _userRepository.GetUser<User>(id);
                 if (!await DoesIdExists(userDb))
                     throw new RuleException("Id de usuário não encontrado.");
 
-                _messageReturn.Data = await _userRepository.Delete<User>(id) as string;
+                _messageReturn.Data = await _userRepository.Delete(id);
             }
             catch (Exception ex)
             {
@@ -369,7 +369,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
                 };
 
-                var id = await _userRepository.UpdateUser<User>(idUser, user);
+                var id = await _userRepository.UpdateUser(idUser, user);
 
                 _emailService.SaveAsync(email);
 
@@ -407,7 +407,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 //validate user type
-                _messageReturn.Data = await _userRepository.FindByGenericField<User>(fieldName, value);
+                _messageReturn.Data = await _userRepository.FindByField<User>(fieldName, value);
                 return _messageReturn;
             }
             catch (Exception ex)

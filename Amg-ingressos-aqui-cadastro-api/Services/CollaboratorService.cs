@@ -140,7 +140,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-                var eventDetailsTask = _eventRepository.FindById<List<Event>>(idEvent);
+                var eventDetailsTask = _eventRepository.FindById<Event>(idEvent);
                 var listUserEventTask =
                     _associateColabEventRepository.FindAllColabsOfEvent<AssociateCollaboratorEvent>(
                         idEvent

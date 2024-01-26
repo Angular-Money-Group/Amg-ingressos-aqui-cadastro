@@ -53,7 +53,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 idReceiptAccount.ValidateIdMongo();
                 var receiptAccountDTOList = new List<ReceiptAccountDto>();
-                List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<List<ReceiptAccount>>("_id", idReceiptAccount);
+                List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<ReceiptAccount>("_id", idReceiptAccount);
 
                 /*for (var i = 0; i < receiptAccount.Count; i++)
                 {
@@ -78,7 +78,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 idUser.ValidateIdMongo();
                 var receiptAccountDTOList = new List<ReceiptAccountDto>();
-                List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<List<ReceiptAccount>>("IdUser", idUser);
+                List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<ReceiptAccount>("IdUser", idUser);
 
                 /*for (var i = 0; i < receiptAccount.Count; i++)
                 {
@@ -106,7 +106,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 if (!_messageReturn.hasRunnedSuccessfully())
                     throw new SaveException("O campo IdUser nao tem nenhum usuario correspondente.");
 
-                var id = await _receiptAccountRepository.Save<ReceiptAccount>(receiptAccount);
+                var id = await _receiptAccountRepository.Save(receiptAccount);
                 _messageReturn.Data = id;
             }
             catch (Exception ex)
@@ -139,14 +139,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 idUser.ValidateIdMongo();
 
-                _messageReturn = await FindByIdAsync(id);
-                if (!_messageReturn.hasRunnedSuccessfully())
-                    throw new EditException(_messageReturn.Message);
+                var ReceiptAccountDto = FindByIdAsync(id).Result.ToObject<ReceiptAccountDto>();
 
-                if ((_messageReturn.Data as ReceiptAccountDto).IdUser != idUser)
+                if (ReceiptAccountDto.IdUser != idUser)
                     throw new EditException("Id de conta bancaria nao corresponde ao id de usuario.");
 
-                _messageReturn.Data = await _receiptAccountRepository.Delete<ReceiptAccount>(id) as string;
+                _messageReturn.Data = await _receiptAccountRepository.Delete(id);
             }
             catch (Exception ex)
             {
