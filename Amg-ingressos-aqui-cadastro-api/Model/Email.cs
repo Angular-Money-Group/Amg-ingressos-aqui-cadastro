@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 
@@ -17,7 +18,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         }
 
         [BsonRepresentation(BsonType.ObjectId)]
-        public string Id;
+        [BsonElement("_id")]
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
         public string Sender { get; set; }
         public string To { get; set; }
         public string Subject { get; set; }

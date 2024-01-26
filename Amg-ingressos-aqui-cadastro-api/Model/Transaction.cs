@@ -5,7 +5,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class Transaction
     {
-        public Transaction(){
+        public Transaction()
+        {
             Id = string.Empty;
             IdPerson = string.Empty;
             ReturnUrl = string.Empty;

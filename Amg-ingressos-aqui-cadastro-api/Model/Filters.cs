@@ -7,9 +7,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
     {
         public FiltersUser()
         {
-            this.Email = string.Empty;
-            this.Name = string.Empty;
-            this.PhoneNumber = string.Empty;
+            Email = string.Empty;
+            Name = string.Empty;
+            PhoneNumber = string.Empty;
         }
 
         [JsonProperty("email")]

@@ -7,7 +7,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class TicketSupport
     {
-
         public TicketSupport()
         {
             this.Id = string.Empty;

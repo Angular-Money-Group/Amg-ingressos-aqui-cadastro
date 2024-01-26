@@ -61,7 +61,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 // controlar o fluxo para nao permitir que o colab entre aqui de primeira
-                EventColab eventColab = eventColabSaveDTO.makeEventColabSave();       
+                EventColab eventColab = eventColabSaveDTO.MakeEventColabSave();       
                 
                 var id = await _eventColabRepository.Save<EventColab>(eventColab);
                 _messageReturn.Data = id;

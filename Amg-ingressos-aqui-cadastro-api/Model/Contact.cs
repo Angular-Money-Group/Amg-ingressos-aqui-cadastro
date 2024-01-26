@@ -5,7 +5,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class Contact
     {
-
         public Contact()
         {
             Email = string.Empty;

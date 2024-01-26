@@ -22,34 +22,26 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         [BsonRepresentation(BsonType.ObjectId)]
         [BsonElement("Id")]
         [JsonPropertyName("Id")]
-        public string? Id { get; set; }
+        public string Id { get; set; }
 
         /// <summary>
         /// Id do Event
         /// </summary>
         [BsonElement("IdEvent")]
         [JsonPropertyName("IdEvent")]
-        public string? IdEvent { get; set; }
+        public string IdEvent { get; set; }
 
         /// <summary>
         /// Id do Colaborador
         /// </summary>
         [BsonElement("IdColab")]
         [JsonPropertyName("IdColab")]
-        public string? IdColab { get; set; }
+        public string IdColab { get; set; }
 
-        public EventColab makeEventColabSave()
+        public EventColab MakeEventColabSave()
         {
             if (Id is not null)
-                Id = null;
-            ValidateIdEventFormat(IdEvent);
-            ValidateIdColabFormat(IdColab);
-            return new EventColab();
-        }
-
-        public EventColab makeEventColabUpdate()
-        {
-            Id.ValidateIdMongo();
+                Id = string.Empty;
             ValidateIdEventFormat(IdEvent);
             ValidateIdColabFormat(IdColab);
             return new EventColab();

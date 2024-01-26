@@ -80,25 +80,25 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// </summary>
         [Required]
         public Address? Address { get; set; }
-        
+
         /// <summary>
         /// Id mongo Meio de Recebimento
         /// </summary>
         [BsonRepresentation(BsonType.ObjectId)]
         public string IdMeansReceipt { get; set; }
-        
+
         /// <summary>
         /// Id mongo organizador do evento
         /// </summary>
         [BsonRepresentation(BsonType.ObjectId)]
         public string IdOrganizer { get; set; }
-        
+
         /// <summary>
         /// Se o evento está em destaque
         /// </summary>
         [BsonDefaultValue(false)]
         public bool Highlighted { get; set; }
-        
+
         /// <summary>
         /// Se o evento está em destaque
         /// </summary>

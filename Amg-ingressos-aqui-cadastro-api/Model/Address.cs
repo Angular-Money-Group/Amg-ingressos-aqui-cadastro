@@ -1,7 +1,8 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
-namespace Amg_ingressos_aqui_cadastro_api.Model {
+namespace Amg_ingressos_aqui_cadastro_api.Model
+{
     public class Address
     {
 
@@ -66,9 +67,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Model {
         [JsonPropertyName("city")]
         public string City { get; set; }
 
-       /// <summary>
-       /// Estado de residencia 
-       /// </summary>
+        /// <summary>
+        /// Estado de residencia 
+        /// </summary>
         [BsonElement("State")]
         [JsonPropertyName("state")]
         public string State { get; set; }
