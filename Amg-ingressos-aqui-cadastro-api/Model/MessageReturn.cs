@@ -1,34 +1,43 @@
+using Amg_ingressos_aqui_cadastro_api.Exceptions;
+using Newtonsoft.Json;
+
 namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class MessageReturn
     {
 
-        public MessageReturn() {
+        public MessageReturn()
+        {
             Message = string.Empty;
-            Data = null;
-        }
-        public MessageReturn(string message) {
-            Message = message;
-            Data = null;
-        }
-        public MessageReturn(object data) {
-            Message = string.Empty;
-            Data = data;
+            Data = string.Empty;
         }
 
         /// <summary>
         /// Mensagem de retorno
         /// </summary>
-        public string? Message;
+        public string Message { get; set; }
 
         /// <summary>
         /// Objeto de dados retornado
         /// </summary>
-        public object? Data;
+        public object Data { get; set; }
 
         // METHODS
-        public bool hasRunnedSuccessfully() {
+        public bool hasRunnedSuccessfully()
+        {
             return string.IsNullOrEmpty(Message) && (Data is not null);
+        }
+        public T ToObject<T>()
+        {
+            return (T)this.Data;
+        }
+        public List<T> ToListObject<T>()
+        {
+            return (List<T>)this.Data;
+        }
+        public T JsonToModel<T>()
+        {
+            return JsonConvert.DeserializeObject<T>(this.Data.ToString() ?? string.Empty) ?? throw new ConvertException("Não foi possivel converter.");
         }
     }
 }

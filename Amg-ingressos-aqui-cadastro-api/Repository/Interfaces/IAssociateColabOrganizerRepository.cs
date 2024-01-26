@@ -7,6 +7,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
         Task<object> AssociateColabAsync(AssociateCollaboratorOrganizer associateCollaborator);
         Task<object> AssociateManyColabWithOrganizerAsync(List<AssociateCollaboratorOrganizer> collaboratorOrganizer);
         Task<object> DeleteAssociateColabAsync(string idAssociate);
-        Task<object> FindAllColabsOfProducer<T>(string idProducer);
+        Task<List<T>> FindAllColabsOfProducer<T>(string idProducer);
     }
 }

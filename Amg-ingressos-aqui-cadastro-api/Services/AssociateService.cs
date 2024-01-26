@@ -48,14 +48,59 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        public async Task<MessageReturn> AssociateColabOrganizerAsync(string idUserOrganizer, string idUserColaborator)
+        public async Task<MessageReturn> AssociateColabOrganizerAsync(string idUserOrganizer, UserDto user)
         {
             try
             {
+                //Consulta todos os colaboradores vinculados ao Organizador do evento
+                var listAssociate = _associateColabOrganizerRepository.FindAllColabsOfProducer<AssociateCollaboratorOrganizer>(idUserOrganizer).Result;
+                string idUserCollaborator = string.Empty;
+
+                //Se o Id do user, estiver vazio, consulta se email ou documentId (cpf) já existe para o tipo colaborador
+                if (string.IsNullOrEmpty(user.Id))
+                {
+                    //TypeUserEnum.Collaborator = 3
+                    //Consulta se user do email, é colaborador e se já esta vinculado ao organizador do evento
+                    User userData = _userService.FindByGenericField<User>("Contact.Email", user.Contact.Email).Result.ToObject<User>();
+                    if (userData != null && userData.Type == TypeUserEnum.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userData.Id))
+                        throw new RuleException(MessageLogErrors.Get);
+                    else if (userData == null)
+                    {
+                        //Consulta se user do documentId, é colaborador e se já esta vinculado ao organizador do evento
+                        User userLocal = _userService.FindByGenericField<User>("DocumentId", user.DocumentId).Result.ToObject<User>();
+                        if (userLocal != null && userLocal.Type == TypeUserEnum.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userLocal.Id))
+                            throw new RuleException(MessageLogErrors.Get);
+                        else if (userLocal != null)
+                            idUserCollaborator = userLocal.Id;
+                    }
+                    else
+                        idUserCollaborator = userData.Id;
+
+                    //Se não encontrar os dados user colaborador, cadastra ele
+                    if (string.IsNullOrEmpty(idUserCollaborator))
+                    {
+                        //Insere o colaborador
+                        var userSaveLocal = _userService.SaveAsync(user).Result.ToObject<User>();
+
+                        if (userSaveLocal == null)
+                            throw new RuleException("usuario nao pode vazio.");
+
+                        idUserCollaborator = userSaveLocal.Id ?? string.Empty;
+                    }
+                }
+                else
+                {
+                    idUserCollaborator = user.Id;
+
+                    //Consulta se o colaborador ja está vinculado ao organizador do evento
+                    if (listAssociate.Any() && listAssociate.Exists(x => x.IdUserCollaborator == user.Id))
+                        throw new RuleException(MessageLogErrors.Get);
+
+                }
                 _messageReturn.Data = await _associateColabOrganizerRepository
                 .AssociateColabAsync(new AssociateCollaboratorOrganizer()
                 {
-                    IdUserCollaborator = idUserColaborator,
+                    IdUserCollaborator = user.Id,
                     IdUserOrganizer = idUserOrganizer
                 });
             }

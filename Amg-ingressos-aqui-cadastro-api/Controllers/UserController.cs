@@ -13,7 +13,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
     {
         private readonly IUserService _userService;
 
-        public UserController( IUserService userService)
+        public UserController(IUserService userService)
         {
             _userService = userService;
         }
@@ -68,9 +68,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
 
             var result = await _userService.FindByIdAsync(id);
             if (result.hasRunnedSuccessfully())
-            {
                 return Ok(result.Data);
-            }
             else
                 throw new GetException(result.Message);
         }
@@ -79,19 +77,16 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// Atualiza usuario pelo ID
         /// </summary>
         /// <param name="id"> id do usuario</param>
-        /// <param name="usuarioUpdated">Corpo usuario a ser Gravado</param>
+        /// <param name="user">Corpo usuario a ser Gravado</param>
         /// <returns>200 usuario da busca</returns>
         /// <returns>204 Nenhum usuario encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPut]
         [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromBody] UserDto usuarioUpdated)
+        public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromBody] UserDto user)
         {
-            if (usuarioUpdated is null)
-                throw new RuleException("Json de Usuario veio Nulo.");
-            usuarioUpdated.Id = id;
-            MessageReturn result = await _userService.UpdateByIdAsync(usuarioUpdated);
+            MessageReturn result = await _userService.UpdateByIdAsync(id, user);
 
             if (result.hasRunnedSuccessfully())
                 return Ok(result.Data);

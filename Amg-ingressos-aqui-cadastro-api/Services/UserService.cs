@@ -13,7 +13,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
     {
         private readonly IUserRepository _userRepository;
         private readonly IEmailService _emailService;
-        private MessageReturn? _messageReturn;
+        private MessageReturn _messageReturn;
         private readonly ILogger<UserService> _logger;
 
         public UserService(
@@ -25,11 +25,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             _userRepository = userRepository;
             _emailService = emailService;
             _logger = logger;
+            _messageReturn = new MessageReturn();
         }
 
         public async Task<MessageReturn> GetAsync(FiltersUser filters)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 var result = await _userRepository.Get<User>(filters);
@@ -53,7 +53,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<MessageReturn> FindByIdAsync(string idUser)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 idUser.ValidateIdMongo();
@@ -73,7 +72,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<MessageReturn> FindByDocumentIdAsync(System.Enum TEnum, string documentId)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 documentId.ValidateCpfFormat();
@@ -110,12 +108,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        public async Task<bool> IsEmailAvailable(string email)
+        public async Task<MessageReturn> IsEmailAvailable(string email)
         {
-            _messageReturn = new MessageReturn();
             try
             {
-                return !await _userRepository.DoesValueExistsOnField<User>("Contact.Email", email);
+                _messageReturn.Data = await _userRepository.DoesValueExistsOnField<User>("Contact.Email", email);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
@@ -124,15 +122,15 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
         }
 
-        public async Task<bool> IsDocumentIdAvailable(string documentId)
+        public async Task<MessageReturn> IsDocumentIdAvailable(string documentId)
         {
-            _messageReturn = new MessageReturn();
             try
             {
-                return !await _userRepository.DoesValueExistsOnField<User>(
+                _messageReturn.Data = await _userRepository.DoesValueExistsOnField<User>(
                     "DocumentId",
                     documentId
                 );
+                return _messageReturn;
             }
             catch (Exception ex)
             {
@@ -143,15 +141,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<MessageReturn> SaveAsync(UserDto userSave)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 User user = userSave.DtoToModel();
 
-                if (user.Type != TypeUserEnum.Collaborator && !await IsDocumentIdAvailable(user.DocumentId))
+                if (user.Type != TypeUserEnum.Collaborator && !IsDocumentIdAvailable(user.DocumentId).Result.ToObject<bool>())
                     throw new RuleException("Documento de Identificação já cadastrado.");
 
-                if (user.Type != TypeUserEnum.Collaborator && !await IsEmailAvailable(user.Contact.Email))
+                if (user.Type != TypeUserEnum.Collaborator && !IsEmailAvailable(user.Contact.Email).Result.ToObject<bool>())
                 {
                     throw new RuleException("Email Indisponível.");
                 }
@@ -199,7 +196,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<MessageReturn> SaveColabAsync(UserDto colabSave)
         {
-            _messageReturn = new MessageReturn();
             string id = string.Empty;
             try
             {
@@ -235,7 +231,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<bool> DoesIdExists(User user)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 return DoesValueExistsOnField(user);
@@ -262,39 +257,34 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
         }
 
-        public async Task<MessageReturn> UpdateByIdAsync(UserDto userUpdated)
+        public async Task<MessageReturn> UpdateByIdAsync(string id,UserDto user)
         {
-            _messageReturn = new MessageReturn();
             try
             {
-                User user = userUpdated.DtoToModel();
-                User userDb = await _userRepository.GetUser(user.Id);
+                User userModel = user.DtoToModel();
+                User userDb = await _userRepository.GetUser(userModel.Id);
 
                 if (!await DoesIdExists(userDb))
                     throw new RuleException("Id de usuário não encontrado.");
-                if (userUpdated.Password != null)
+
+                if (userModel.Password != null)
                 {
                     var key = "b14ca5898a4e4133bbce2ea2315a2023";
-                    user.Password = AesOperation.EncryptString(key, user.Password);
+                    userModel.Password = AesOperation.EncryptString(key, userModel.Password);
                 }
                 else
-                {
-                    user.Password = userDb.Password;
-                }
-                if (userUpdated.Address == null)
-                {
-                    user.Address = userDb.Address;
-                }
-                if (userUpdated.Contact == null)
-                {
-                    user.Contact = userDb.Contact;
-                }
-                if (userUpdated.UserConfirmation == null)
-                {
-                    user.UserConfirmation = userDb.UserConfirmation;
-                }
+                    userModel.Password = userDb.Password;
 
-                _messageReturn.Data = await _userRepository.UpdateUser<User>(user.Id, user);
+                if (userModel.Address == null)
+                    userModel.Address = userDb.Address;
+
+                if (userModel.Contact == null)
+                    userModel.Contact = userDb.Contact;
+
+                if (userModel.UserConfirmation == null)
+                    userModel.UserConfirmation = userDb.UserConfirmation;
+
+                _messageReturn.Data = await _userRepository.UpdateUser<User>(userModel.Id, userModel);
             }
             catch (Exception ex)
             {
@@ -306,7 +296,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<MessageReturn> UpdatePassowrdByIdAsync(string id, string password)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 User userDb = await _userRepository.GetUser(id);
@@ -331,7 +320,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<MessageReturn> DeleteAsync(string id)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 id.ValidateIdMongo();
@@ -351,7 +339,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<MessageReturn> ResendUserConfirmationAsync(string idUser)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 idUser.ValidateIdMongo();
@@ -398,7 +385,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         }
         public async Task<MessageReturn> FindByDocumentIdAndEmailAsync(System.Enum TEnum, string documentId, string email)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 email.ValidateEmailFormat();
@@ -414,6 +400,21 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
 
             return _messageReturn;
+        }
+
+        public async Task<MessageReturn> FindByGenericField<T>(string fieldName, object value)
+        {
+            try
+            {
+                //validate user type
+                _messageReturn.Data = await _userRepository.FindByGenericField<User>(fieldName, value);
+                return _messageReturn;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByDocumentIdAndEmailAsync), ex));
+                throw;
+            }
         }
     }
 }

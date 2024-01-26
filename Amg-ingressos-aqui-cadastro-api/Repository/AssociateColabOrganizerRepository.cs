@@ -34,11 +34,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 throw new Exception("erro ao desassociar colaborador");
         }
 
-        public async Task<object> FindAllColabsOfProducer<T>(string idUserOrganizer)
+        public async Task<List<T>> FindAllColabsOfProducer<T>(string idUserOrganizer)
         {
 
             var filter = Builders<AssociateCollaboratorOrganizer>.Filter.Eq(x => x.IdUserOrganizer, idUserOrganizer);
             var producerColabs = await _associateCollection.Find(filter)
+                                            .As<T>()
                                             .ToListAsync() ??
                                             throw new RuleException("Este produtor ainda não cadastrou nenhum colaborador...");
             return producerColabs;

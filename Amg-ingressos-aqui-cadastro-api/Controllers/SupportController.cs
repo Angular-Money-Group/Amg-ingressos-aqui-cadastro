@@ -13,7 +13,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
     {
         private readonly ISupportService _supportService;
 
-        public SupportController( ISupportService supportService)
+        public SupportController(ISupportService supportService)
         {
             _supportService = supportService;
         }
