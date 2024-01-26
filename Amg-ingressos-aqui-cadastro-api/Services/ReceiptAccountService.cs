@@ -12,30 +12,31 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
     {
         private readonly IReceiptAccountRepository _receiptAccountRepository;
         private readonly IUserService _userService;
-        private MessageReturn? _messageReturn;
+        private readonly MessageReturn _messageReturn;
         private readonly ILogger<ReceiptAccountService> _logger;
 
-        public ReceiptAccountService(IReceiptAccountRepository receiptAccountRepository,
-         IUserService userService,
-         ILogger<ReceiptAccountService> logger)
+        public ReceiptAccountService(
+            IReceiptAccountRepository receiptAccountRepository,
+            IUserService userService,
+            ILogger<ReceiptAccountService> logger)
         {
             _receiptAccountRepository = receiptAccountRepository;
             _userService = userService;
             _logger = logger;
+            _messageReturn = new MessageReturn();
         }
 
         public async Task<MessageReturn> GetAllReceiptAccountsAsync()
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 var result = await _receiptAccountRepository.GetAllReceiptAccounts<ReceiptAccount>();
 
-                List<ReceiptAccountDto> list = new List<ReceiptAccountDto>();
-                /*foreach (ReceiptAccount receiptAccount in result)
+                List<ReceiptAccount> list = new List<ReceiptAccount>();
+                foreach (ReceiptAccount receiptAccount in result)
                 {
-                    list.Add(new ReceiptAccountDTO(receiptAccount));
-                }*/
+                    list.Add(receiptAccount);
+                }
                 _messageReturn.Data = list;
             }
             catch (Exception ex)
@@ -43,48 +44,34 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(GetAllReceiptAccountsAsync), ex));
                 throw;
             }
+
             return _messageReturn;
         }
 
         public async Task<MessageReturn> FindByIdAsync(string idReceiptAccount)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 idReceiptAccount.ValidateIdMongo();
-                var receiptAccountDTOList = new List<ReceiptAccountDto>();
                 List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<ReceiptAccount>("_id", idReceiptAccount);
-
-                /*for (var i = 0; i < receiptAccount.Count; i++)
-                {
-                    receiptAccountDTOList.Add(new ReceiptAccountDTO(receiptAccount[i]));
-                }*/
-                _messageReturn.Data = receiptAccountDTOList.FirstOrDefault();
-
+                _messageReturn.Data = receiptAccount.FirstOrDefault() ?? new ReceiptAccount();
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByIdAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> FindByIdUserAsync(string idUser)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 idUser.ValidateIdMongo();
-                var receiptAccountDTOList = new List<ReceiptAccountDto>();
                 List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<ReceiptAccount>("IdUser", idUser);
-
-                /*for (var i = 0; i < receiptAccount.Count; i++)
-                {
-                    receiptAccountDTOList.Add(new ReceiptAccountDTO(receiptAccount[i]));
-                }*/
-                _messageReturn.Data = receiptAccountDTOList;
+                _messageReturn.Data = receiptAccount;
+                return _messageReturn;
 
             }
             catch (Exception ex)
@@ -92,38 +79,38 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByIdUserAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
         public async Task<MessageReturn> SaveAsync(ReceiptAccountDto receiptAccountSave)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 ReceiptAccount receiptAccount = receiptAccountSave.makeReceiptAccountSave();
 
-                _messageReturn = await _userService.FindByIdAsync(receiptAccountSave.IdUser);
-                if (!_messageReturn.hasRunnedSuccessfully())
+                var user = await _userService.FindByIdAsync(receiptAccountSave.IdUser);
+                if (!user.hasRunnedSuccessfully())
                     throw new SaveException("O campo IdUser nao tem nenhum usuario correspondente.");
 
                 var id = await _receiptAccountRepository.Save(receiptAccount);
                 _messageReturn.Data = id;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(SaveAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
-        public async Task<bool> DoesIdExists(string idReceiptAccount)
+        public Task<MessageReturn> DoesIdExists(string idReceiptAccount)
         {
-            _messageReturn = new MessageReturn();
             try
             {
-                return await _receiptAccountRepository.DoesValueExistsOnField<ReceiptAccount>("Id", idReceiptAccount);
+                _messageReturn.Data =  _receiptAccountRepository
+                                            .DoesValueExistsOnField<ReceiptAccount>(
+                                                "Id", 
+                                                idReceiptAccount
+                                            ).Result;
+                return Task.FromResult(_messageReturn);
             }
             catch (Exception ex)
             {
@@ -134,7 +121,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<MessageReturn> DeleteAsync(string id, string idUser)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 idUser.ValidateIdMongo();
@@ -145,13 +131,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     throw new EditException("Id de conta bancaria nao corresponde ao id de usuario.");
 
                 _messageReturn.Data = await _receiptAccountRepository.Delete(id);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(DeleteAsync), ex));
                 throw;
             }
-            return _messageReturn;
         }
     }
 }

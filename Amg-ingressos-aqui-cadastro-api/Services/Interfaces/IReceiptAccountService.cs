@@ -9,7 +9,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
         Task<MessageReturn> FindByIdAsync(string idReceiptAccount);
         Task<MessageReturn> FindByIdUserAsync(string idUser);
         Task<MessageReturn> SaveAsync(ReceiptAccountDto receiptAccountSave);
-        Task<bool> DoesIdExists(string idReceiptAccount);
+        Task<MessageReturn> DoesIdExists(string idReceiptAccount);
         Task<MessageReturn> DeleteAsync(string id, string idUser);
     }
 }

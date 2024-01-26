@@ -90,8 +90,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 }
                 else
                 {
-                    idUserCollaborator = user.Id;
-
                     //Consulta se o colaborador ja está vinculado ao organizador do evento
                     if (listAssociate.Any() && listAssociate.Exists(x => x.IdUserCollaborator == user.Id))
                         throw new RuleException(MessageLogErrors.Get);

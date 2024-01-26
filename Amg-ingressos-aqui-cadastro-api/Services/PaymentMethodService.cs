@@ -12,7 +12,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
     {
         private readonly IPaymentMethodRepository _paymentMethodRepository;
         private readonly IUserService _userService;
-        private MessageReturn? _messageReturn;
+        private MessageReturn _messageReturn;
         private readonly ILogger<PaymentMethodService> _logger;
 
         public PaymentMethodService(IPaymentMethodRepository paymentMethodRepository,
@@ -22,20 +22,20 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             _paymentMethodRepository = paymentMethodRepository;
             _userService = userService;
             _logger = logger;
+            _messageReturn = new MessageReturn();
         }
 
         public async Task<MessageReturn> GetAllPaymentMethodsAsync()
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 var result = await _paymentMethodRepository.GetAllPaymentMethods<PaymentMethod>();
 
-                List<PaymentMethodDto> list = new List<PaymentMethodDto>();
-                /*foreach (PaymentMethod paymentMethod in result)
+                List<PaymentMethod> list = new List<PaymentMethod>();
+                foreach (PaymentMethod paymentMethod in result)
                 {
-                    list.Add(new PaymentMethodDTO(paymentMethod));
-                }*/
+                    list.Add(paymentMethod);
+                }
                 _messageReturn.Data = list;
             }
             catch (Exception ex)
@@ -89,12 +89,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        public async Task<bool> DoesIdExists(string idPaymentMethod)
+        public async Task<MessageReturn> DoesIdExists(string idPaymentMethod)
         {
-            _messageReturn = new MessageReturn();
             try
             {
-                return await _paymentMethodRepository.DoesValueExistsOnField<PaymentMethod>("Id", idPaymentMethod);
+                _messageReturn.Data = await _paymentMethodRepository
+                    .DoesValueExistsOnField<PaymentMethod>("Id", idPaymentMethod);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
@@ -105,13 +106,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<MessageReturn> DeleteAsync(string id, string idUser)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 idUser.ValidateIdMongo();
 
                 var paymentMethod = FindByIdAsync(id).Result.ToObject<PaymentMethodDto>();
-
 
                 if (paymentMethod.Id != idUser)
                     throw new DeleteException("Id de metodo de pagamento nao corresponde ao id de usuario.");

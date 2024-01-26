@@ -12,13 +12,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly IEmailService _emailService;
+        private readonly INotificationService _emailService;
         private MessageReturn _messageReturn;
         private readonly ILogger<UserService> _logger;
 
         public UserService(
             IUserRepository userRepository,
-            IEmailService emailService,
+            INotificationService emailService,
             ILogger<UserService> logger
         )
         {
@@ -42,32 +42,31 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     list.Add(user);
                 }
                 _messageReturn.Data = list;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(GetAsync), ex));
                 throw;
             }
-            return _messageReturn;
         }
 
-        public async Task<MessageReturn> FindByIdAsync(string idUser)
+        public async Task<MessageReturn> FindByIdAsync(string id)
         {
             try
             {
-                idUser.ValidateIdMongo();
+                id.ValidateIdMongo();
 
                 //validate user type
-                User user = await _userRepository.FindByField<User>("Id", idUser);
+                User user = await _userRepository.FindByField<User>("Id", id);
                 _messageReturn.Data = user;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByIdAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> FindByDocumentIdAsync(System.Enum TEnum, string documentId)
@@ -79,14 +78,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 //validate user type
                 User user = await _userRepository.FindByField<User>("DocumentId", documentId);
                 _messageReturn.Data = user;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByDocumentIdAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> FindByEmailAsync(System.Enum TEnum, string email)
@@ -179,9 +177,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 }
 
                 var result = await _userRepository.Save(user);
-
                 user.Id = result.Id;
-
                 _messageReturn.Data = user;
             }
             catch (Exception ex)
@@ -190,7 +186,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 throw;
             }
 
-            _logger.LogInformation("Finished", _messageReturn.Data);
+            _logger.LogInformation("Finished");
             return _messageReturn;
         }
 
@@ -219,14 +215,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     userDb = await _userRepository.Save(user);
                 }
                 _messageReturn.Data = userDb.Id;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(SaveColabAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
         public Task<bool> DoesIdExists(User user)
@@ -285,13 +280,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     userModel.UserConfirmation = userDb.UserConfirmation;
 
                 _messageReturn.Data = await _userRepository.UpdateUser(userModel.Id, userModel);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(UpdateByIdAsync), ex));
                 throw;
             }
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> UpdatePassowrdByIdAsync(string id, string password)
@@ -309,13 +304,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     id,
                     password
                 );
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(UpdatePassowrdByIdAsync), ex));
                 throw;
             }
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> DeleteAsync(string id)
@@ -328,30 +323,28 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     throw new RuleException("Id de usuário não encontrado.");
 
                 _messageReturn.Data = await _userRepository.Delete(id);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(DeleteAsync), ex));
                 throw;
             }
-            return _messageReturn;
         }
 
-        public async Task<MessageReturn> ResendUserConfirmationAsync(string idUser)
+        public async Task<MessageReturn> ResendUserConfirmationAsync(string id)
         {
             try
             {
-                idUser.ValidateIdMongo();
+                id.ValidateIdMongo();
 
-                User user = await _userRepository.FindByField<User>("Id", idUser);
+                User user = await _userRepository.FindByField<User>("Id", id);
 
                 if (user.Type == TypeUser.Collaborator)
                     throw new RuleException("Usuário não pode ser colaborador");
 
-                if (user.UserConfirmation.EmailVerified == true)
-                {
+                if (user.UserConfirmation.EmailVerified)
                     throw new RuleException("Usuário já verificado");
-                }
 
                 int randomNumber = new Random().Next(100000, 999999);
 
@@ -369,19 +362,19 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
                 };
 
-                var id = await _userRepository.UpdateUser(idUser, user);
+                await _userRepository.UpdateUser(id, user);
 
-                _emailService.SaveAsync(email);
+                _ = _emailService.SaveAsync(email);
 
                 _messageReturn.Data = user;
+                _logger.LogInformation("Finished");
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(ResendUserConfirmationAsync), ex));
                 throw;
             }
-            _logger.LogInformation("Finished", _messageReturn.Data);
-            return _messageReturn;
         }
         public async Task<MessageReturn> FindByDocumentIdAndEmailAsync(System.Enum TEnum, string documentId, string email)
         {
@@ -392,14 +385,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 //validate user type
                 User user = await _userRepository.FindByField<User>("Contact.Email", email);
                 _messageReturn.Data = user;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByDocumentIdAndEmailAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> FindByGenericField<T>(string fieldName, object value)

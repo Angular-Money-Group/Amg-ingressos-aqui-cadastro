@@ -22,7 +22,7 @@ builder.Services.Configure<CadastroDatabaseSettings>(
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IReceiptAccountService, ReceiptAccountService>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAssociateService, AssociateService>();
 builder.Services.AddScoped<ISupportService, SupportService>();
 builder.Services.AddScoped<IAssociateService, AssociateService>();

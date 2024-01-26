@@ -8,11 +8,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
         Task<MessageReturn> GetAsync(FiltersUser filters);
         Task<MessageReturn> FindByIdAsync(string id);
         Task<MessageReturn> FindByEmailAsync(System.Enum TEnum, string email);
-        Task<MessageReturn> FindByDocumentIdAndEmailAsync(System.Enum TEnum,string documentId, string email);
+        Task<MessageReturn> FindByDocumentIdAndEmailAsync(System.Enum TEnum, string documentId, string email);
         Task<MessageReturn> IsEmailAvailable(string email);
         Task<MessageReturn> SaveAsync(UserDto userSave);
         Task<MessageReturn> SaveColabAsync(UserDto colabSave);
-        Task<MessageReturn> UpdateByIdAsync(string id,UserDto user);
+        Task<MessageReturn> UpdateByIdAsync(string id, UserDto user);
         Task<MessageReturn> UpdatePassowrdByIdAsync(string id, string password);
         Task<MessageReturn> ResendUserConfirmationAsync(string id);
         Task<MessageReturn> FindByGenericField<T>(string fieldName, object value);

@@ -1,5 +1,6 @@
 using Amg_ingressos_aqui_cadastro_api.Consts;
 using Amg_ingressos_aqui_cadastro_api.Dtos;
+using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
@@ -13,8 +14,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         private readonly IAssociateColabEventRepository _associateColabEventRepository;
         private readonly IEventRepository _eventRepository;
         private readonly IUserService _userService;
-        private readonly IEmailService _emailService;
-        private readonly MessageReturn? _messageReturn;
+        private readonly INotificationService _emailService;
+        private readonly MessageReturn _messageReturn;
         private readonly ILogger<CollaboratorService> _logger;
 
         public CollaboratorService(
@@ -22,7 +23,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             IEventRepository eventRepository,
             IAssociateColabEventRepository associateColabEventRepository,
             IUserService userService,
-            IEmailService emailService,
+            INotificationService emailService,
             ILogger<CollaboratorService> logger
         )
         {
@@ -35,22 +36,19 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             _messageReturn = new MessageReturn();
         }
 
-        public async Task<MessageReturn> GetAllCollaboratorOfOrganizerAsync(string idOrganizer)
+        public async Task<MessageReturn> GetAllCollaboratorOfOrganizerAsync(string idUserOrganizer)
         {
             try
             {
-                idOrganizer.ValidateIdMongo();
+                idUserOrganizer.ValidateIdMongo();
                 var listUser =
-                    (List<User>)
                         _userService
                             .GetAsync(new FiltersUser() { Type = Enum.TypeUser.Collaborator })
-                            .Result.Data;
+                            .Result.ToListObject<User>();
 
                 var listAssociate =
-                    (List<AssociateCollaboratorOrganizer>)
-                        _organizerRepository
-                            .FindAllColabsOfProducer<AssociateCollaboratorOrganizer>(idOrganizer)
-                            .Result;
+                        await _organizerRepository
+                            .FindAllColabsOfProducer<AssociateCollaboratorOrganizer>(idUserOrganizer);
 
                 var result =
                     from associate in listAssociate
@@ -61,7 +59,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         DocumentId = users.DocumentId,
                         Name = users.Name,
                         Id = users.Id,
-                        IdAssociate = associate.Id
+                        IdAssociate = associate.Id ?? throw new RuleException("id associate não pode ser null")
                     };
 
                 _messageReturn.Data = result;
@@ -85,22 +83,17 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 idEvent.ValidateIdMongo();
                 idUserOrganizer.ValidateIdMongo();
                 //list de usuarios collaborator
-                var listUser =
-                    (IEnumerable<User>)
-                        _userService
-                            .GetAsync(new FiltersUser() { Type = Enum.TypeUser.Collaborator })
-                            .Result.Data;
+                var listUser = _userService
+                                .GetAsync(new FiltersUser() { Type = Enum.TypeUser.Collaborator })
+                                .Result.ToListObject<User>();
                 //lista de usuarios relacionados ao Organizador
                 var listUserOrganizerCollaborator =
-                    (IEnumerable<GetCollaboratorProducerDto>)
-                        GetAllCollaboratorOfOrganizerAsync(idUserOrganizer).Result.Data;
+                        GetAllCollaboratorOfOrganizerAsync(idUserOrganizer)
+                        .Result.ToListObject<GetCollaboratorProducerDto>();
 
                 //lista associada ao evento
-                var listAssociate =
-                    (IEnumerable<AssociateCollaboratorEvent>)
-                        _associateColabEventRepository
-                            .FindAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent)
-                            .Result;
+                var listAssociate = await _associateColabEventRepository
+                                        .FindAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent);
 
                 var result =
                     from usersCollaborator in listUser
@@ -112,14 +105,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                             .Select(x => x.IdUserCollaborator)
                             .Contains(usersOrganizer.Id)
                             ? listAssociate
-                                .FirstOrDefault(x => x.IdUserCollaborator == usersCollaborator.Id)
-                                .Id
+                                ?.Find(x => x.IdUserCollaborator == usersCollaborator.Id)
+                                ?.Id ?? string.Empty
                             : string.Empty,
-                        Assigned = listAssociate
+                        Assigned = listAssociate?
                             .Select(x => x.IdUserCollaborator)
-                            .Contains(usersOrganizer.Id)
-                            ? true
-                            : false,
+                            .Contains(usersOrganizer.Id) ?? false,
                         DocumentId = usersOrganizer.DocumentId,
                         Email = usersOrganizer.Email,
                         Id = usersOrganizer.Id,
@@ -164,9 +155,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         Subject = "Credenciais de Acesso ao Evento",
                         Sender = "suporte@ingressosaqui.com",
                         To = user.Contact.Email,
-                        EventDate = eventDetails.FirstOrDefault().StartDate.ToString(),
-                        EventName = eventDetails.FirstOrDefault().Name,
-                        LinkQrCode = "https://qrcode.ingressosaqui.com/auth?idEvento=" + eventDetails.FirstOrDefault().Id,
+                        EventDate = eventDetails?.FirstOrDefault()?.StartDate.ToString() ?? string.Empty,
+                        EventName = eventDetails?.FirstOrDefault()?.Name ?? string.Empty,
+                        LinkQrCode = "https://qrcode.ingressosaqui.com/auth?idEvento=" + eventDetails?.FirstOrDefault()?.Id ?? string.Empty,
                         Password = user.Password,
                         UserName = user.Name
                     };
@@ -188,17 +179,15 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 idEvent.ValidateIdMongo();
-                var listUser =
-                    (List<UserDto>)
-                        _userService
-                            .GetAsync(new FiltersUser() { Type = Enum.TypeUser.Collaborator })
-                            .Result.Data;
+                var listUser = _userService
+                                .GetAsync(new FiltersUser()
+                                {
+                                    Type = Enum.TypeUser.Collaborator
+                                })
+                                .Result.ToListObject<UserDto>();
                 //lista associada ao evento
-                var listAssociate =
-                    (IEnumerable<AssociateCollaboratorEvent>)
-                        _associateColabEventRepository
-                            .FindAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent)
-                            .Result;
+                var listAssociate = await _associateColabEventRepository
+                                        .FindAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent);
 
                 var result =
                     from associate in listAssociate
