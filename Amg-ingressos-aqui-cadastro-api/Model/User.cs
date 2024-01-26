@@ -50,14 +50,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// </sumary>
         [BsonElement("Status")]
         [JsonPropertyName("status")]
-        public TypeStatusEnum Status { get; set; }
+        public TypeStatus Status { get; set; }
 
         /// <summary>
         /// Tipo do usuário
         /// </summary>
         [BsonElement("Type")]
         [JsonPropertyName("type")]
-        public TypeUserEnum Type { get; set; }
+        public TypeUser Type { get; set; }
 
         /// <summary>
         /// Endereço do usuário
@@ -127,19 +127,19 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
             if (Id is not null)
                 Id = null;
 
-            Status = TypeStatusEnum.Active;
+            Status = TypeStatus.Active;
 
             ValidateBasicUserFormat();
             //TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum), Type, true);
             switch (this.Type)
             {
-                case TypeUserEnum.Admin:
+                case TypeUser.Admin:
                     ValidateAdminFormat();
                     break;
-                case TypeUserEnum.Organizer:
+                case TypeUser.Organizer:
                     ValidateProducerFormat();
                     break;
-                case TypeUserEnum.Customer:
+                case TypeUser.Customer:
                     ValidateCustomerFormat();
                     break;
             }
@@ -154,13 +154,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
             ValidateBasicUserUpdateFormat();
             switch (this.Type)
             {
-                case TypeUserEnum.Admin:
+                case TypeUser.Admin:
                     ValidateAdminFormat();
                     break;
-                case TypeUserEnum.Organizer:
+                case TypeUser.Organizer:
                     ValidateProducerFormat();
                     break;
-                case TypeUserEnum.Customer:
+                case TypeUser.Customer:
                     ValidateCustomerFormat();
                     break;
             }
@@ -186,19 +186,19 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         public void ValidateAdminFormat()
         {
             //TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum), Type, true);
-            ValidateUserType(TypeUserEnum.Admin, this.Type);
+            ValidateUserType(TypeUser.Admin, this.Type);
             ValidateDocumentIdFormat();
         }
         public void ValidateCustomerFormat()
         {
             //TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum), Type, true);
-            ValidateUserType(TypeUserEnum.Customer, this.Type);
+            ValidateUserType(TypeUser.Customer, this.Type);
             ValidateCpfFormat();
         }
         public void ValidateProducerFormat()
         {
             //TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum), Type, true);
-            ValidateUserType(TypeUserEnum.Organizer, this.Type);
+            ValidateUserType(TypeUser.Organizer, this.Type);
             ValidateCnpjFormat();
         }
         

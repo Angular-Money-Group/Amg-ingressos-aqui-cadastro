@@ -28,7 +28,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         /// Status
         /// </sumary>
         [JsonPropertyName("status")]
-        public TypeStatusEnum Status { get; set; }
+        public TypeStatus Status { get; set; }
 
         /// <summary>
         /// Tipo do usuário
@@ -102,7 +102,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
 
         public User DtoToModel()
         {
-            TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum), Type, true);
+            TypeUser type = (TypeUser)System.Enum.Parse(typeof(TypeUser), Type, true);
             return new User()
             {
                 Address = this.Address,

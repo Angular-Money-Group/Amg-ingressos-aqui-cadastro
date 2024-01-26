@@ -113,13 +113,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
 
             if (user != null)
             {
-                if (user.Status == TypeStatusEnum.Inactive)
+                if (user.Status == TypeStatus.Inactive)
                 {
                     var result = await _userCollection.UpdateOneAsync(
                         Builders<User>.Filter.Eq(userMongo => userMongo.Id, id),
                         Builders<User>.Update.Set(
                             userMongo => userMongo.Status,
-                            TypeStatusEnum.Active
+                            TypeStatus.Active
                         )
                     );
                     return "Usuário Reativado.";
@@ -130,7 +130,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                         Builders<User>.Filter.Eq(userMongo => userMongo.Id, id),
                         Builders<User>.Update.Set(
                             userMongo => userMongo.Status,
-                            TypeStatusEnum.Inactive
+                            TypeStatus.Inactive
                         )
                     );
                     return "Usuário Deletado.";

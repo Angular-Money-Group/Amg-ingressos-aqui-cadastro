@@ -231,7 +231,7 @@ namespace Prime.UnitTests.Services
         public void Given_PaymentMethod_Without_typePayment_When_save_Then_Return_Message_Miss_typePayment()
         {
             //Arrange
-            this.paymentMethodComplet.typePayment = TypePaymentEnum.CreditCard;
+            this.paymentMethodComplet.typePayment = TypePayment.CreditCard;
             var expectedMessage = new MessageReturn() { Message = "Tipo de Pagamento é Obrigatório." };
 
             //Act

@@ -1,6 +1,6 @@
 namespace Amg_ingressos_aqui_cadastro_api.Enum
 {
-    public enum TypePaymentEnum
+    public enum TypePayment
     {
         CreditCard = 0,
         DebitCard = 1,

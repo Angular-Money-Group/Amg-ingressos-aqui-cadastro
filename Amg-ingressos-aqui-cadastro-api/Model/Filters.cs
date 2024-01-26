@@ -22,6 +22,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         public string PhoneNumber { get; set; }
 
         [JsonProperty("type")]
-        public TypeUserEnum Type { get; set; }
+        public TypeUser Type { get; set; }
     }
 }

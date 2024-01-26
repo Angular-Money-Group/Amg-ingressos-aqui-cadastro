@@ -145,10 +145,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 User user = userSave.DtoToModel();
 
-                if (user.Type != TypeUserEnum.Collaborator && !IsDocumentIdAvailable(user.DocumentId).Result.ToObject<bool>())
+                if (user.Type != TypeUser.Collaborator && !IsDocumentIdAvailable(user.DocumentId).Result.ToObject<bool>())
                     throw new RuleException("Documento de Identificação já cadastrado.");
 
-                if (user.Type != TypeUserEnum.Collaborator && !IsEmailAvailable(user.Contact.Email).Result.ToObject<bool>())
+                if (user.Type != TypeUser.Collaborator && !IsEmailAvailable(user.Contact.Email).Result.ToObject<bool>())
                 {
                     throw new RuleException("Email Indisponível.");
                 }
@@ -158,7 +158,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 int randomNumber = new Random().Next(100000, 999999);
 
-                if (user.Type != TypeUserEnum.Collaborator)
+                if (user.Type != TypeUser.Collaborator)
                 {
 
                     var email = new EmailVerifyAccountDto
@@ -201,7 +201,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 User user = colabSave.DtoToModel();
                 _messageReturn = await FindByDocumentIdAsync(
-                    TypeUserEnum.Collaborator,
+                    TypeUser.Collaborator,
                     user.DocumentId
                 );
                 if (_messageReturn.hasRunnedSuccessfully())
@@ -209,7 +209,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 else
                 {
                     _messageReturn = await FindByEmailAsync(
-                        TypeUserEnum.Collaborator,
+                        TypeUser.Collaborator,
                         user.Contact.Email
                     );
                     if (_messageReturn.hasRunnedSuccessfully())
@@ -345,7 +345,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 User user = await _userRepository.FindByField<User>("Id", idUser);
 
-                if (user.Type == TypeUserEnum.Collaborator)
+                if (user.Type == TypeUser.Collaborator)
                     throw new RuleException("Usuário não pode ser colaborador");
 
                 if (user.UserConfirmation.EmailVerified == true)

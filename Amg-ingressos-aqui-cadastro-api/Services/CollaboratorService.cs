@@ -43,7 +43,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var listUser =
                     (List<User>)
                         _userService
-                            .GetAsync(new FiltersUser() { Type = Enum.TypeUserEnum.Collaborator })
+                            .GetAsync(new FiltersUser() { Type = Enum.TypeUser.Collaborator })
                             .Result.Data;
 
                 var listAssociate =
@@ -88,7 +88,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var listUser =
                     (IEnumerable<User>)
                         _userService
-                            .GetAsync(new FiltersUser() { Type = Enum.TypeUserEnum.Collaborator })
+                            .GetAsync(new FiltersUser() { Type = Enum.TypeUser.Collaborator })
                             .Result.Data;
                 //lista de usuarios relacionados ao Organizador
                 var listUserOrganizerCollaborator =
@@ -146,7 +146,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         idEvent
                     );
                 var listUserTask = _userService.GetAsync(
-                    new FiltersUser() { Type = Enum.TypeUserEnum.Collaborator }
+                    new FiltersUser() { Type = Enum.TypeUser.Collaborator }
                 );
 
                 await Task.WhenAll(eventDetailsTask, listUserEventTask, listUserTask);
@@ -191,7 +191,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var listUser =
                     (List<UserDto>)
                         _userService
-                            .GetAsync(new FiltersUser() { Type = Enum.TypeUserEnum.Collaborator })
+                            .GetAsync(new FiltersUser() { Type = Enum.TypeUser.Collaborator })
                             .Result.Data;
                 //lista associada ao evento
                 var listAssociate =

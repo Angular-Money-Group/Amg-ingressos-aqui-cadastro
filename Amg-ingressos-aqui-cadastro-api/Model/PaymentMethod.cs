@@ -41,7 +41,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// <summary>
         /// Crédito ou Débito
         /// </summary>
-        public TypePaymentEnum typePayment { get; set; }
+        public TypePayment typePayment { get; set; }
 
         /// <summary>
         /// Número do Cartão

@@ -187,7 +187,7 @@ namespace Prime.UnitTests.Services
                 Returns(Task.FromResult(this.userComplet));
 
             //Act
-            var result = _userService.FindByEmailAsync(TypeUserEnum.Admin, email);
+            var result = _userService.FindByEmailAsync(TypeUser.Admin, email);
 
             //Assert
             Assert.IsInstanceOf<UserDto>(result.Result.Data);
@@ -204,7 +204,7 @@ namespace Prime.UnitTests.Services
             var messageExpected = "Email é Obrigatório.";
 
             //Act
-            var result = _userService.FindByEmailAsync(TypeUserEnum.Admin, userComplet.Contact.Email);
+            var result = _userService.FindByEmailAsync(TypeUser.Admin, userComplet.Contact.Email);
 
             //Assert
             Assert.AreEqual(messageExpected, result.Result.Message);
@@ -221,7 +221,7 @@ namespace Prime.UnitTests.Services
             var messageExpected = "Formato de email inválido.";
 
             //Act
-            var result = _userService.FindByEmailAsync(TypeUserEnum.Admin, userComplet.Contact.Email);
+            var result = _userService.FindByEmailAsync(TypeUser.Admin, userComplet.Contact.Email);
 
             //Assert
             Assert.AreEqual(messageExpected, result.Result.Message);
@@ -238,7 +238,7 @@ namespace Prime.UnitTests.Services
                 .Throws(new RuleException(messageReturn));
 
             //Act
-            var result = _userService.FindByEmailAsync(TypeUserEnum.Admin, email);
+            var result = _userService.FindByEmailAsync(TypeUser.Admin, email);
             //Assert
             Assert.AreEqual(messageReturn, result.Result.Message);
             Assert.AreEqual(string.Empty, result.Result.Data);
@@ -255,7 +255,7 @@ namespace Prime.UnitTests.Services
                 .Throws(new Exception(expectedMessage));
 
             // Act and Assert
-            var exception = Assert.ThrowsAsync<Exception>(() => _userService.FindByEmailAsync(TypeUserEnum.Admin, email));
+            var exception = Assert.ThrowsAsync<Exception>(() => _userService.FindByEmailAsync(TypeUser.Admin, email));
             Assert.AreEqual(expectedMessage, exception.Message);
         }
 
@@ -373,7 +373,7 @@ namespace Prime.UnitTests.Services
         public void Given_User_Without_Status_When_save_Then_Save_With_Status_Active()
         {
             //Arrange
-            this.userDTO.Status = TypeStatusEnum.Active;
+            this.userDTO.Status = TypeStatus.Active;
             var messageReturn = userComplet.Id;
 
             _userRepositoryMock.Setup(x => x.DoesValueExistsOnField<User>("Id", userComplet.Id))

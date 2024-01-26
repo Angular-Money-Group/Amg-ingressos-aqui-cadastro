@@ -12,7 +12,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
                 Id = "1b111101-e2bb-4255-8caf-4136c566a95c",
                 IdUser = "1b111101-e2bb-4255-8caf-4136c566a962",
                 DocumentId = "05292425234",
-                typePayment = TypePaymentEnum.DebitCard,
+                typePayment = TypePayment.DebitCard,
                 CardNumber = "1234 5678 8901 2345",
                 NameOnCard = "Isabella V Ferreira",
                 ExpirationDate = new DateTime(2024, 02, 01, 16, 00, 00),

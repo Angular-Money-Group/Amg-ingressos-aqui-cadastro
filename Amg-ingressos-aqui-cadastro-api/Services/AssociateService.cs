@@ -62,13 +62,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     //TypeUserEnum.Collaborator = 3
                     //Consulta se user do email, é colaborador e se já esta vinculado ao organizador do evento
                     User userData = _userService.FindByGenericField<User>("Contact.Email", user.Contact.Email).Result.ToObject<User>();
-                    if (userData != null && userData.Type == TypeUserEnum.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userData.Id))
+                    if (userData != null && userData.Type == TypeUser.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userData.Id))
                         throw new RuleException(MessageLogErrors.Get);
                     else if (userData == null)
                     {
                         //Consulta se user do documentId, é colaborador e se já esta vinculado ao organizador do evento
                         User userLocal = _userService.FindByGenericField<User>("DocumentId", user.DocumentId).Result.ToObject<User>();
-                        if (userLocal != null && userLocal.Type == TypeUserEnum.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userLocal.Id))
+                        if (userLocal != null && userLocal.Type == TypeUser.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userLocal.Id))
                             throw new RuleException(MessageLogErrors.Get);
                         else if (userLocal != null)
                             idUserCollaborator = userLocal.Id;
@@ -187,8 +187,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var user = (UserDto)_userService.FindByIdAsync(idUser).Result.Data;
                 if (user == null)
                     throw new RuleException("Usário não cadastrado.");
-                TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum), user.Type, true);
-                if (type != TypeUserEnum.ApiData)
+                TypeUser type = (TypeUser)System.Enum.Parse(typeof(TypeUser), user.Type, true);
+                if (type != TypeUser.ApiData)
                     throw new RuleException("Usário não está no perfil de ApiData.");
 
 
