@@ -17,7 +17,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
 
         }
 
-
         /// <summary>
         /// Nome do usuário
         /// </summary>

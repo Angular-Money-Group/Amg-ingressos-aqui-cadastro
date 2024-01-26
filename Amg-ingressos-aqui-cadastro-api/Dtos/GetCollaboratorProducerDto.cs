@@ -15,7 +15,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             IdAssociate = string.Empty;
         }
 
-
         /// <summary>
         /// Nome do usuário
         /// </summary>
