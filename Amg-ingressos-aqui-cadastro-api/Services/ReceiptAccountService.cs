@@ -38,45 +38,43 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     list.Add(receiptAccount);
                 }
                 _messageReturn.Data = list;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(GetAllReceiptAccountsAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
-        public async Task<MessageReturn> FindByIdAsync(string idReceiptAccount)
+        public async Task<MessageReturn> GetByIdAsync(string idReceiptAccount)
         {
             try
             {
                 idReceiptAccount.ValidateIdMongo();
-                List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<ReceiptAccount>("_id", idReceiptAccount);
+                List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.GetByField<ReceiptAccount>("_id", idReceiptAccount);
                 _messageReturn.Data = receiptAccount.FirstOrDefault() ?? new ReceiptAccount();
                 return _messageReturn;
             }
             catch (Exception ex)
             {
-                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByIdAsync), ex));
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(GetByIdAsync), ex));
                 throw;
             }
         }
 
-        public async Task<MessageReturn> FindByIdUserAsync(string idUser)
+        public async Task<MessageReturn> GetByIdUserAsync(string idUser)
         {
             try
             {
                 idUser.ValidateIdMongo();
-                List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.FindByField<ReceiptAccount>("IdUser", idUser);
+                List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.GetByField<ReceiptAccount>("IdUser", idUser);
                 _messageReturn.Data = receiptAccount;
                 return _messageReturn;
-
             }
             catch (Exception ex)
             {
-                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByIdUserAsync), ex));
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(GetByIdUserAsync), ex));
                 throw;
             }
         }
@@ -84,10 +82,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-                ReceiptAccount receiptAccount = receiptAccountSave.makeReceiptAccountSave();
+                ReceiptAccount receiptAccount = receiptAccountSave.MakeReceiptAccountSave();
 
-                var user = await _userService.FindByIdAsync(receiptAccountSave.IdUser);
-                if (!user.hasRunnedSuccessfully())
+                var user = await _userService.GetByIdAsync(receiptAccountSave.IdUser);
+                if (!user.HasRunnedSuccessfully())
                     throw new SaveException("O campo IdUser nao tem nenhum usuario correspondente.");
 
                 var id = await _receiptAccountRepository.Save(receiptAccount);
@@ -105,9 +103,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-                _messageReturn.Data =  _receiptAccountRepository
+                _messageReturn.Data = _receiptAccountRepository
                                             .DoesValueExistsOnField<ReceiptAccount>(
-                                                "Id", 
+                                                "Id",
                                                 idReceiptAccount
                                             ).Result;
                 return Task.FromResult(_messageReturn);
@@ -125,7 +123,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 idUser.ValidateIdMongo();
 
-                var ReceiptAccountDto = FindByIdAsync(id).Result.ToObject<ReceiptAccountDto>();
+                var ReceiptAccountDto = GetByIdAsync(id).Result.ToObject<ReceiptAccountDto>();
 
                 if (ReceiptAccountDto.IdUser != idUser)
                     throw new EditException("Id de conta bancaria nao corresponde ao id de usuario.");

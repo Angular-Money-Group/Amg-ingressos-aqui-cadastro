@@ -27,12 +27,11 @@ builder.Services.AddScoped<IAssociateService, AssociateService>();
 builder.Services.AddScoped<ISupportService, SupportService>();
 builder.Services.AddScoped<IAssociateService, AssociateService>();
 builder.Services.AddScoped<ICollaboratorService, CollaboratorService>();
+builder.Services.AddScoped<IEventService, EventService>();
 //repository
 builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<IReceiptAccountRepository, ReceiptAccountRepository>();
 builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
-builder.Services.AddScoped<IEmailRepository, EmailRepository>();
-builder.Services.AddScoped<IEventRepository, EventRepository>();
 builder.Services.AddScoped<ISupportRepository, SupportRepository>();
 builder.Services.AddScoped<ISequenceRepository, SequenceRepository>();
 builder.Services.AddScoped<IAssociateColabOrganizerRepository, AssociateColabOrganizerRepository>();

@@ -8,7 +8,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
         Task<List<T>> GetAll<T>();
         Task<T> FindById<T>(string id);
         Task<TicketSupport> Save(TicketSupport ticketSupport);
-        Task<TicketSupport> UpdateByIdAsync(string id, TicketSupport ticketSupport);
+        Task<TicketSupport> EditByIdAsync(string id, TicketSupport ticketSupport);
         Task<bool> DeleteAsync(string id);
     }
 }

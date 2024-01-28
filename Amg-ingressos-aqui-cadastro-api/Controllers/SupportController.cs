@@ -28,7 +28,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> SaveAsync([FromBody] TicketSupportDto support)
         {
             MessageReturn result = await _supportService.SaveAsync(support);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new SaveException(result.Message);
@@ -47,7 +47,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
             var result = await _supportService.GetAllAsync();
 
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new GetException(result.Message);
@@ -62,11 +62,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpGet]
         [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> FindById([FromRoute] string id)
+        public async Task<IActionResult> GetById([FromRoute] string id)
         {
             var result = await _supportService.FindByIdAsync(id);
 
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new GetException(result.Message);
@@ -81,11 +81,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpPut]
         [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateById([FromRoute] string id, [FromBody] TicketSupportDto support)
+        public async Task<IActionResult> EditById([FromRoute] string id, [FromBody] TicketSupportDto support)
         {
-            var result = await _supportService.UpdateByIdAsync(id, support);
+            var result = await _supportService.EditByIdAsync(id, support);
 
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new EditException(result.Message);
@@ -105,7 +105,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
 
             var result = await _supportService.DeleteAsync(id);
 
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new DeleteException(result.Message);

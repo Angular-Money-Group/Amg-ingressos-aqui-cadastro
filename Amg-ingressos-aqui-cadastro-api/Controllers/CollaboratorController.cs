@@ -28,7 +28,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> GetAllColabsFromProducerAsync([FromRoute] string idUserOrganizer)
         {
             MessageReturn result = await _collaboratorService.GetAllCollaboratorOfOrganizerAsync(idUserOrganizer);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new GetException(result.Message);
@@ -47,7 +47,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
 
             MessageReturn result = await _collaboratorService.GetAllCollaboratorOfEventAssignedAsync(idEvent, idUserOrganizer);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new GetException(result.Message);
@@ -65,10 +65,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> SendEmailCollaboratorAsync([FromRoute] string idEvent)
         {
             MessageReturn result = await _collaboratorService.SendEmailCollaborator(idEvent);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result);
             else
-                throw new GetException(result.Message);
+                throw new RuleException(result.Message);
         }
 
         /// <summary>
@@ -83,7 +83,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> GetCollaboratorByEvent([FromRoute] string idEvent)
         {
             MessageReturn result = await _collaboratorService.GetCollaboratorByEvent(idEvent);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new GetException(result.Message);

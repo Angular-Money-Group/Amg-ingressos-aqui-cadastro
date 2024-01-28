@@ -6,7 +6,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
     {
         Task<EventColab> Save(EventColab eventColabComplet);
         Task<bool> DoesValueExistsOnField<T>(string fieldName, object value);
-        Task<T> FindByField<T>(string fieldName, object value);
+        Task<T> GetByField<T>(string fieldName, object value);
         Task<bool> Delete(object id);
         Task<List<string>> FindAllColabsOfEvent(string idEvent);
     }

@@ -34,7 +34,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             return true;
         }
 
-        public async Task<T> FindByField<T>(string fieldName, object value)
+        public async Task<T> GetByField<T>(string fieldName, object value)
         {
             var filter = Builders<PaymentMethod>.Filter.Eq(fieldName, value);
             var paymentMethod = await _paymentMethodCollection

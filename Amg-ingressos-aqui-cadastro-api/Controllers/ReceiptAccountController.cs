@@ -26,7 +26,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> SaveReceiptAccountAsync([FromBody] ReceiptAccountDto receiptAccountObject)
         {
             MessageReturn result = await _receiptAccountService.SaveAsync(receiptAccountObject);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new SaveException(result.Message);
@@ -45,7 +45,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
 
             var result = await _receiptAccountService.GetAllReceiptAccountsAsync();
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data as List<ReceiptAccountDto>);
             else
                 throw new GetException(result.Message);
@@ -61,11 +61,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpGet]
         [Route("idUser/{idUser}")]
         [Produces("application/json")]
-        public async Task<IActionResult> FindByIdReceiptAccountAsync([FromRoute] string idUser)
+        public async Task<IActionResult> GetByIduserAsync([FromRoute] string idUser)
         {
 
-            var result = await _receiptAccountService.FindByIdUserAsync(idUser);
-            if (result.hasRunnedSuccessfully())
+            var result = await _receiptAccountService.GetByIdUserAsync(idUser);
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data as List<ReceiptAccountDto>);
             else
                 throw new GetException(result.Message);
@@ -83,7 +83,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> DeleteReceiptAccountAsync([FromRoute] string id, [FromRoute] string idUser)
         {
             var result = await _receiptAccountService.DeleteAsync(id, idUser);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new DeleteException(result.Message);

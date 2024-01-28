@@ -33,14 +33,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 var result = await _userRepository.Get<User>(filters);
-
                 List<User> list = new List<User>();
-                var key = "b14ca5898a4e4133bbce2ea2315a2023";
-                foreach (User user in result)
+                result.ForEach(u =>
                 {
-                    user.Password = AesOperation.DecryptString(key, user.Password);
-                    list.Add(user);
-                }
+                    u.Password = AesOperation
+                        .DecryptString(Settings.keyEncrypt, u.Password);
+                    list.Add(u);
+                });
                 _messageReturn.Data = list;
                 return _messageReturn;
             }
@@ -51,20 +50,18 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
         }
 
-        public async Task<MessageReturn> FindByIdAsync(string id)
+        public async Task<MessageReturn> GetByIdAsync(string id)
         {
             try
             {
                 id.ValidateIdMongo();
-
-                //validate user type
-                User user = await _userRepository.FindByField<User>("Id", id);
+                User user = await _userRepository.GetByField<User>("Id", id);
                 _messageReturn.Data = user;
                 return _messageReturn;
             }
             catch (Exception ex)
             {
-                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByIdAsync), ex));
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(GetByIdAsync), ex));
                 throw;
             }
         }
@@ -74,9 +71,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 documentId.ValidateCpfFormat();
-
-                //validate user type
-                User user = await _userRepository.FindByField<User>("DocumentId", documentId);
+                User user = await _userRepository.GetByField<User>("DocumentId", documentId);
                 _messageReturn.Data = user;
                 return _messageReturn;
             }
@@ -92,25 +87,23 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 email.ValidateEmailFormat();
-
-                //validate user type
-                User user = await _userRepository.FindByField<User>("Contact.Email", email);
-                _messageReturn.Data = user;
+                _messageReturn.Data = await _userRepository
+                    .GetByField<User>("Contact.Email", email);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByEmailAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> IsEmailAvailable(string email)
         {
             try
             {
-                _messageReturn.Data = await _userRepository.DoesValueExistsOnField("Contact.Email", email);
+                _messageReturn.Data = await _userRepository
+                    .DoesValueExistsOnField("Contact.Email", email);
                 return _messageReturn;
             }
             catch (Exception ex)
@@ -124,10 +117,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-                _messageReturn.Data = await _userRepository.DoesValueExistsOnField(
-                    "DocumentId",
-                    documentId
-                );
+                _messageReturn.Data = await _userRepository
+                    .DoesValueExistsOnField("DocumentId", documentId);
                 return _messageReturn;
             }
             catch (Exception ex)
@@ -142,17 +133,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 User user = userSave.DtoToModel();
-
                 if (user.Type != TypeUser.Collaborator && !IsDocumentIdAvailable(user.DocumentId).Result.ToObject<bool>())
                     throw new RuleException("Documento de Identificação já cadastrado.");
 
                 if (user.Type != TypeUser.Collaborator && !IsEmailAvailable(user.Contact.Email).Result.ToObject<bool>())
-                {
                     throw new RuleException("Email Indisponível.");
-                }
 
-                var key = "b14ca5898a4e4133bbce2ea2315a2023";
-                user.Password = AesOperation.EncryptString(key, user.Password);
+                user.Password = AesOperation.EncryptString(Settings.keyEncrypt, user.Password);
 
                 int randomNumber = new Random().Next(100000, 999999);
 
@@ -162,8 +149,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     var email = new EmailVerifyAccountDto
                     {
                         CodeValidation = randomNumber,
-                        Subject = "Confirmação de Conta",
-                        Sender = "suporte@ingressosaqui.com",
+                        Subject = Settings.SubjectComfirmationAccount,
+                        Sender = Settings.Sender,
                         To = user.Contact.Email,
                     };
 
@@ -179,15 +166,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var result = await _userRepository.Save(user);
                 user.Id = result.Id;
                 _messageReturn.Data = user;
+                _logger.LogInformation("Finished");
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(SaveAsync), ex));
                 throw;
             }
-
-            _logger.LogInformation("Finished");
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> SaveColabAsync(UserDto colabSave)
@@ -200,7 +186,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     TypeUser.Collaborator,
                     user.DocumentId
                 );
-                if (result.hasRunnedSuccessfully())
+                if (result.HasRunnedSuccessfully())
                     userDb = result.ToObject<User>();
                 else
                 {
@@ -208,7 +194,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         TypeUser.Collaborator,
                         user.Contact.Email
                     );
-                    if (result.hasRunnedSuccessfully())
+                    if (result.HasRunnedSuccessfully())
                         userDb = _messageReturn.ToObject<User>();
                     else
                         _messageReturn = new MessageReturn();
@@ -241,9 +227,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-                if (user is null)
+                if (user == null)
                     return false;
-                return true;
+                else
+                    return true;
             }
             catch (Exception ex)
             {
@@ -263,10 +250,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     throw new RuleException("Id de usuário não encontrado.");
 
                 if (userModel.Password != null)
-                {
-                    var key = "b14ca5898a4e4133bbce2ea2315a2023";
-                    userModel.Password = AesOperation.EncryptString(key, userModel.Password);
-                }
+                    userModel.Password = AesOperation
+                        .EncryptString(Settings.keyEncrypt, userModel.Password);
                 else
                     userModel.Password = userDb.Password;
 
@@ -297,13 +282,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 if (!await DoesIdExists(userDb))
                     throw new RuleException("Id de usuário não encontrado.");
 
-                var key = "b14ca5898a4e4133bbce2ea2315a2023";
-                password = AesOperation.EncryptString(key, password);
+                password = AesOperation.EncryptString(Settings.keyEncrypt, password);
 
-                _messageReturn.Data = await _userRepository.UpdatePasswordUser(
-                    id,
-                    password
-                );
+                _messageReturn.Data = await _userRepository
+                    .UpdatePasswordUser(id, password);
                 return _messageReturn;
             }
             catch (Exception ex)
@@ -338,7 +320,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 id.ValidateIdMongo();
 
-                User user = await _userRepository.FindByField<User>("Id", id);
+                User user = await _userRepository.GetByField<User>("Id", id);
 
                 if (user.Type == TypeUser.Collaborator)
                     throw new RuleException("Usuário não pode ser colaborador");
@@ -351,8 +333,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 var email = new EmailVerifyAccountDto
                 {
                     CodeValidation = randomNumber,
-                    Subject = "Confirmação de Conta",
-                    Sender = "suporte@ingressosaqui.com",
+                    Subject = Settings.SubjectComfirmationAccount,
+                    Sender = Settings.Sender,
                     To = user.Contact.Email,
                 };
 
@@ -383,7 +365,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 email.ValidateEmailFormat();
 
                 //validate user type
-                User user = await _userRepository.FindByField<User>("Contact.Email", email);
+                User user = await _userRepository.GetByField<User>("Contact.Email", email);
                 _messageReturn.Data = user;
                 return _messageReturn;
             }
@@ -399,7 +381,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 //validate user type
-                _messageReturn.Data = await _userRepository.FindByField<User>(fieldName, value);
+                _messageReturn.Data = await _userRepository.GetByField<User>(fieldName, value);
                 return _messageReturn;
             }
             catch (Exception ex)

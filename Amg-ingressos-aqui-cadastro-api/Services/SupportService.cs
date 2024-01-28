@@ -14,21 +14,21 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         private readonly IUserRepository _userRepository;
         private readonly ISequenceRepository _sequenceRepository;
         private readonly INotificationService _emailService;
-        private MessageReturn _messageReturn;
+        private readonly MessageReturn _messageReturn;
         private readonly ILogger<SupportService> _logger;
 
         public SupportService(
             IUserRepository userRepository,
             ISupportRepository supportRepository,
             ISequenceRepository sequenceRepository,
-            INotificationService emailService,
+            INotificationService notificationService,
             ILogger<SupportService> logger
         )
         {
             _supportRepository = supportRepository;
             _sequenceRepository = sequenceRepository;
             _userRepository = userRepository;
-            _emailService = emailService;
+            _emailService = notificationService;
             _logger = logger;
             _messageReturn = new MessageReturn();
         }
@@ -80,7 +80,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 _messageReturn.Data = result;
 
-                var user = await _userRepository.FindByField<User>("Id", support.IdPerson);
+                var user = await _userRepository.GetByField<User>("Id", support.IdPerson);
 
                 await ProcessEmail(support, user);
 
@@ -93,29 +93,26 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
         }
 
-        public async Task<MessageReturn> UpdateByIdAsync(string id, TicketSupportDto ticketSupport)
+        public async Task<MessageReturn> EditByIdAsync(string id, TicketSupportDto ticketSupport)
         {
             try
             {
                 id.ValidateIdMongo();
-
-                _messageReturn.Data = await _supportRepository.UpdateByIdAsync(
+                _messageReturn.Data = await _supportRepository.EditByIdAsync(
                     id,
                     ticketSupport.DtoToModel()
                 );
-
                 return _messageReturn;
             }
             catch (Exception ex)
             {
-                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(UpdateByIdAsync), ex));
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(EditByIdAsync), ex));
                 throw;
             }
         }
 
         public async Task<MessageReturn> DeleteAsync(string id)
         {
-            _messageReturn = new MessageReturn();
             try
             {
                 id.ValidateIdMongo();
@@ -138,10 +135,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 UserEmail = user.Contact.Email,
                 Message = support.Message,
                 Subject = support.Subject,
-                Sender = "suporte@ingressosaqui.com",
-                To = "augustopires@angularmoneygroup.com.br",
+                Sender = Settings.Sender,
+                To = Settings.ToSupport,
             };
-
             await _emailService.SaveAsync(email);
         }
     }

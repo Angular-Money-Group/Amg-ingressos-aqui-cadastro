@@ -1,6 +1,7 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 using System.ComponentModel.DataAnnotations;
+using Amg_ingressos_aqui_cadastro_api.Exceptions;
 
 namespace Amg_ingressos_aqui_cadastro_api.Model
 {
@@ -42,5 +43,17 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         [BsonElement("PhoneVerified")]
         [JsonPropertyName("phoneVerified")]
         public bool PhoneVerified { get; set; } = false;
+
+        public void ValidateUserConfirmation()
+        {
+            if (string.IsNullOrEmpty(this.EmailConfirmationCode))
+                throw new RuleException("Código de Confirmação de Email é Obrigatório.");
+            if (this.EmailConfirmationExpirationDate == DateTime.MinValue)
+                throw new RuleException("Data de Expiração de Código de Confirmação de Email é Obrigatório.");
+            if (!this.EmailVerified)
+                throw new RuleException("Status de Verificação de Email é Obrigatório.");
+            if (!this.PhoneVerified)
+                throw new RuleException("Status de Verificação de Telefone é Obrigatório.");
+        }
     }
 }

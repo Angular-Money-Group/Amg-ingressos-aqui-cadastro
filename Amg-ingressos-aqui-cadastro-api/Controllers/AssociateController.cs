@@ -30,7 +30,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
             //Executa o vinculo do organizador de evento ao user colaborador
             MessageReturn result = await _associateService.AssociateColabOrganizerAsync(idUserOrganizer, user);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new SaveException(result.Message);
@@ -47,7 +47,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> AssociateColabWithEventAsync([FromBody] AssociateCollaboratorEvent colabEvent)
         {
             MessageReturn result = await _associateService.AssociateCollaboratorEventAsync(colabEvent);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new SaveException(result.Message);
@@ -68,7 +68,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                 throw new SaveException("dados invalidos");
 
             MessageReturn result = await _associateService.AssociateManyColabWithOrganizerAsync(collaboratorsOrganizer);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new SaveException(result.Message);
@@ -85,7 +85,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> AssociateManyColabWithEventAsync([FromBody] List<AssociateCollaboratorEvent> collaboratorsEvent)
         {
             MessageReturn result = await _associateService.AssociateManyColabWithEventAsync(collaboratorsEvent);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new SaveException(result.Message);
@@ -102,7 +102,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> DeleteAssociateColabOrganizerAsync([FromRoute] string idAssociate)
         {
             MessageReturn result = await _associateService.DeleteAssociateColabOrganizerAsync(idAssociate);
-            if (!result.hasRunnedSuccessfully())
+            if (!result.HasRunnedSuccessfully())
                 throw new DeleteException(result.Message);
 
             return Ok(result.Data);
@@ -119,8 +119,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> DeleteAssociateColabEventAsync([FromRoute] string idAssociate)
         {
             MessageReturn result = await _associateService.DeleteAssociateColabEventAsync(idAssociate);
-            if (!result.hasRunnedSuccessfully())
-                throw new SaveException(result.Message);
+            if (!result.HasRunnedSuccessfully())
+                throw new DeleteException(result.Message);
 
             return Ok(result.Data);
         }
@@ -136,7 +136,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> AssociateUserApiDataToEventAsync([FromBody] UserApiDataEventDto data)
         {
             MessageReturn result = await _associateService.AssociateUserApiDataToEventAsync(data.IdEvent, data.IdUser);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new SaveException(result.Message);
@@ -153,7 +153,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> GetUserApiDataToEventAsync([FromRoute] string idEvent)
         {
             MessageReturn result = await _associateService.GetUserApiDataToEventAsync(idEvent);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new GetException(result.Message);

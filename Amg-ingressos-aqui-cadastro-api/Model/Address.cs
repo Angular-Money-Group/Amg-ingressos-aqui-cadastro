@@ -1,11 +1,12 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using Amg_ingressos_aqui_cadastro_api.Exceptions;
+using Amg_ingressos_aqui_cadastro_api.Utils;
+using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
 namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class Address
     {
-
         public Address()
         {
             Cep = string.Empty;
@@ -73,5 +74,40 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         [BsonElement("State")]
         [JsonPropertyName("state")]
         public string State { get; set; }
+
+        public void ValidateAdressFormat()
+        {
+
+            if (string.IsNullOrEmpty(this.Cep))
+                throw new RuleException("Em Endereço, CEP é Obrigatório.");
+            this.Cep = string.Join("", this.Cep.ToCharArray().Where(Char.IsDigit));
+            if (this.Cep.Length != 8)
+                throw new RuleException("Em Endereço, formato de CEP inválido.");
+
+            if (string.IsNullOrEmpty(this.AddressDescription))
+                throw new RuleException("Em Endereço, Logradouro é Obrigatório.");
+            if (!this.AddressDescription.ValidateTextFormat())
+                throw new RuleException("Em de Endereço, formato de Logradouro inválido.");
+
+            if (string.IsNullOrEmpty(this.Number))
+                throw new RuleException("Em Endereço, Número é Obrigatório.");
+            if (!this.Number.ValidateSimpleTextFormat())
+                throw new RuleException("Em de Endereço, formato de Número inválido.");
+
+            if (string.IsNullOrEmpty(this.Neighborhood))
+                throw new RuleException("Em Endereço, Bairro é Obrigatório.");
+            if (!this.Neighborhood.ValidateTextFormat())
+                throw new RuleException("Em Endereço, formato de Bairro inválido.");
+
+            if (string.IsNullOrEmpty(this.City))
+                throw new RuleException("Em endereço, Cidade é Obrigatório.");
+            if (!this.City.ValidateTextFormat())
+                throw new RuleException("Uma tentativa de cadastro pode ter vindo de fora. [User.Adress.City]");
+
+            if (string.IsNullOrEmpty(this.State))
+                throw new RuleException("Em endereço, Estado é Obrigatório.");
+            if (!this.State.ValidateTextFormat())
+                throw new RuleException("Uma tentativa de cadastro pode ter vindo de fora. [User.Adress.State]");
+        }
     }
 }

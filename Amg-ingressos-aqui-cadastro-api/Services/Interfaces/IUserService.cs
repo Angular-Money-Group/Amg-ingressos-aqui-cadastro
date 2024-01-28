@@ -6,7 +6,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
     public interface IUserService
     {
         Task<MessageReturn> GetAsync(FiltersUser filters);
-        Task<MessageReturn> FindByIdAsync(string id);
+        Task<MessageReturn> GetByIdAsync(string id);
         Task<MessageReturn> FindByEmailAsync(System.Enum TEnum, string email);
         Task<MessageReturn> FindByDocumentIdAndEmailAsync(System.Enum TEnum, string documentId, string email);
         Task<MessageReturn> IsEmailAvailable(string email);

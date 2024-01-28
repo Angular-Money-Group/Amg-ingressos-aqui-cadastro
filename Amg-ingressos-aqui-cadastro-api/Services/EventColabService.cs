@@ -36,7 +36,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 foreach (string idColab in idColabsOfProducer)
                 {
-                    User colab = _userService.FindByIdAsync(idColab).Result.ToObject<User>();
+                    User colab = _userService.GetByIdAsync(idColab).Result.ToObject<User>();
                     if (idColabsOfEvent.Contains(idColab))
                         colabsEvent.Add(colab);
                 }

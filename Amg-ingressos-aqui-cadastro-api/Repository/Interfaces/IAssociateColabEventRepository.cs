@@ -6,7 +6,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
     {
         Task<AssociateCollaboratorEvent> AssociateCollaboratorEventAsync(AssociateCollaboratorEvent associateCollaborator);
         Task<List<AssociateCollaboratorEvent>> AssociateManyColabWithEventAsync(List<AssociateCollaboratorEvent> collaboratorEvent);
-        Task<List<T>> FindAllColabsOfEvent<T>(string idEvent);
+        Task<List<T>> GetAllColabsOfEvent<T>(string idEvent);
         Task<bool> DeleteAssociateCollaboratorEventAsync(string idAssociate);
     }
 }

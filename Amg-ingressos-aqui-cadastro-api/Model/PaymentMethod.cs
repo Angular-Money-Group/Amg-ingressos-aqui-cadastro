@@ -64,12 +64,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         public string SecureCode { get; set; }
 
         // PAYMENT METHOD FACTORY FUNCTIONS
-        public PaymentMethod makePaymentMethod()
+        public PaymentMethod MakePaymentMethod()
         {
             return new PaymentMethod();
         }
 
-        public PaymentMethod makePaymentMethodSave()
+        public PaymentMethod MakePaymentMethodSave()
         {
             if (!string.IsNullOrEmpty(Id))
                 Id = string.Empty;
@@ -79,10 +79,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
             ValidateNameOnCardFormat();
             ValidateExpirationDateFormat();
             ValidateSecureCodeFormat();
-            return makePaymentMethod();
+            return MakePaymentMethod();
         }
 
-        public PaymentMethod makePaymentMethodUpdate()
+        public PaymentMethod MakePaymentMethodUpdate()
         {
             Id.ValidateIdMongo();
             ValidateIdUserFormat();
@@ -91,7 +91,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
             ValidateNameOnCardFormat();
             ValidateExpirationDateFormat();
             ValidateSecureCodeFormat();
-            return makePaymentMethod();
+            return MakePaymentMethod();
         }
 
         // PUBLIC FUNCTIONS

@@ -14,35 +14,30 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
 
         public UserRepository(IDbConnection dbConnection)
         {
-            _userCollection = dbConnection.GetConnection<User>("user");
+            _userCollection = dbConnection.GetConnection<User>();
         }
 
         public async Task<User> Save(User user)
         {
-
             await _userCollection.InsertOneAsync(user);
 
             if (user.Id is null)
                 throw new RuleException("Erro ao salvar usuario");
 
             return user;
-
         }
 
         public async Task<bool> DoesValueExistsOnField(string fieldName, object value)
         {
-
             var filter = Builders<User>.Filter.Eq(fieldName, value);
             var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
             if (user is null)
                 return false;
             return true;
-
         }
 
         public async Task<T> GetUser<T>(string id)
         {
-
             var filter = Builders<User>.Filter.Eq("Id", id);
             var user = await _userCollection
                                 .Find(filter)
@@ -52,9 +47,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             return user;
         }
 
-        public async Task<T> FindByField<T>(string fieldName, object value)
+        public async Task<T> GetByField<T>(string fieldName, object value)
         {
-
             var filter = Builders<User>.Filter.Eq(fieldName, value);
             var user = await _userCollection
                                 .Find(filter)
@@ -62,12 +56,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                                 .FirstOrDefaultAsync();
             if (user == null)
                 throw new RuleException("Usuário não encontrado por " + fieldName + ".");
+
             return user;
         }
 
+
         public async Task<User> UpdateUser(string id, User user)
         {
-
             //Monta lista de campos, que serão atualizado - Set do update
             var updateDefination = new List<UpdateDefinition<User>>();
 
@@ -100,12 +95,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 return user;
             else
                 throw new RuleException("Erro ao atualizar usuario.");
-
         }
 
         public async Task<bool> Delete(object id)
         {
-
             var user = await _userCollection
                 .Find(Builders<User>.Filter.Eq(userMongo => userMongo.Id, id))
                 .FirstOrDefaultAsync();
@@ -145,12 +138,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             }
             else
                 throw new RuleException("Usuário não encontrado.");
-
         }
 
         public async Task<List<T>> Get<T>(FiltersUser? filters)
         {
-
             var filtersOptions = new List<FilterDefinition<User>> { Builders<User>.Filter.Empty };
 
             if (filters != null)
@@ -205,7 +196,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
 
         public async Task<bool> UpdatePasswordUser(string id, string password)
         {
-
             var update = Builders<User>.Update.Set(userMongo => userMongo.Password, password);
             var filter = Builders<User>.Filter.Eq(userMongo => userMongo.Id, id);
 

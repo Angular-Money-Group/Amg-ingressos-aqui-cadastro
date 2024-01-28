@@ -23,7 +23,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         public object Data { get; set; }
 
         // METHODS
-        public bool hasRunnedSuccessfully()
+        public bool HasRunnedSuccessfully()
         {
             return string.IsNullOrEmpty(Message) && (Data is not null);
         }

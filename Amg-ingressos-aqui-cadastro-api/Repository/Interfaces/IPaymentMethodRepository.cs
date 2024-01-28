@@ -6,7 +6,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
     {
         Task<PaymentMethod> Save<T>(PaymentMethod paymentMethodComplet);
         Task<bool> DoesValueExistsOnField<T>(string fieldName, object value);
-        Task<T> FindByField<T>(string fieldName, object value);
+        Task<T> GetByField<T>(string fieldName, object value);
         Task<bool> Delete<T>(object id);
         Task<List<T>> GetAllPaymentMethods<T>();
     }

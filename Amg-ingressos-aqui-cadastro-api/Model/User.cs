@@ -121,16 +121,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         public string BirthDate { get; set; }
 
 
-
-        public User makeUserSave()
+        public User MakeUserSave()
         {
             if (Id is not null)
-                Id = null;
+                Id = string.Empty;
 
             Status = TypeStatus.Active;
 
             ValidateBasicUserFormat();
-            //TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum), Type, true);
             switch (this.Type)
             {
                 case TypeUser.Admin:
@@ -147,7 +145,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
             return new User();
         }
 
-        public User makeUserUpdate()
+        public User MakeUserUpdate()
         {
             Id.ValidateIdMongo();
 
@@ -171,8 +169,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         {
 
             ValidateNameFormat();
-            validatePasswordFormat();
-            validateConctact();
+            ValidatePasswordFormat();
+            Contact.ValidateConctact();
         }
 
         public void ValidateBasicUserUpdateFormat()
@@ -180,36 +178,28 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
             ValidateNameFormat();
             if (Password is not null)
             {
-                validatePasswordFormat();
+                ValidatePasswordFormat();
             }
         }
+        
         public void ValidateAdminFormat()
         {
-            //TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum), Type, true);
             ValidateUserType(TypeUser.Admin, this.Type);
             ValidateDocumentIdFormat();
         }
+        
         public void ValidateCustomerFormat()
         {
-            //TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum), Type, true);
             ValidateUserType(TypeUser.Customer, this.Type);
             ValidateCpfFormat();
         }
+        
         public void ValidateProducerFormat()
         {
-            //TypeUserEnum type = (TypeUserEnum)System.Enum.Parse(typeof(TypeUserEnum), Type, true);
             ValidateUserType(TypeUser.Organizer, this.Type);
             ValidateCnpjFormat();
         }
         
-        public static void ValidateEmailFormat(string email)
-        {
-            if (string.IsNullOrEmpty(email))
-                throw new RuleException("Email é Obrigatório.");
-            if (!email.ValidateEmailFormat())
-                throw new RuleException("Formato de email inválido.");
-        }
-
         public static void ValidatePhoneNumberFormat(string? phoneNumber)
         {
             if (string.IsNullOrEmpty(phoneNumber))
@@ -263,66 +253,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
                 throw new RuleException("Formato de Documento de CNPJ inválido.");
         }
 
-        public void ValidateAdressFormat()
-        {
-            if (Address is not null)
-            {
-
-                if (string.IsNullOrEmpty(Address.Cep))
-                    throw new RuleException("Em Endereço, CEP é Obrigatório.");
-                Address.Cep = string.Join("", Address.Cep.ToCharArray().Where(Char.IsDigit));
-                if (Address.Cep.Length != 8)
-                    throw new RuleException("Em Endereço, formato de CEP inválido.");
-
-                if (string.IsNullOrEmpty(Address.AddressDescription))
-                    throw new RuleException("Em Endereço, Logradouro é Obrigatório.");
-                if (!Address.AddressDescription.ValidateTextFormat())
-                    throw new RuleException("Em de Endereço, formato de Logradouro inválido.");
-
-                if (string.IsNullOrEmpty(Address.Number))
-                    throw new RuleException("Em Endereço, Número é Obrigatório.");
-                if (!Address.Number.ValidateSimpleTextFormat())
-                    throw new RuleException("Em de Endereço, formato de Número inválido.");
-
-                if (string.IsNullOrEmpty(Address.Neighborhood))
-                    throw new RuleException("Em Endereço, Bairro é Obrigatório.");
-                if (!Address.Neighborhood.ValidateTextFormat())
-                    throw new RuleException("Em Endereço, formato de Bairro inválido.");
-
-                if (string.IsNullOrEmpty(Address.City))
-                    throw new RuleException("Em endereço, Cidade é Obrigatório.");
-                if (!Address.City.ValidateTextFormat())
-                    throw new RuleException("Uma tentativa de cadastro pode ter vindo de fora. [User.Adress.City]");
-
-                if (string.IsNullOrEmpty(Address.State))
-                    throw new RuleException("Em endereço, Estado é Obrigatório.");
-                if (!Address.State.ValidateTextFormat())
-                    throw new RuleException("Uma tentativa de cadastro pode ter vindo de fora. [User.Adress.State]");
-            }
-        }
-
-        public void validateConctact()
-        {
-            if (Contact is null)
-                throw new RuleException("Contato é Obrigatório.");
-            ValidateEmailFormat(Contact.Email);
-        }
-
-        public void validateUserConfirmation()
-        {
-            if (UserConfirmation is null)
-                throw new RuleException("UserConfirmation é Obrigatório.");
-            if (string.IsNullOrEmpty(UserConfirmation.EmailConfirmationCode))
-                throw new RuleException("Código de Confirmação de Email é Obrigatório.");
-            if (UserConfirmation.EmailConfirmationExpirationDate == DateTime.MinValue)
-                throw new RuleException("Data de Expiração de Código de Confirmação de Email é Obrigatório.");
-            if (!UserConfirmation.EmailVerified)
-                throw new RuleException("Status de Verificação de Email é Obrigatório.");
-            if (!UserConfirmation.PhoneVerified)
-                throw new RuleException("Status de Verificação de Telefone é Obrigatório.");
-        }
-
-        public void validatePasswordFormat()
+        public void ValidatePasswordFormat()
         {
             if (string.IsNullOrEmpty(Password))
                 throw new RuleException("Senha é Obrigatório.");

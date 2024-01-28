@@ -60,20 +60,20 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
 
 
         // RECEIPT ACCOUNT FACTORY FUNCTIONS
-        public ReceiptAccount makeReceiptAccount()
+        public ReceiptAccount MakeReceiptAccount()
         {
             return new ReceiptAccount();
         }
 
-        public ReceiptAccount makeReceiptAccountSave()
+        public ReceiptAccount MakeReceiptAccountSave()
         {
             if (string.IsNullOrEmpty(Id))
                 Id = string.Empty;
             ValidateIdUserFormat();
-            return makeReceiptAccount();
+            return MakeReceiptAccount();
         }
 
-        public ReceiptAccount makeReceiptAccountUpdate()
+        public ReceiptAccount MakeReceiptAccountUpdate()
         {
             Id.ValidateIdMongo();
             ValidateIdUserFormat();
@@ -82,7 +82,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
             ValidateBankAgency();
             ValidateBankAccount();
             ValidateBankDigit();
-            return makeReceiptAccount();
+            return MakeReceiptAccount();
         }
 
         // PUBLIC FUNCTIONS
@@ -130,6 +130,5 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
             if (!BankDigit.ValidateNumbersAndLetters())
                 throw new RuleException("Campo de Dígito Conta Bancária contém caractere inválido.");
         }
-
     }
 }

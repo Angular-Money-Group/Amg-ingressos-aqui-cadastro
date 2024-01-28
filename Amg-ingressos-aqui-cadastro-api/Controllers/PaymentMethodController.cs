@@ -28,7 +28,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> SavePaymentMethodAsync([FromBody] PaymentMethodDto paymentMethodObject)
         {
             MessageReturn result = await _paymentMethodService.SaveAsync(paymentMethodObject);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new SaveException(result.Message);
@@ -46,7 +46,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> GetAllPaymentMethodsAsync()
         {
             var result = await _paymentMethodService.GetAllPaymentMethodsAsync();
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data as List<PaymentMethodDto>);
             else
                 throw new GetException(result.Message);
@@ -62,11 +62,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpGet]
         [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> FindByIdPaymentMethodAsync([FromRoute] string id)
+        public async Task<IActionResult> GetByIdPaymentMethodAsync([FromRoute] string id)
         {
 
-            var result = await _paymentMethodService.FindByIdAsync(id);
-            if (result.hasRunnedSuccessfully())
+            var result = await _paymentMethodService.GetByIdAsync(id);
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data as PaymentMethodDto);
             else
                 throw new GetException(result.Message);
@@ -84,7 +84,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> DeletePaymentMethodAsync([FromRoute] string id, [FromRoute] string idUser)
         {
             var result = await _paymentMethodService.DeleteAsync(id, idUser);
-            if (result.hasRunnedSuccessfully())
+            if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
                 throw new DeleteException(result.Message);

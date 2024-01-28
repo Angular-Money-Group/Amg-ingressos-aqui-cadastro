@@ -3,7 +3,7 @@ using System.Text;
 
 namespace Amg_ingressos_aqui_cadastro_api.Utils
 {
-    public class AesOperation
+    public static class AesOperation
     {
         public static string EncryptString(string key, string plainText)
         {

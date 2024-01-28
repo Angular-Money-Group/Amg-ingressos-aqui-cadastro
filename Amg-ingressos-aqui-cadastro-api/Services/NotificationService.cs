@@ -32,7 +32,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 _logger.LogInformation(string.Format("Call PostAsync - Send: {0}", GetType().Name));
                 var result = await _HttpClient.PostAsync(url + uri, jsonBody);
-                if (result.IsSuccessStatusCode)
+                if (!result.IsSuccessStatusCode)
                 {
                     var response = result.Content.ReadAsStringAsync();
                     _messageReturn.Message = response.Result;

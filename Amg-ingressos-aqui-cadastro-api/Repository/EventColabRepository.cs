@@ -34,7 +34,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             return true;
         }
 
-        public async Task<T> FindByField<T>(string fieldName, object value)
+        public async Task<T> GetByField<T>(string fieldName, object value)
         {
 
             var filter = Builders<EventColab>.Filter.Eq(fieldName, value);
@@ -43,7 +43,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                                         .As<T>()
                                         .FirstOrDefaultAsync();
             if (eventColab == null)
-                throw new RuleException(" não encontrado por " + fieldName + ".");
+                throw new RuleException("não encontrado por field " + fieldName + ".");
             return eventColab;
         }
 

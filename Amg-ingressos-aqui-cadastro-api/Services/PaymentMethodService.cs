@@ -37,33 +37,31 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     list.Add(paymentMethod);
                 }
                 _messageReturn.Data = list;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(GetAllPaymentMethodsAsync), ex));
                 throw;
             }
-            return _messageReturn;
         }
 
-        public async Task<MessageReturn> FindByIdAsync(string idPaymentMethod)
+        public async Task<MessageReturn> GetByIdAsync(string idPaymentMethod)
         {
             _messageReturn = new MessageReturn();
             try
             {
                 idPaymentMethod.ValidateIdMongo();
-
-                PaymentMethod paymentMethod = await _paymentMethodRepository.FindByField<PaymentMethod>("Id", idPaymentMethod);
-                _messageReturn.Data = paymentMethod;
+                _messageReturn.Data = await _paymentMethodRepository
+                    .GetByField<PaymentMethod>("Id", idPaymentMethod);
+                return _messageReturn;
 
             }
             catch (Exception ex)
             {
-                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(FindByIdAsync), ex));
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(GetByIdAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> SaveAsync(PaymentMethodDto paymentMethodSave)
@@ -71,22 +69,20 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             _messageReturn = new MessageReturn();
             try
             {
-                PaymentMethod paymentMethod = paymentMethodSave.makePaymentMethodSave();
+                PaymentMethod paymentMethod = paymentMethodSave.MakePaymentMethodSave();
 
-                _messageReturn = await _userService.FindByIdAsync(paymentMethodSave.IdUser);
-                if (!_messageReturn.hasRunnedSuccessfully())
+                _messageReturn = await _userService.GetByIdAsync(paymentMethodSave.IdUser);
+                if (!_messageReturn.HasRunnedSuccessfully())
                     throw new SaveException("O campo IdUser nao tem nenhum usuario correspondente.");
 
-                var id = await _paymentMethodRepository.Save<PaymentMethod>(paymentMethod);
-                _messageReturn.Data = id;
+                _messageReturn.Data = await _paymentMethodRepository.Save<PaymentMethod>(paymentMethod);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(SaveAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> DoesIdExists(string idPaymentMethod)
@@ -109,8 +105,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 idUser.ValidateIdMongo();
-
-                var paymentMethod = FindByIdAsync(id).Result.ToObject<PaymentMethodDto>();
+                var paymentMethod = GetByIdAsync(id).Result.ToObject<PaymentMethodDto>();
 
                 if (paymentMethod.Id != idUser)
                     throw new DeleteException("Id de metodo de pagamento nao corresponde ao id de usuario.");

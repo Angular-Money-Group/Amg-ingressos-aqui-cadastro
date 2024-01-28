@@ -38,6 +38,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 _messageReturn.Data = await _associateColabEventRepository.AssociateCollaboratorEventAsync(collaboratorEvent);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
@@ -45,7 +46,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 throw;
             }
 
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> AssociateColabOrganizerAsync(string idUserOrganizer, UserDto user)
@@ -53,28 +53,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 //Consulta todos os colaboradores vinculados ao Organizador do evento
-                var listAssociate = _associateColabOrganizerRepository.FindAllColabsOfProducer<AssociateCollaboratorOrganizer>(idUserOrganizer).Result;
+                var listAssociate = await _associateColabOrganizerRepository.GetAllColabsOfProducer<AssociateCollaboratorOrganizer>(idUserOrganizer);
                 string idUserCollaborator = string.Empty;
 
                 //Se o Id do user, estiver vazio, consulta se email ou documentId (cpf) já existe para o tipo colaborador
                 if (string.IsNullOrEmpty(user.Id))
                 {
-                    //TypeUserEnum.Collaborator = 3
-                    //Consulta se user do email, é colaborador e se já esta vinculado ao organizador do evento
-                    User userData = _userService.FindByGenericField<User>("Contact.Email", user.Contact.Email).Result.ToObject<User>();
-                    if (userData != null && userData.Type == TypeUser.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userData.Id))
-                        throw new RuleException(MessageLogErrors.Get);
-                    else if (userData == null)
-                    {
-                        //Consulta se user do documentId, é colaborador e se já esta vinculado ao organizador do evento
-                        User userLocal = _userService.FindByGenericField<User>("DocumentId", user.DocumentId).Result.ToObject<User>();
-                        if (userLocal != null && userLocal.Type == TypeUser.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userLocal.Id))
-                            throw new RuleException(MessageLogErrors.Get);
-                        else if (userLocal != null)
-                            idUserCollaborator = userLocal.Id;
-                    }
-                    else
-                        idUserCollaborator = userData.Id;
+                    idUserCollaborator = ValidateEmailCpfCollaborator(user, listAssociate, idUserCollaborator);
 
                     //Se não encontrar os dados user colaborador, cadastra ele
                     if (string.IsNullOrEmpty(idUserCollaborator))
@@ -96,11 +81,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 }
                 _messageReturn.Data = await _associateColabOrganizerRepository
-                .AssociateColabAsync(new AssociateCollaboratorOrganizer()
-                {
-                    IdUserCollaborator = user.Id,
-                    IdUserOrganizer = idUserOrganizer
-                });
+                    .AssociateColabAsync(new AssociateCollaboratorOrganizer()
+                    {
+                        IdUserCollaborator = user.Id,
+                        IdUserOrganizer = idUserOrganizer
+                    });
             }
             catch (Exception ex)
             {
@@ -111,19 +96,39 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
+        private string ValidateEmailCpfCollaborator(UserDto user, List<AssociateCollaboratorOrganizer> listAssociate, string idUserCollaborator)
+        {
+            //TypeUserEnum.Collaborator = 3
+            //Consulta se user do email, é colaborador e se já esta vinculado ao organizador do evento
+            User userData = _userService.FindByGenericField<User>("Contact.Email", user.Contact.Email).Result.ToObject<User>();
+            if (userData != null && userData.Type == TypeUser.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userData.Id))
+                throw new RuleException(MessageLogErrors.Get);
+            else if (userData == null)
+            {
+                //Consulta se user do documentId, é colaborador e se já esta vinculado ao organizador do evento
+                User userLocal = _userService.FindByGenericField<User>("DocumentId", user.DocumentId).Result.ToObject<User>();
+                if (userLocal != null && userLocal.Type == TypeUser.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userLocal.Id))
+                    throw new RuleException(MessageLogErrors.Get);
+                else if (userLocal != null)
+                    idUserCollaborator = userLocal.Id;
+            }
+            else
+                idUserCollaborator = userData.Id;
+            return idUserCollaborator;
+        }
+
         public async Task<MessageReturn> AssociateManyColabWithEventAsync(List<AssociateCollaboratorEvent> collaboratorEvent)
         {
             try
             {
                 _messageReturn.Data = await _associateColabEventRepository.AssociateManyColabWithEventAsync(collaboratorEvent);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(AssociateManyColabWithEventAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> DeleteAssociateColabEventAsync(string idAssociate)
@@ -132,32 +137,28 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 _messageReturn.Data = await _associateColabEventRepository
                                         .DeleteAssociateCollaboratorEventAsync(idAssociate);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(DeleteAssociateColabEventAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> DeleteAssociateColabOrganizerAsync(string idAssociate)
         {
             try
             {
-                var result = await _associateColabOrganizerRepository
+                _messageReturn.Data = await _associateColabOrganizerRepository
                                          .DeleteAssociateColabAsync(idAssociate);
-
-                _messageReturn.Data = result;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(DeleteAssociateColabOrganizerAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> AssociateManyColabWithOrganizerAsync(List<AssociateCollaboratorOrganizer> colaboratorOrganizer)
@@ -165,15 +166,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 _messageReturn.Data = await _associateColabOrganizerRepository
-                .AssociateManyColabWithOrganizerAsync(colaboratorOrganizer);
+                    .AssociateManyColabWithOrganizerAsync(colaboratorOrganizer);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(AssociateManyColabWithOrganizerAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> AssociateUserApiDataToEventAsync(string idEvent, string idUser)
@@ -182,7 +182,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 idEvent.ValidateIdMongo();
                 idUser.ValidateIdMongo();
-                var user = (UserDto)_userService.FindByIdAsync(idUser).Result.Data;
+                var user = (UserDto)_userService.GetByIdAsync(idUser).Result.Data;
                 if (user == null)
                     throw new RuleException("Usário não cadastrado.");
                 TypeUser type = (TypeUser)System.Enum.Parse(typeof(TypeUser), user.Type, true);
@@ -191,15 +191,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
 
                 _messageReturn.Data = await _associateUserApiDataEventRepository
-                .AssociateUserApiDataToEventAsync(new AssociateUserApiDataEvent() { IdEvent = idEvent, IdUser = idUser });
+                    .AssociateUserApiDataToEventAsync(new AssociateUserApiDataEvent() { IdEvent = idEvent, IdUser = idUser });
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(AssociateUserApiDataToEventAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> GetUserApiDataToEventAsync(string idEvent)
@@ -209,15 +208,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 idEvent.ValidateIdMongo();
 
                 _messageReturn.Data = await _associateUserApiDataEventRepository
-                .GetUserApiDataToEventAsync<AssociateUserApiDataEvent>(idEvent);
+                    .GetUserApiDataToEventAsync<AssociateUserApiDataEvent>(idEvent);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(GetUserApiDataToEventAsync), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
     }
 }

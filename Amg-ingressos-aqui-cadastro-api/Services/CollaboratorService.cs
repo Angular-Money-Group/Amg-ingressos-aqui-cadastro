@@ -12,27 +12,27 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
     {
         private readonly IAssociateColabOrganizerRepository _organizerRepository;
         private readonly IAssociateColabEventRepository _associateColabEventRepository;
-        private readonly IEventRepository _eventRepository;
         private readonly IUserService _userService;
         private readonly INotificationService _emailService;
         private readonly MessageReturn _messageReturn;
         private readonly ILogger<CollaboratorService> _logger;
+        private readonly IEventService _eventService;
 
         public CollaboratorService(
             IAssociateColabOrganizerRepository organizerRepository,
-            IEventRepository eventRepository,
             IAssociateColabEventRepository associateColabEventRepository,
             IUserService userService,
             INotificationService emailService,
-            ILogger<CollaboratorService> logger
+            ILogger<CollaboratorService> logger,
+            IEventService eventService
         )
         {
             _organizerRepository = organizerRepository;
             _associateColabEventRepository = associateColabEventRepository;
-            _eventRepository = eventRepository;
             _userService = userService;
             _emailService = emailService;
             _logger = logger;
+            _eventService = eventService;
             _messageReturn = new MessageReturn();
         }
 
@@ -48,7 +48,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 var listAssociate =
                         await _organizerRepository
-                            .FindAllColabsOfProducer<AssociateCollaboratorOrganizer>(idUserOrganizer);
+                            .GetAllColabsOfProducer<AssociateCollaboratorOrganizer>(idUserOrganizer);
 
                 var result =
                     from associate in listAssociate
@@ -93,7 +93,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 //lista associada ao evento
                 var listAssociate = await _associateColabEventRepository
-                                        .FindAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent);
+                                        .GetAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent);
 
                 var result =
                     from usersCollaborator in listUser
@@ -131,18 +131,17 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-                var eventDetailsTask = _eventRepository.FindById<Event>(idEvent);
+                var eventDetails = _eventService.GetById(idEvent).Result.ToObject<Event>();
                 var listUserEventTask =
-                    _associateColabEventRepository.FindAllColabsOfEvent<AssociateCollaboratorEvent>(
+                    _associateColabEventRepository
+                    .GetAllColabsOfEvent<AssociateCollaboratorEvent>(
                         idEvent
                     );
                 var listUserTask = _userService.GetAsync(
                     new FiltersUser() { Type = Enum.TypeUser.Collaborator }
                 );
 
-                await Task.WhenAll(eventDetailsTask, listUserEventTask, listUserTask);
-
-                var eventDetails = eventDetailsTask.Result;
+                await Task.WhenAll(listUserEventTask, listUserTask);
                 var listUserEvent =
                     (IEnumerable<AssociateCollaboratorEvent>)listUserEventTask.Result;
                 var listUser = ((List<UserDto>)listUserTask.Result.Data).ToDictionary(u => u.Id);
@@ -152,12 +151,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     join user in listUser.Values on usersEvent.IdUserCollaborator equals user.Id
                     select new EmailLoginCollaboratorCredentialDto
                     {
-                        Subject = "Credenciais de Acesso ao Evento",
-                        Sender = "suporte@ingressosaqui.com",
+                        Subject = Settings.SubjectCredentialsEvent,
+                        Sender = Settings.Sender,
                         To = user.Contact.Email,
-                        EventDate = eventDetails?.FirstOrDefault()?.StartDate.ToString() ?? string.Empty,
-                        EventName = eventDetails?.FirstOrDefault()?.Name ?? string.Empty,
-                        LinkQrCode = "https://qrcode.ingressosaqui.com/auth?idEvento=" + eventDetails?.FirstOrDefault()?.Id ?? string.Empty,
+                        EventDate = eventDetails?.StartDate.ToString() ?? string.Empty,
+                        EventName = eventDetails?.Name ?? string.Empty,
+                        LinkQrCode = Settings.UrlLoginCollaborator + eventDetails?.Id ?? string.Empty,
                         Password = user.Password,
                         UserName = user.Name
                     };
@@ -187,7 +186,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                                 .Result.ToListObject<UserDto>();
                 //lista associada ao evento
                 var listAssociate = await _associateColabEventRepository
-                                        .FindAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent);
+                                        .GetAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent);
 
                 var result =
                     from associate in listAssociate
@@ -202,14 +201,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     };
 
                 _messageReturn.Data = result;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(GetCollaboratorByEvent), ex));
                 throw;
             }
-
-            return _messageReturn;
         }
     }
 }

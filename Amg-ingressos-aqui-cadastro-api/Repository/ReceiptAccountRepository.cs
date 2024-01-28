@@ -37,7 +37,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             return true;
         }
 
-        public async Task<List<T>> FindByField<T>(string fieldName, object value)
+        public async Task<List<T>> GetByField<T>(string fieldName, object value)
         {
             FilterDefinition<ReceiptAccount> filter;
             if (fieldName == "_id")

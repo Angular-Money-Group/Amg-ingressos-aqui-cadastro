@@ -1,4 +1,6 @@
-﻿using MongoDB.Bson.Serialization.Attributes;
+﻿using Amg_ingressos_aqui_cadastro_api.Exceptions;
+using Amg_ingressos_aqui_cadastro_api.Utils;
+using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
 
 namespace Amg_ingressos_aqui_cadastro_api.Model
@@ -24,5 +26,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         [BsonElement("PhoneNumber")]
         [JsonPropertyName("phoneNumber")]
         public string PhoneNumber { get; set; }
+
+        public void ValidateConctact()
+        {
+            this.Email.ValidateEmailFormat();
+        }
     }
 }

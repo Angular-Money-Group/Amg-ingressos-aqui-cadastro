@@ -5,7 +5,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Infra
     public abstract class AbstractExceptionHandlerMiddleware
     {
         private readonly RequestDelegate _next;
-        public AbstractExceptionHandlerMiddleware(RequestDelegate next)
+        protected AbstractExceptionHandlerMiddleware(RequestDelegate next)
         {
             _next = next;
         }

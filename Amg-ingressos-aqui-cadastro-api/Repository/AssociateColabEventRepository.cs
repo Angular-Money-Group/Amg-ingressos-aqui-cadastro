@@ -35,7 +35,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             return true;
         }
 
-        public async Task<List<T>> FindAllColabsOfEvent<T>(string idEvent)
+        public async Task<List<T>> GetAllColabsOfEvent<T>(string idEvent)
         {
             var filter = Builders<AssociateCollaboratorEvent>.Filter.Eq(x => x.IdEvent, idEvent);
             var eventCollaborator = await _associateCollection.Find(filter)

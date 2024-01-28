@@ -34,7 +34,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             return true;
         }
 
-        public async Task<List<T>> FindAllColabsOfProducer<T>(string idProducer)
+        public async Task<List<T>> GetAllColabsOfProducer<T>(string idProducer)
         {
 
             var filter = Builders<AssociateCollaboratorOrganizer>.Filter.Eq(x => x.IdUserOrganizer, idProducer);
