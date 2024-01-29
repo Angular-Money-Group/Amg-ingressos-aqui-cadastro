@@ -14,7 +14,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
 
         public UserRepository(IDbConnection dbConnection)
         {
-            _userCollection = dbConnection.GetConnection<User>();
+            _userCollection = dbConnection.GetConnection<User>("user");
         }
 
         public async Task<User> Save(User user)
@@ -149,8 +149,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 if (!string.IsNullOrEmpty(filters.Name))
                 {
                     filtersOptions.Add(
-                        Builders<User>.Filter.Regex(
-                            g => g.Name,
+                        Builders<User>.Filter.Regex("Name",
                             new BsonRegularExpression(filters.Name, "i")
                         )
                     );
@@ -159,8 +158,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 if (!string.IsNullOrEmpty(filters.Email))
                 {
                     filtersOptions.Add(
-                        Builders<User>.Filter.Regex(
-                            g => g.Contact!.Email,
+                        Builders<User>.Filter.Regex("Contact.Email",
                             new BsonRegularExpression(filters.Email, "i")
                         )
                     );
@@ -169,14 +167,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 if (!string.IsNullOrEmpty(filters.PhoneNumber))
                 {
                     filtersOptions.Add(
-                        Builders<User>.Filter.Regex(
-                            g => g.Contact!.PhoneNumber,
+                        Builders<User>.Filter.Regex("Contact.PhoneNumber",
                             new BsonRegularExpression(filters.PhoneNumber, "i")
                         )
                     );
                 }
 
-                filtersOptions.Add(Builders<User>.Filter.Eq(g => g.Type, filters.Type));
+                filtersOptions.Add(Builders<User>.Filter.Eq("Type", filters.Type));
             }
 
             var filter = Builders<User>.Filter.And(filtersOptions);
@@ -185,11 +182,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                                 .Match(filter)
                                 .As<T>()
                                 .ToListAsync();
-
-            if (pResults.Count == 0)
-            {
-                throw new RuleException("Usuarios não encontrados");
-            }
 
             return pResults;
         }

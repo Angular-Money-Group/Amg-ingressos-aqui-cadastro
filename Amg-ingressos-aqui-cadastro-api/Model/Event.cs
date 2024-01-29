@@ -20,7 +20,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
             Address = new Address();
             IdMeansReceipt = string.Empty;
             IdOrganizer = string.Empty;
-            Courtesy = string.Empty;
         }
 
         /// <summary>
@@ -98,10 +97,5 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// </summary>
         [BsonDefaultValue(false)]
         public bool Highlighted { get; set; }
-
-        /// <summary>
-        /// Se o evento está em destaque
-        /// </summary>
-        public object Courtesy { get; set; }
     }
 }

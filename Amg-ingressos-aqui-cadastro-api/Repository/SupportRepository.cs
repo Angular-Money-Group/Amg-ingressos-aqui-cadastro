@@ -16,18 +16,19 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             _supportCollection = dbConnection.GetConnection<TicketSupport>("ticketsupports");
         }
 
-        public async Task<List<T>> GetAll<T>()
+        public Task<List<T>> GetAll<T>()
         {
-            var filter = Builders<TicketSupport>.Filter.Ne(x => x.Status, StatusSupport.Canceled);
-            var pResults = await _supportCollection
-                                        .FindAsync<T>(filter);
+            var results = _supportCollection
+                                        .Find(_ => true)
+                                        .As<T>()
+                                        .ToListAsync();
 
-            if (!pResults.Any())
+            if (!results.Result.Any())
             {
                 throw new RuleException("Tickets não encontrados");
             }
 
-            return pResults.ToList();
+            return Task.FromResult(results.Result.ToList());
         }
 
         public Task<T> FindById<T>(string id)

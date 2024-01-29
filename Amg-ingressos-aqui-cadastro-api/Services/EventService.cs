@@ -1,4 +1,5 @@
 using Amg_ingressos_aqui_cadastro_api.Consts;
+using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Newtonsoft.Json;
@@ -7,7 +8,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 {
     public class EventService : IEventService
     {
-       private readonly MessageReturn _messageReturn;
+        private readonly MessageReturn _messageReturn;
         private readonly HttpClient _HttpClient;
         private readonly ILogger<EventService> _logger;
 
@@ -23,14 +24,16 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 var url = Settings.EventServiceApi;
-                var uri = Settings.UriGetByIdEvent+idEvent;
+                var uri = Settings.UriGetByIdEvent + idEvent;
 
                 var response = await _HttpClient.GetAsync(url + uri);
-                if (response.IsSuccessStatusCode)
-                {
-                    var jsonContent = await response.Content.ReadAsStringAsync();
-                    _messageReturn.Data = JsonConvert.DeserializeObject<Event>(jsonContent) ?? new Event();
-                }
+                if (!response.IsSuccessStatusCode)
+                    throw new ExternalServiceException("Erro ao buscar Evento.");
+                if (response.StatusCode == System.Net.HttpStatusCode.NoContent)
+                    throw new ExternalServiceException("Evento não encontrado.");
+                    
+                var jsonContent = await response.Content.ReadAsStringAsync();
+                _messageReturn.Data = JsonConvert.DeserializeObject<Event>(jsonContent) ?? new Event();
                 return _messageReturn;
             }
             catch (Exception ex)
@@ -38,6 +41,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(GetById), ex));
                 throw;
             }
-        } 
+        }
     }
 }

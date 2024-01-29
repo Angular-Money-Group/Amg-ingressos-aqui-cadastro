@@ -1,6 +1,5 @@
 ﻿using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
-using System.ComponentModel.DataAnnotations;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 
 namespace Amg_ingressos_aqui_cadastro_api.Model
@@ -15,7 +14,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// <summary>
         /// Confirmação de e-mail
         /// </summary>
-        [Required]
         [BsonElement("EmailConfirmationCode")]
         [JsonPropertyName("emailConfirmationCode")]
         public string EmailConfirmationCode { get; set; }
@@ -23,15 +21,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// <summary>
         /// Codigo de confirmação de e-mail
         /// </summary>
-        [Required]
         [BsonElement("EmailConfirmationExpirationDate")]
         [JsonPropertyName("emailConfirmationExpirationDate")]
-        public DateTime EmailConfirmationExpirationDate { get; set; }
+        public DateTime? EmailConfirmationExpirationDate { get; set; }
 
         /// <summary> 
         /// flag de email verificado 
         /// </summary>
-        [Required]
         [BsonElement("EmailVerified")]
         [JsonPropertyName("emailVerified")]
         public bool EmailVerified { get; set; } = false;
@@ -39,7 +35,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// <summary> 
         /// flag de telefone verificado 
         /// </summary>
-        [Required]
         [BsonElement("PhoneVerified")]
         [JsonPropertyName("phoneVerified")]
         public bool PhoneVerified { get; set; } = false;

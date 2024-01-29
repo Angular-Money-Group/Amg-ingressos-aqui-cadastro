@@ -17,7 +17,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Infra
             HttpStatusCode code;
             switch (exception)
             {
-                case GetException:
+                case GetException
+                    or ExternalServiceException:
                     code = HttpStatusCode.NotFound;
                     break;
                 case IdMongoException:

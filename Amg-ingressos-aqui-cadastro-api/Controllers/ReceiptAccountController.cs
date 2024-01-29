@@ -45,10 +45,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         {
 
             var result = await _receiptAccountService.GetAllReceiptAccountsAsync();
-            if (result.HasRunnedSuccessfully())
-                return Ok(result.Data as List<ReceiptAccountDto>);
-            else
+            if (!result.HasRunnedSuccessfully())
                 throw new GetException(result.Message);
+
+            return Ok(result.Data);
         }
 
         /// <summary>
@@ -66,7 +66,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
 
             var result = await _receiptAccountService.GetByIdUserAsync(idUser);
             if (result.HasRunnedSuccessfully())
-                return Ok(result.Data as List<ReceiptAccountDto>);
+                return Ok(result.Data);
             else
                 throw new GetException(result.Message);
         }

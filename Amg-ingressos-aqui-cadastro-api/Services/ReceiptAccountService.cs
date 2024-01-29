@@ -30,14 +30,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-                var result = await _receiptAccountRepository.GetAllReceiptAccounts<ReceiptAccount>();
-
-                List<ReceiptAccount> list = new List<ReceiptAccount>();
-                foreach (ReceiptAccount receiptAccount in result)
-                {
-                    list.Add(receiptAccount);
-                }
-                _messageReturn.Data = list;
+                _messageReturn.Data = await _receiptAccountRepository.GetAllReceiptAccounts<ReceiptAccount>();
                 return _messageReturn;
             }
             catch (Exception ex)
@@ -68,8 +61,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 idUser.ValidateIdMongo();
-                List<ReceiptAccount> receiptAccount = await _receiptAccountRepository.GetByField<ReceiptAccount>("IdUser", idUser);
-                _messageReturn.Data = receiptAccount;
+                _messageReturn.Data = 
+                    await _receiptAccountRepository
+                        .GetByField<ReceiptAccount>("IdUser", idUser);
+
                 return _messageReturn;
             }
             catch (Exception ex)

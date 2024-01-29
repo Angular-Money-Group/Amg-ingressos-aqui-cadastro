@@ -62,7 +62,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         IdAssociate = associate.Id ?? throw new RuleException("id associate não pode ser null")
                     };
 
-                _messageReturn.Data = result;
+                _messageReturn.Data = result.ToList();
             }
             catch (Exception ex)
             {
@@ -142,9 +142,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 );
 
                 await Task.WhenAll(listUserEventTask, listUserTask);
-                var listUserEvent =
-                    (IEnumerable<AssociateCollaboratorEvent>)listUserEventTask.Result;
-                var listUser = ((List<UserDto>)listUserTask.Result.Data).ToDictionary(u => u.Id);
+                var listUserEvent = listUserEventTask.Result;
+                var listUser = listUserTask.Result.ToListObject<User>()
+                                                .ToDictionary(u => u.Id);
 
                 var listEmail =
                     from usersEvent in listUserEvent
@@ -183,7 +183,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                                 {
                                     Type = Enum.TypeUser.Collaborator
                                 })
-                                .Result.ToListObject<UserDto>();
+                                .Result.ToListObject<User>();
                 //lista associada ao evento
                 var listAssociate = await _associateColabEventRepository
                                         .GetAllColabsOfEvent<AssociateCollaboratorEvent>(idEvent);
