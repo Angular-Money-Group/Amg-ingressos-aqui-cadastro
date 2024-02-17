@@ -59,19 +59,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 //Se o Id do user, estiver vazio, consulta se email ou documentId (cpf) já existe para o tipo colaborador
                 if (string.IsNullOrEmpty(user.Id))
                 {
-                    idUserCollaborator = ValidateEmailCpfCollaborator(user, listAssociate, idUserCollaborator);
-
-                    //Se não encontrar os dados user colaborador, cadastra ele
-                    if (string.IsNullOrEmpty(idUserCollaborator))
-                    {
-                        //Insere o colaborador
-                        var userSaveLocal = _userService.SaveAsync(user).Result.ToObject<User>();
-
-                        if (userSaveLocal == null)
-                            throw new RuleException("usuario nao pode vazio.");
-
-                        idUserCollaborator = userSaveLocal.Id ?? string.Empty;
-                    }
+                    //Insere o colaborador ao organizador do evento, mesmo se os dados de email e cpf existirem
+                    var userSaveLocal = await _userService.SaveAsync(user);
+                    idUserCollaborator = userSaveLocal.ToObject<User>().Id;
                 }
                 else
                 {
