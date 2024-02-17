@@ -61,7 +61,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                     {
                         return BadRequest(MessageLogErrors.FindUserAssociateColab);
                     }
-                    else if(userData == null)
+                    else if (userData == null)
                     {
                         //Consulta se user do documentId, é colaborador e se já esta vinculado ao organizador do evento
                         User userLocal = await _userRepository.FindByGenericField<User>("DocumentId", user.DocumentId);
@@ -69,7 +69,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                         {
                             return BadRequest(MessageLogErrors.FindUserAssociateColab);
                         }
-                        else if(userLocal != null)
+                        else if (userLocal != null)
                         {
                             idUserCollaborator = userLocal.Id;
                         }
@@ -79,44 +79,27 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
                         idUserCollaborator = userData.Id;
                     }
 
-                    //Se não encontrar os dados user colaborador, cadastra ele
-                    if (string.IsNullOrEmpty(idUserCollaborator))
+                    //Insere o colaborador ao organizador do evento, mesmo se os dados de email e cpf existirem
+                    var userSaveLocal = await _userService.SaveAsync(user);
+
+                    if (userSaveLocal != null && userSaveLocal.Data != null)
                     {
-                        //Insere o colaborador
-                        var userSaveLocal = await _userService.SaveAsync(user);
-
-                        if (userSaveLocal != null && userSaveLocal.Data != null)
-                        {
-                            userSave = (User)userSaveLocal.Data;
-                        }
-
-                        idUserCollaborator = userSave.Id;
+                        userSave = (User)userSaveLocal.Data;
                     }
+
+                    idUserCollaborator = userSave.Id;
+
                 }
                 else
                 {
                     idUserCollaborator = user.Id;
-                    
+
                     //Consulta se o colaborador ja está vinculado ao organizador do evento
                     if (listAssociate.Any() && listAssociate.Exists(x => x.IdUserCollaborator == user.Id))
                     {
                         return BadRequest(MessageLogErrors.FindUserAssociateColab);
                     }
                 }
-
-                /*
-                var userData = (UserDTO)_userService.FindByEmailAsync(TypeUserEnum.Collaborator,user.Contact.Email).Result.Data;
-                var idUserCollaborator = string.Empty;
-                if(userData != null){
-                    //Pega o id do colaborador
-                    idUserCollaborator = userData.Id;
-                }
-                else{
-                    //Insere o colaborador
-                    var userSave = (UserDTO)_userService.SaveAsync(user).Result.Data;
-                    idUserCollaborator = userSave.Id;
-                }
-                */
 
                 //Executa o vinculo do organizador de evento ao user colaborador
                 MessageReturn result = await _associateService.AssociateColabOrganizerAsync(idUserOrganizer, idUserCollaborator);
@@ -127,9 +110,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             }
             catch (EmailAlreadyExists ex)
             {
-                throw ex;
-                //_logger.LogInformation(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
-                //return BadRequest(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email);
+                _logger.LogInformation(ex.Message);
+                return BadRequest(ex.Message);
             }
             catch (SaveUserException ex)
             {
