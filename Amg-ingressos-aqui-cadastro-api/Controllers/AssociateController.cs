@@ -33,7 +33,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
             if (result.HasRunnedSuccessfully())
                 return Ok(result.Data);
             else
-                throw new SaveException(result.Message);
+                return BadRequest(result);
         }
 
         /// <summary>

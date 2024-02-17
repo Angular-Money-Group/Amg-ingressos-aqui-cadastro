@@ -244,6 +244,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 User userModel = user.DtoToModel();
+                userModel.Id = id;
                 User userDb = await _userRepository.GetUser<User>(userModel.Id);
 
                 if (!await DoesIdExists(userDb))
