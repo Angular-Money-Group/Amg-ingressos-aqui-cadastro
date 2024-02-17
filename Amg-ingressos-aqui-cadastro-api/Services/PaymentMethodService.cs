@@ -1,163 +1,126 @@
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
-using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Utils;
-using System;
-using System.Text.RegularExpressions;
+using Amg_ingressos_aqui_cadastro_api.Consts;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
     public class PaymentMethodService : IPaymentMethodService
     {
-        private IPaymentMethodRepository _paymentMethodRepository;
-        private IUserService _userService;
-        private MessageReturn? _messageReturn;
+        private readonly IPaymentMethodRepository _paymentMethodRepository;
+        private readonly IUserService _userService;
+        private MessageReturn _messageReturn;
+        private readonly ILogger<PaymentMethodService> _logger;
 
-        public PaymentMethodService(IPaymentMethodRepository paymentMethodRepository, IUserService userService)
+        public PaymentMethodService(IPaymentMethodRepository paymentMethodRepository,
+        IUserService userService,
+        ILogger<PaymentMethodService> logger)
         {
-            this._paymentMethodRepository = paymentMethodRepository;
-            this._userService = userService;
+            _paymentMethodRepository = paymentMethodRepository;
+            _userService = userService;
+            _logger = logger;
+            _messageReturn = new MessageReturn();
         }
-        
+
         public async Task<MessageReturn> GetAllPaymentMethodsAsync()
         {
-            this._messageReturn = new MessageReturn();
             try
             {
                 var result = await _paymentMethodRepository.GetAllPaymentMethods<PaymentMethod>();
 
-                List<PaymentMethodDTO> list = new List<PaymentMethodDTO>();
-                foreach (PaymentMethod paymentMethod in result) {
-                    list.Add(new PaymentMethodDTO(paymentMethod));
+                List<PaymentMethod> list = new List<PaymentMethod>();
+                foreach (PaymentMethod paymentMethod in result)
+                {
+                    list.Add(paymentMethod);
                 }
                 _messageReturn.Data = list;
-            }
-            catch (GetAllPaymentMethodException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(GetAllPaymentMethodsAsync), ex));
+                throw;
             }
-            return _messageReturn;
         }
-        
-        public async Task<MessageReturn> FindByIdAsync(string idPaymentMethod)
+
+        public async Task<MessageReturn> GetByIdAsync(string idPaymentMethod)
         {
-            this._messageReturn = new MessageReturn();
+            _messageReturn = new MessageReturn();
             try
             {
                 idPaymentMethod.ValidateIdMongo();
+                _messageReturn.Data = await _paymentMethodRepository
+                    .GetByField<PaymentMethod>("Id", idPaymentMethod);
+                return _messageReturn;
 
-                PaymentMethod paymentMethod = await _paymentMethodRepository.FindByField<PaymentMethod>("Id", idPaymentMethod);
-                _messageReturn.Data = new PaymentMethodDTO(paymentMethod);
-
-            }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (PaymentMethodNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(GetByIdAsync), ex));
+                throw;
             }
-
-            return _messageReturn;
         }
-        
-        public async Task<MessageReturn> SaveAsync(PaymentMethodDTO paymentMethodSave) {
-            this._messageReturn = new MessageReturn();
+
+        public async Task<MessageReturn> SaveAsync(PaymentMethodDto paymentMethodSave)
+        {
+            _messageReturn = new MessageReturn();
             try
             {
-                PaymentMethod paymentMethod = paymentMethodSave.makePaymentMethodSave();
+                PaymentMethod paymentMethod = paymentMethodSave.MakePaymentMethodSave();
 
-                _messageReturn = await _userService.FindByIdAsync(paymentMethodSave.IdUser);
-                if (!_messageReturn.hasRunnedSuccessfully())
-                    throw new SavePaymentMethodException("O campo IdUser nao tem nenhum usuario correspondente.");   
-                
-                var id = await _paymentMethodRepository.Save<PaymentMethod>(paymentMethod);
-                _messageReturn.Data = id;
-            }
-            catch (EmptyFieldsException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (InvalidFormatException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (SavePaymentMethodException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                _messageReturn = await _userService.GetByIdAsync(paymentMethodSave.IdUser);
+                if (!_messageReturn.HasRunnedSuccessfully())
+                    throw new SaveException("O campo IdUser nao tem nenhum usuario correspondente.");
+
+                _messageReturn.Data = await _paymentMethodRepository.Save<PaymentMethod>(paymentMethod);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(SaveAsync), ex));
+                throw;
             }
-
-            return _messageReturn;
         }
 
-        public async Task<bool> DoesIdExists(string idPaymentMethod) {
-            this._messageReturn = new MessageReturn();
-            try {
-                return await _paymentMethodRepository.DoesValueExistsOnField<PaymentMethod>("Id", idPaymentMethod);
+        public async Task<MessageReturn> DoesIdExists(string idPaymentMethod)
+        {
+            try
+            {
+                _messageReturn.Data = await _paymentMethodRepository
+                    .DoesValueExistsOnField<PaymentMethod>("Id", idPaymentMethod);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(DoesIdExists), ex));
+                throw;
             }
         }
 
-        public async Task<MessageReturn> DeleteAsync(string id, string idUser) {
-            this._messageReturn = new MessageReturn();
+        public async Task<MessageReturn> DeleteAsync(string id, string idUser)
+        {
             try
             {
                 idUser.ValidateIdMongo();
-                
-                _messageReturn = await FindByIdAsync(id);
-                if (!_messageReturn.hasRunnedSuccessfully())
-                    throw new DeletePaymentMethodException(_messageReturn.Message);
-                
-                if ((_messageReturn.Data as PaymentMethodDTO).IdUser != idUser)
-                    throw new DeletePaymentMethodException("Id de metodo de pagamento nao corresponde ao id de usuario.");
+                var paymentMethod = GetByIdAsync(id).Result.ToObject<PaymentMethodDto>();
 
-                _messageReturn.Data = await _paymentMethodRepository.Delete<PaymentMethod>(id) as string;
-            }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (PaymentMethodNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (DeletePaymentMethodException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                if (paymentMethod.Id != idUser)
+                    throw new DeleteException("Id de metodo de pagamento nao corresponde ao id de usuario.");
+
+                if (!await _paymentMethodRepository.Delete<PaymentMethod>(id))
+                    throw new RuleException("erro ao deletar meio de pagamento.");
+
+                _messageReturn.Data = "ok";
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(DeleteAsync), ex));
+                throw;
             }
-            return _messageReturn;
         }
     }
 }

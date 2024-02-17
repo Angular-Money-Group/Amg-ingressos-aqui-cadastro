@@ -1,10 +1,8 @@
-using Amg_ingressos_aqui_cadastro_api.Consts;
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Microsoft.AspNetCore.Mvc;
-using System.Net;
 
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
@@ -13,12 +11,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
     [Produces("application/json")]
     public class UserController : ControllerBase
     {
-        private readonly ILogger<UserController> _logger;
         private readonly IUserService _userService;
 
-        public UserController(ILogger<UserController> logger, IUserService userService)
+        public UserController(IUserService userService)
         {
-            _logger = logger;
             _userService = userService;
         }
 
@@ -29,40 +25,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        public async Task<IActionResult> SaveUserAsync([FromBody] UserDTO user)
+        public async Task<IActionResult> SaveUserAsync([FromBody] UserDto user)
         {
-            try
-            {
-                //Pegar o jwt e ver o id do organizador
-//                var n = Request.Headers["Authorization"];
-        
-                // userObject.Password = hashPassword;
-                MessageReturn result = await _userService.SaveAsync(user);
-                // userDTOObject.Password = hashPassword;
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new SaveUserException(result.Message);
-            }
-            catch (EmailAlreadyExists ex)
-            {
-                _logger.LogInformation(
-                    MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email
-                );
-                return BadRequest(
-                    MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + user.Contact.Email
-                );
-            }
-            catch (SaveUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.saveUserMessage);
-            }
+            MessageReturn result = await _userService.SaveAsync(user);
+            if (result.HasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new SaveException(result.Message);
         }
 
         /// <summary>
@@ -73,29 +42,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
         [Produces("application/json")]
-        public async Task<IActionResult> GetAsync(
-            [FromQuery] FiltersUser filters
-        )
+        public async Task<IActionResult> GetAsync([FromQuery] FiltersUser filters)
         {
-            try
-            {
-                var result = await _userService.GetAsync(filters);
+            var result = await _userService.GetAsync(filters);
 
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new GetAllUserException(result.Message);
-            }
-            catch (GetAllUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.GetAllUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.GetAllUserMessage);
-            }
+            if (result.HasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new GetException(result.Message);
         }
 
         /// <summary>
@@ -109,72 +63,35 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpGet]
         [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> FindByIdAsync([FromRoute] string id)
+        public async Task<IActionResult> GetByIdAsync([FromRoute] string id)
         {
-            try
-            {
-                //System.Enum.TryParse(type, out TypeUserEnum enumValue);
 
-                var result = await _userService.FindByIdAsync(id);
-                if (result.hasRunnedSuccessfully())
-                {
-                    return Ok(result.Data);
-                }
-                else
-                    throw new UserNotFound(result.Message);
-            }
-            catch (UserNotFound ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.FindByIdUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.FindByIdUserMessage);
-            }
+            var result = await _userService.GetByIdAsync(id);
+            if (result.HasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new GetException(result.Message);
         }
 
         /// <summary>
         /// Atualiza usuario pelo ID
         /// </summary>
         /// <param name="id"> id do usuario</param>
-        /// <param name="usuarioUpdated">Corpo usuario a ser Gravado</param>
+        /// <param name="user">Corpo usuario a ser Gravado</param>
         /// <returns>200 usuario da busca</returns>
         /// <returns>204 Nenhum usuario encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPut]
         [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateAsync(
-            [FromRoute] string id,
-            [FromBody] UserDTO usuarioUpdated
-        )
+        public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromBody] UserDto user)
         {
-            try
-            {
-                if (usuarioUpdated is null)
-                    throw new EmptyFieldsException("Json de Usuario veio Nulo.");
-                usuarioUpdated.Id = id;
-                MessageReturn result = await _userService.UpdateByIdAsync(usuarioUpdated);
+            MessageReturn result = await _userService.UpdateByIdAsync(id, user);
 
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new UpdateUserException(result.Message);
-            }
-            catch (EmptyFieldsException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (UpdateUserException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.updateUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.updateUserMessage);
-            }
+            if (result.HasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new EditException(result.Message);
         }
 
         /// <summary>
@@ -188,39 +105,20 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [HttpPut]
         [Route("resetpassword/{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdatePassowordAsync(
-            [FromRoute] string id,
-            [FromBody] UserDTO userPassword
-        )
+        public async Task<IActionResult> UpdatePassowordAsync([FromRoute] string id, [FromBody] UserDto userPassword)
         {
-            try
-            {
-                if (userPassword is null)
-                    throw new EmptyFieldsException("Json de Usuario veio Nulo.");
+            if (userPassword is null)
+                throw new RuleException("Json de Usuario veio Nulo.");
 
-                MessageReturn result = await _userService.UpdatePassowrdByIdAsync(
-                    id,
-                    userPassword.Password
-                );
+            MessageReturn result = await _userService.UpdatePassowrdByIdAsync(
+                id,
+                userPassword.Password
+            );
 
-                if (result.hasRunnedSuccessfully())
-                    return NoContent();
-                else
-                    throw new UpdateUserException(result.Message);
-            }
-            catch (EmptyFieldsException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (UpdateUserException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.updateUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.updateUserMessage);
-            }
+            if (result.HasRunnedSuccessfully())
+                return NoContent();
+            else
+                throw new EditException(result.Message);
         }
 
         /// <summary>
@@ -233,24 +131,11 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [Route("{id}")]
         public async Task<IActionResult> DeleteAsync([FromRoute] string id)
         {
-            try
-            {
-                var result = await _userService.DeleteAsync(id);
-                if (result.hasRunnedSuccessfully())
-                    return Ok(result.Data);
-                else
-                    throw new DeleteUserException(result.Message);
-            }
-            catch (DeleteUserException ex)
-            {
-                _logger.LogInformation(MessageLogErrors.deleteUserMessage, ex);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.deleteUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.deleteUserMessage);
-            }
+            var result = await _userService.DeleteAsync(id);
+            if (result.HasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new DeleteException(result.Message);
         }
 
         /// <summary>
@@ -263,27 +148,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         [Route("resendEmail/{idUser}")]
         public async Task<IActionResult> ResendUserConfirmationAsync([FromRoute] string idUser)
         {
-            try
+            var result = await _userService.ResendUserConfirmationAsync(idUser);
+            if (result.HasRunnedSuccessfully())
             {
-                var result = await _userService.ResendUserConfirmationAsync(idUser);
-                if (result.hasRunnedSuccessfully())
-                {
-                    return Ok(result.Data);
-                }
-                else
-                {
-                    throw new UserVerifiedException(result.Message);
-                }
+                return Ok(result.Data);
             }
-            catch (UserVerifiedException ex)
+            else
             {
-                _logger.LogInformation(MessageLogErrors.deleteUserMessage, ex);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.deleteUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.deleteUserMessage);
+                throw new RuleException(result.Message);
             }
         }
     }

@@ -6,10 +6,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
     public interface IReceiptAccountService
     {
         Task<MessageReturn> GetAllReceiptAccountsAsync();
-        Task<MessageReturn> FindByIdAsync(string idReceiptAccount);
-        Task<MessageReturn> FindByIdUserAsync(string idUser);
-        Task<MessageReturn> SaveAsync(ReceiptAccountDTO receiptAccountSave);
-        Task<bool> DoesIdExists(string idReceiptAccount);
+        Task<MessageReturn> GetByIdAsync(string idReceiptAccount);
+        Task<MessageReturn> GetByIdUserAsync(string idUser);
+        Task<MessageReturn> SaveAsync(ReceiptAccountDto receiptAccountSave);
+        Task<MessageReturn> DoesIdExists(string idReceiptAccount);
         Task<MessageReturn> DeleteAsync(string id, string idUser);
     }
 }

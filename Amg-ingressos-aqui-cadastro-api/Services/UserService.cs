@@ -5,219 +5,152 @@ using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Utils;
+using Amg_ingressos_aqui_cadastro_api.Consts;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
     public class UserService : IUserService
     {
-        private IUserRepository _userRepository;
-        private IEmailService _emailService;
-        private MessageReturn? _messageReturn;
-        private ILogger<UserService> _logger;
+        private readonly IUserRepository _userRepository;
+        private readonly INotificationService _emailService;
+        private MessageReturn _messageReturn;
+        private readonly ILogger<UserService> _logger;
 
         public UserService(
             IUserRepository userRepository,
-            IEmailService emailService,
+            INotificationService emailService,
             ILogger<UserService> logger
         )
         {
             _userRepository = userRepository;
             _emailService = emailService;
             _logger = logger;
+            _messageReturn = new MessageReturn();
         }
 
         public async Task<MessageReturn> GetAsync(FiltersUser filters)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
                 var result = await _userRepository.Get<User>(filters);
-
                 List<User> list = new List<User>();
-                var key = "b14ca5898a4e4133bbce2ea2315a2023";
-                foreach (User user in result)
+                result.ForEach(u =>
                 {
-                    user.Password = AesOperation.DecryptString(key, user.Password);
-                    list.Add(user);
-                }
+                    u.Password = AesOperation
+                        .DecryptString(Settings.keyEncrypt, u.Password);
+                    list.Add(u);
+                });
                 _messageReturn.Data = list;
-            }
-            catch (GetAllUserException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(GetAsync), ex));
+                throw;
             }
-            return _messageReturn;
         }
 
-        public async Task<MessageReturn> FindByIdAsync(string idUser)
+        public async Task<MessageReturn> GetByIdAsync(string id)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
-                idUser.ValidateIdMongo();
-
-                //validate user type
-                User user = await _userRepository.FindByField<User>("Id", idUser);
+                id.ValidateIdMongo();
+                User user = await _userRepository.GetByField<User>("Id", id);
                 _messageReturn.Data = user;
-            }
-            catch (InvalidUserTypeException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UserNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(GetByIdAsync), ex));
+                throw;
             }
-
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> FindByDocumentIdAsync(System.Enum TEnum, string documentId)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
                 documentId.ValidateCpfFormat();
-
-                //validate user type
-                User user = await _userRepository.FindByField<User>("DocumentId", documentId);
+                User user = await _userRepository.GetByField<User>("DocumentId", documentId);
                 _messageReturn.Data = user;
-            }
-            catch (InvalidUserTypeException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UserNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByDocumentIdAsync), ex));
+                throw;
             }
-
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> FindByEmailAsync(System.Enum TEnum, string email)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
-                UserDTO.ValidateEmailFormat(email);
-
-                //validate user type
-                User user = await _userRepository.FindByField<User>("Contact.Email", email);
-                _messageReturn.Data = user;
-            }
-            catch (InvalidUserTypeException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (EmptyFieldsException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (InvalidFormatException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UserNotFound ex)
-            {
-                _messageReturn.Data = string.Empty;
-                _messageReturn.Message = ex.Message;
+                email.ValidateEmailFormat();
+                _messageReturn.Data = await _userRepository
+                    .GetByField<User>("Contact.Email", email);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByEmailAsync), ex));
+                throw;
             }
-
-            return _messageReturn;
         }
 
-        public async Task<bool> IsEmailAvailable(string email)
+        public async Task<MessageReturn> IsEmailAvailable(string email)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
-                return !await _userRepository.DoesValueExistsOnField<User>("Contact.Email", email);
+                _messageReturn.Data = await _userRepository
+                    .DoesValueExistsOnField("Contact.Email", email);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(IsEmailAvailable), ex));
+                throw;
             }
         }
 
-        public async Task<bool> IsDocumentIdAvailable(string documentId)
+        public async Task<MessageReturn> IsDocumentIdAvailable(string documentId)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
-                return !await _userRepository.DoesValueExistsOnField<User>(
-                    "DocumentId",
-                    documentId
-                );
+                _messageReturn.Data = await _userRepository
+                    .DoesValueExistsOnField("DocumentId", documentId);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(IsDocumentIdAvailable), ex));
+                throw;
             }
         }
 
-        public async Task<MessageReturn> SaveAsync(UserDTO userSave)
+        public async Task<MessageReturn> SaveAsync(UserDto userSave)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
-                User user = userSave.makeUserSave();
+                User user = userSave.DtoToModel();
+                if (user.Type != TypeUser.Collaborator && !IsDocumentIdAvailable(user.DocumentId).Result.ToObject<bool>())
+                    throw new RuleException("Documento de Identificação já cadastrado.");
 
-                if (user.Type != TypeUserEnum.Collaborator && !await IsDocumentIdAvailable(user.DocumentId))
-                    throw new DocumentIdAlreadyExists("Documento de Identificação já cadastrado.");
+                if (user.Type != TypeUser.Collaborator && !IsEmailAvailable(user.Contact.Email).Result.ToObject<bool>())
+                    throw new RuleException("Email Indisponível.");
 
-                if (user.Type != TypeUserEnum.Collaborator && !await IsEmailAvailable(user.Contact.Email))
-                {
-                    throw new EmailAlreadyExists("Email Indisponível.");
-                }
-
-                var key = "b14ca5898a4e4133bbce2ea2315a2023";
-                user.Password = AesOperation.EncryptString(key, user.Password);
+                user.Password = AesOperation.EncryptString(Settings.keyEncrypt, user.Password);
 
                 int randomNumber = new Random().Next(100000, 999999);
 
-                if (user.Type != TypeUserEnum.Collaborator)
+                if (user.Type != TypeUser.Collaborator)
                 {
 
                     var email = new EmailVerifyAccountDto
                     {
                         CodeValidation = randomNumber,
-                        Subject = "Confirmação de Conta",
-                        Sender = "suporte@ingressosaqui.com",
+                        Subject = Settings.SubjectComfirmationAccount,
+                        Sender = Settings.Sender,
                         To = user.Contact.Email,
                     };
 
@@ -227,119 +160,66 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
                     };
 
-                    _emailService.SaveAsync(email);
+                    _ = _emailService.SaveAsync(email);
                 }
 
-                var id = await _userRepository.Save<User>(user) as string;
-
-                user.Id = id;
-
+                var result = await _userRepository.Save(user);
+                user.Id = result.Id;
                 _messageReturn.Data = user;
+                _logger.LogInformation("Finished");
+                return _messageReturn;
             }
-            catch (EmptyFieldsException ex)
+            catch (Exception ex)
             {
-                _logger.LogError("Empty Fields", ex);
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (InvalidFormatException ex)
-            {
-                _logger.LogError("Invalid Format", ex);
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (DocumentIdAlreadyExists ex)
-            {
-                _logger.LogError("DocumentId Already Exists", ex);
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (EmailAlreadyExists ex)
-            {
-                _logger.LogError("Email Already Exists", ex);
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(SaveAsync), ex));
                 throw;
             }
-            catch (SaveUserException ex)
-            {
-                _logger.LogError("Error in db", ex);
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError("Error 500" + ex.Message, ex);
-                throw ex;
-            }
-
-            _logger.LogInformation("Finished", _messageReturn.Data);
-            return _messageReturn;
         }
 
-        public async Task<MessageReturn> SaveColabAsync(UserDTO colabSave)
+        public async Task<MessageReturn> SaveColabAsync(UserDto colabSave)
         {
-            this._messageReturn = new MessageReturn();
-            string id = string.Empty;
+            User userDb;
             try
             {
-                User user = colabSave.makeUserSave();
-                _messageReturn = await FindByDocumentIdAsync(
-                    TypeUserEnum.Collaborator,
+                User user = colabSave.DtoToModel();
+                var result = await FindByDocumentIdAsync(
+                    TypeUser.Collaborator,
                     user.DocumentId
                 );
-                if (_messageReturn.hasRunnedSuccessfully())
-                    id = (_messageReturn.Data as UserDTO).Id;
+                if (result.HasRunnedSuccessfully())
+                    userDb = result.ToObject<User>();
                 else
                 {
-                    _messageReturn = await FindByEmailAsync(
-                        TypeUserEnum.Collaborator,
+                    result = await FindByEmailAsync(
+                        TypeUser.Collaborator,
                         user.Contact.Email
                     );
-                    if (_messageReturn.hasRunnedSuccessfully())
-                        id = (_messageReturn.Data as UserDTO).Id;
+                    if (result.HasRunnedSuccessfully())
+                        userDb = _messageReturn.ToObject<User>();
                     else
                         _messageReturn = new MessageReturn();
-                    id = await _userRepository.Save<User>(user) as string;
+                    userDb = await _userRepository.Save(user);
                 }
-                _messageReturn.Data = id;
-            }
-            catch (EmptyFieldsException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (InvalidUserTypeException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (InvalidFormatException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (SaveUserException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = "Colab: " + ex.Message;
+                _messageReturn.Data = userDb.Id;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(SaveColabAsync), ex));
+                throw;
             }
-
-            return _messageReturn;
         }
 
-        public async Task<bool> DoesIdExists(User user)
+        public Task<bool> DoesIdExists(User user)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
-                return DoesValueExistsOnField(user);
+                return Task.FromResult(DoesValueExistsOnField(user));
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(DoesIdExists), ex));
+                throw;
             }
         }
 
@@ -347,189 +227,114 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         {
             try
             {
-                if (user is null)
+                if (user == null)
                     return false;
-                return true;
+                else
+                    return true;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(DoesValueExistsOnField), ex));
+                throw;
             }
         }
 
-        public async Task<MessageReturn> UpdateByIdAsync(UserDTO userUpdated)
+        public async Task<MessageReturn> UpdateByIdAsync(string id, UserDto user)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
-                User user = userUpdated.makeUserUpdate();
-                User userDb = await _userRepository.GetUser(user.Id);
+                User userModel = user.DtoToModel();
+                User userDb = await _userRepository.GetUser<User>(userModel.Id);
 
                 if (!await DoesIdExists(userDb))
-                    throw new UserNotFound("Id de usuário não encontrado.");
-                if (userUpdated.Password != null)
-                {
-                    var key = "b14ca5898a4e4133bbce2ea2315a2023";
-                    user.Password = AesOperation.EncryptString(key, user.Password);
-                }
-                else
-                {
-                    user.Password = userDb.Password;
-                }
-                if (userUpdated.Address == null)
-                {
-                    user.Address = userDb.Address;
-                }
-                if (userUpdated.Contact == null)
-                {
-                    user.Contact = userDb.Contact;
-                }
-                if (userUpdated.UserConfirmation == null)
-                {
-                    user.UserConfirmation = userDb.UserConfirmation;
-                }
+                    throw new RuleException("Id de usuário não encontrado.");
 
-                _messageReturn.Data = await _userRepository.UpdateUser<User>(user.Id, user);
-            }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (EmptyFieldsException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UserNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (InvalidFormatException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UpdateUserException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                if (userModel.Password != null)
+                    userModel.Password = AesOperation
+                        .EncryptString(Settings.keyEncrypt, userModel.Password);
+                else
+                    userModel.Password = userDb.Password;
+
+                if (userModel.Address == null)
+                    userModel.Address = userDb.Address;
+
+                if (userModel.Contact == null)
+                    userModel.Contact = userDb.Contact;
+
+                if (userModel.UserConfirmation == null)
+                    userModel.UserConfirmation = userDb.UserConfirmation;
+
+                _messageReturn.Data = await _userRepository.UpdateUser(userModel.Id, userModel);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(UpdateByIdAsync), ex));
+                throw;
             }
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> UpdatePassowrdByIdAsync(string id, string password)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
-                User userDb = await _userRepository.GetUser(id);
+                User userDb = await _userRepository.GetUser<User>(id);
                 if (!await DoesIdExists(userDb))
-                    throw new UserNotFound("Id de usuário não encontrado.");
+                    throw new RuleException("Id de usuário não encontrado.");
 
-                var key = "b14ca5898a4e4133bbce2ea2315a2023";
-                password = AesOperation.EncryptString(key, password);
+                password = AesOperation.EncryptString(Settings.keyEncrypt, password);
 
-                _messageReturn.Data = await _userRepository.UpdatePasswordUser<object>(
-                    id,
-                    password
-                );
-            }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (EmptyFieldsException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UserNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (InvalidFormatException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UpdateUserException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                _messageReturn.Data = await _userRepository
+                    .UpdatePasswordUser(id, password);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(UpdatePassowrdByIdAsync), ex));
+                throw;
             }
-            return _messageReturn;
         }
 
         public async Task<MessageReturn> DeleteAsync(string id)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
                 id.ValidateIdMongo();
-                User userDb = await _userRepository.GetUser(id);
+                User userDb = await _userRepository.GetUser<User>(id);
                 if (!await DoesIdExists(userDb))
-                    throw new UserNotFound("Id de usuário não encontrado.");
+                    throw new RuleException("Id de usuário não encontrado.");
 
-                _messageReturn.Data = await _userRepository.Delete<User>(id) as string;
-            }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UserNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (DeleteUserException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                _messageReturn.Data = await _userRepository.Delete(id);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(DeleteAsync), ex));
+                throw;
             }
-            return _messageReturn;
         }
 
-        public async Task<MessageReturn> ResendUserConfirmationAsync(string idUser)
+        public async Task<MessageReturn> ResendUserConfirmationAsync(string id)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
-                idUser.ValidateIdMongo();
+                id.ValidateIdMongo();
 
-                User user = await _userRepository.FindByField<User>("Id", idUser);
+                User user = await _userRepository.GetByField<User>("Id", id);
 
-                if (user.Type == TypeUserEnum.Collaborator)
-                    throw new UserNotFound("Usuário não pode ser colaborador");
+                if (user.Type == TypeUser.Collaborator)
+                    throw new RuleException("Usuário não pode ser colaborador");
 
-                if (user.UserConfirmation.EmailVerified == true)
-                {
-                    throw new UserVerifiedException("Usuário já verificado");
-                }
+                if (user.UserConfirmation.EmailVerified)
+                    throw new RuleException("Usuário já verificado");
 
                 int randomNumber = new Random().Next(100000, 999999);
 
                 var email = new EmailVerifyAccountDto
                 {
                     CodeValidation = randomNumber,
-                    Subject = "Confirmação de Conta",
-                    Sender = "suporte@ingressosaqui.com",
+                    Subject = Settings.SubjectComfirmationAccount,
+                    Sender = Settings.Sender,
                     To = user.Contact.Email,
                 };
 
@@ -539,62 +344,51 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
                 };
 
-                var id = await _userRepository.UpdateUser<User>(idUser, user);
+                await _userRepository.UpdateUser(id, user);
 
-                _emailService.SaveAsync(email);
+                _ = _emailService.SaveAsync(email);
 
                 _messageReturn.Data = user;
-            }
-            catch (UserVerifiedException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                _logger.LogInformation("Finished");
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                _logger.LogError("Error 500" + ex.Message, ex);
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(ResendUserConfirmationAsync), ex));
+                throw;
             }
-            _logger.LogInformation("Finished", _messageReturn.Data);
-            return _messageReturn;
         }
         public async Task<MessageReturn> FindByDocumentIdAndEmailAsync(System.Enum TEnum, string documentId, string email)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
-                UserDTO.ValidateEmailFormat(email);
+                email.ValidateEmailFormat();
 
                 //validate user type
-                User user = await _userRepository.FindByField<User>("Contact.Email", email);
+                User user = await _userRepository.GetByField<User>("Contact.Email", email);
                 _messageReturn.Data = user;
-            }
-            catch (InvalidUserTypeException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (EmptyFieldsException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (InvalidFormatException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UserNotFound ex)
-            {
-                _messageReturn.Data = string.Empty;
-                _messageReturn.Message = ex.Message;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByDocumentIdAndEmailAsync), ex));
+                throw;
             }
+        }
 
-            return _messageReturn;
+        public async Task<MessageReturn> FindByGenericField<T>(string fieldName, object value)
+        {
+            try
+            {
+                //validate user type
+                _messageReturn.Data = await _userRepository.GetByField<User>(fieldName, value);
+                return _messageReturn;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByDocumentIdAndEmailAsync), ex));
+                throw;
+            }
         }
     }
 }

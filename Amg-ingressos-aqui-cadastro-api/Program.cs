@@ -1,5 +1,4 @@
 using Amg_ingressos_aqui_cadastro_api.Infra;
-using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Repository;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services;
@@ -23,17 +22,16 @@ builder.Services.Configure<CadastroDatabaseSettings>(
 builder.Services.AddScoped<IUserService, UserService>();
 builder.Services.AddScoped<IReceiptAccountService, ReceiptAccountService>();
 builder.Services.AddScoped<IPaymentMethodService, PaymentMethodService>();
-builder.Services.AddScoped<IEmailService, EmailService>();
+builder.Services.AddScoped<INotificationService, NotificationService>();
 builder.Services.AddScoped<IAssociateService, AssociateService>();
 builder.Services.AddScoped<ISupportService, SupportService>();
 builder.Services.AddScoped<IAssociateService, AssociateService>();
 builder.Services.AddScoped<ICollaboratorService, CollaboratorService>();
+builder.Services.AddScoped<IEventService, EventService>();
 //repository
-builder.Services.AddScoped<IUserRepository, UserRepository<object>>();
-builder.Services.AddScoped<IReceiptAccountRepository, ReceiptAccountRepository<object>>();
-builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository<object>>();
-builder.Services.AddScoped<IEmailRepository, EmailRepository>();
-builder.Services.AddScoped<IEventRepository, EventRepository>();
+builder.Services.AddScoped<IUserRepository, UserRepository>();
+builder.Services.AddScoped<IReceiptAccountRepository, ReceiptAccountRepository>();
+builder.Services.AddScoped<IPaymentMethodRepository, PaymentMethodRepository>();
 builder.Services.AddScoped<ISupportRepository, SupportRepository>();
 builder.Services.AddScoped<ISequenceRepository, SequenceRepository>();
 builder.Services.AddScoped<IAssociateColabOrganizerRepository, AssociateColabOrganizerRepository>();
@@ -42,16 +40,7 @@ builder.Services.AddScoped<IAssociateUserApiDataEventRepository, AssociateUserAp
 
 
 //infra
-builder.Services.AddScoped<IDbConnection<User>, DbConnection<User>>();
-builder.Services.AddScoped<IDbConnection<Event>, DbConnection<Event>>();
-builder.Services.AddScoped<IDbConnection<ReceiptAccount>, DbConnection<ReceiptAccount>>();
-builder.Services.AddScoped<IDbConnection<PaymentMethod>, DbConnection<PaymentMethod>>();
-builder.Services.AddScoped<IDbConnection<TicketSupport>, DbConnection<TicketSupport>>();
-builder.Services.AddScoped<IDbConnection<Sequence>, DbConnection<Sequence>>();
-builder.Services.AddScoped<IDbConnection<Email>, DbConnection<Email>>();
-builder.Services.AddScoped<IDbConnection<AssociateCollaboratorOrganizer>, DbConnection<AssociateCollaboratorOrganizer>>();
-builder.Services.AddScoped<IDbConnection<AssociateCollaboratorEvent>, DbConnection<AssociateCollaboratorEvent>>();
-builder.Services.AddScoped<IDbConnection<AssociateUserApiDataEvent>, DbConnection<AssociateUserApiDataEvent>>();
+builder.Services.AddScoped<IDbConnection, DbConnection>();
 
 builder.Services.AddCors(options =>
 {
@@ -84,16 +73,6 @@ app.UseCors(x => x
 
 app.UseAuthorization();
 
-//app.MapGet("/jwt-token/headers", (HttpContext ctx) =>
-//{
-//    if (ctx.Request.Headers.TryGetValue("Authorization", out var headerAuth))
-//    {
-//        var jwtToken = headerAuth.First().Split(new[] { ' ' }, StringSplitOptions.RemoveEmptyEntries)[1];
-//        return Task.FromResult(TypedResults.Ok(new { token = jwtToken }));
-//    }
-//    return Task.FromResult(TypedResults.NotFound(new { message = "jwt not found" }));
-//});
-
 app.MapControllers();
-
+app.UseMiddleware<CadastroExceptionHandlerMiddleaware>();
 app.Run();

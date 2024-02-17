@@ -4,9 +4,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
 {
     public interface IAssociateColabOrganizerRepository
     {
-        Task<object> AssociateColabAsync(AssociateCollaboratorOrganizer associateCollaborator);
-        Task<object> AssociateManyColabWithOrganizerAsync(List<AssociateCollaboratorOrganizer> collaboratorOrganizer);
-        Task<object> DeleteAssociateColabAsync(string idAssociate);
-        Task<object> FindAllColabsOfProducer<T>(string idProducer);
+        Task<AssociateCollaboratorOrganizer> AssociateColabAsync(AssociateCollaboratorOrganizer associateCollaborator);
+        Task<List<AssociateCollaboratorOrganizer>> AssociateManyColabWithOrganizerAsync(List<AssociateCollaboratorOrganizer> collaboratorOrganizer);
+        Task<bool> DeleteAssociateColabAsync(string idAssociate);
+        Task<List<T>> GetAllColabsOfProducer<T>(string idProducer);
     }
 }

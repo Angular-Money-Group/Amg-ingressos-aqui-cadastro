@@ -1,7 +1,5 @@
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Enum;
-using Newtonsoft.Json.Linq;
-using Amg_ingressos_aqui_cadastro_api.Dtos;
 
 namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
 {
@@ -15,7 +13,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
                 Name = "isabella",
                 DocumentId = "05292425234",
                 Status = 0,
-                Type = TypeUserEnum.Admin,
+                Type = TypeUser.Admin,
                 Address = new Address()
                 {
                     AddressDescription = "Parque Sabiázinho",
@@ -50,7 +48,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
                 Name = "isabella",
                 DocumentId = "05292425234",
                 Status = 0,
-                Type = TypeUserEnum.Customer,
+                Type = TypeUser.Customer,
                 Address = new Address()
                 {
                     AddressDescription = "Parque Sabiázinho",
@@ -85,7 +83,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
                 Name = "isabella",
                 DocumentId = "05292425234",
                 Status = 0,
-                Type = TypeUserEnum.Organizer,
+                Type = TypeUser.Organizer,
                 Address = new Address()
                 {
                     AddressDescription = "Parque Sabiázinho",
@@ -120,7 +118,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
                 Name = "isabella",
                 DocumentId = "05292425234",
                 Status = 0,
-                Type = TypeUserEnum.Collaborator,
+                Type = TypeUser.Collaborator,
                 Contact = new Contact()
                 {
                     Email = "isabel1a@gmail.com",
@@ -133,9 +131,9 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
         internal static List<User> ListSimpleUser()
         {
             List<User> listUser = new List<User>();
-            listUser.Add(new User(SimpleUser()));
-            listUser.Add(new User(ProducerUser()));
-            listUser.Add(new User(ColabUser()));
+            listUser.Add(SimpleUser());
+            listUser.Add(ProducerUser());
+            listUser.Add(ColabUser());
 
             return listUser;
         }
@@ -143,7 +141,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
         internal static List<User> ListCloab()
         {
             List<User> listColab = new List<User>();
-            listColab.Add(new User(ColabUser()));
+            listColab.Add(ColabUser());
 
             return listColab;
         }
@@ -151,7 +149,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
         internal static List<User> ListProducer()
         {
             List<User> listProducer = new List<User>();
-            listProducer.Add(new User(ProducerUser()));
+            listProducer.Add(ProducerUser());
 
             return listProducer;
         }

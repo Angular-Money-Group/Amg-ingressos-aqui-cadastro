@@ -1,4 +1,5 @@
 using System.ComponentModel.DataAnnotations;
+using System.Text.Json.Serialization;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using Newtonsoft.Json;
@@ -7,12 +8,28 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class Event
     {
+
+        public Event()
+        {
+            Id = string.Empty;
+            Name = string.Empty;
+            Local = string.Empty;
+            Type = string.Empty;
+            Image = string.Empty;
+            Description = string.Empty;
+            Address = new Address();
+            IdMeansReceipt = string.Empty;
+            IdOrganizer = string.Empty;
+        }
+
         /// <summary>
         /// Id mongo
         /// </summary>
         [BsonId]
         [BsonRepresentation(BsonType.ObjectId)]
-        public string _Id { get; set; }
+        [JsonProperty("_id")]
+        [JsonPropertyName("id")]
+        public string Id { get; set; }
 
         /// <summary>
         /// name
@@ -62,36 +79,23 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// </summary>
         [Required]
         public Address? Address { get; set; }
-        
-        /// <summary>
-        /// Lista de Variants
-        /// </summary>
-        [BsonIgnore]
-        [Required]
-        [JsonProperty("Variant")]
-        public List<object> Variant { get; set; }
-        
+
         /// <summary>
         /// Id mongo Meio de Recebimento
         /// </summary>
         [BsonRepresentation(BsonType.ObjectId)]
         public string IdMeansReceipt { get; set; }
-        
+
         /// <summary>
         /// Id mongo organizador do evento
         /// </summary>
         [BsonRepresentation(BsonType.ObjectId)]
         public string IdOrganizer { get; set; }
-        
+
         /// <summary>
         /// Se o evento está em destaque
         /// </summary>
         [BsonDefaultValue(false)]
         public bool Highlighted { get; set; }
-        
-        /// <summary>
-        /// Se o evento está em destaque
-        /// </summary>
-        public object Courtesy { get; set; }
     }
 }

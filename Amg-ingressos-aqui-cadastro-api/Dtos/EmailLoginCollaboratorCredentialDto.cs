@@ -1,3 +1,5 @@
+using Amg_ingressos_aqui_cadastro_api.Model;
+
 namespace Amg_ingressos_aqui_cadastro_api.Dtos
 {
     public class EmailLoginCollaboratorCredentialDto
@@ -14,7 +16,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             Subject = string.Empty;
             TypeTemplate = 4;
         }
-        
+
         public string UserName { get; set; }
         public string Password { get; set; }
         public string EventName { get; set; }

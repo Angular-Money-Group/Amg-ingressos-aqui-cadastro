@@ -13,7 +13,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             Subject = string.Empty;
             TypeTemplate = 5;
         }
-        
+
         public string UserName { get; set; }
         public string UserEmail { get; set; }
         public string UserPhone { get; set; }

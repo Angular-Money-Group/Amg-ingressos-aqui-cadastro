@@ -1,123 +1,78 @@
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
-using System.Diagnostics.CodeAnalysis;
 using Amg_ingressos_aqui_cadastro_api.Infra;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Threading.Tasks;
 
 namespace Amg_ingressos_aqui_cadastro_api.Repository
 {
-    public class ReceiptAccountRepository<T> : IReceiptAccountRepository
+    public class ReceiptAccountRepository : IReceiptAccountRepository
     {
         private readonly IMongoCollection<ReceiptAccount> _receiptAccountCollection;
 
-        public ReceiptAccountRepository(IDbConnection<ReceiptAccount> dbConnection)
+        public ReceiptAccountRepository(IDbConnection dbConnection)
         {
-            this._receiptAccountCollection = dbConnection.GetConnection("receiptAccount");
+            _receiptAccountCollection = dbConnection.GetConnection<ReceiptAccount>("receiptAccount");
         }
 
-        public async Task<object> Save<T>(ReceiptAccount receiptAccountComplet)
+        public async Task<ReceiptAccount> Save(ReceiptAccount receiptAccountComplet)
         {
-            try
-            {
-                await this._receiptAccountCollection.InsertOneAsync(receiptAccountComplet);
 
-                if (receiptAccountComplet.Id is null)
-                    throw new SaveReceiptAccountException("Erro ao salvar conta de recebimento");
+            await _receiptAccountCollection.InsertOneAsync(receiptAccountComplet);
 
-                return receiptAccountComplet.Id;
-            }
-            catch (SaveReceiptAccountException ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            if (receiptAccountComplet.Id is null)
+                throw new RuleException("Erro ao salvar conta de recebimento");
+
+            return receiptAccountComplet;
         }
 
         public async Task<bool> DoesValueExistsOnField<T>(string fieldName, object value)
         {
-            try
-            {
-                var filter = Builders<ReceiptAccount>.Filter.Eq(fieldName, value);
-                var receiptAccount = await _receiptAccountCollection.Find(filter).FirstOrDefaultAsync();
-                if (receiptAccount is null)
-                    return false;
-                return true;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+
+            var filter = Builders<ReceiptAccount>.Filter.Eq(fieldName, value);
+            var receiptAccount = await _receiptAccountCollection.Find(filter).FirstOrDefaultAsync();
+            if (receiptAccount is null)
+                return false;
+            return true;
         }
 
-        public async Task<List<ReceiptAccount>> FindByField<T>(string fieldName, object value)
+        public async Task<List<T>> GetByField<T>(string fieldName, object value)
         {
-            try
-            {
-                FilterDefinition<ReceiptAccount> filter = null;
-                if(fieldName == "_id")
-                  filter =  Builders<ReceiptAccount>.Filter.Eq(fieldName, ObjectId.Parse(value.ToString()));
-                else
-                 filter = Builders<ReceiptAccount>.Filter.Eq(fieldName, value);
+            FilterDefinition<ReceiptAccount> filter;
+            if (fieldName == "_id")
+                filter = Builders<ReceiptAccount>.Filter.Eq(fieldName, ObjectId.Parse(value.ToString()));
+            else
+                filter = Builders<ReceiptAccount>.Filter.Eq(fieldName, value);
 
-                var receiptAccount = await _receiptAccountCollection.Find(filter).ToListAsync();
+            var receiptAccount = await _receiptAccountCollection
+                                                    .Find(filter)
+                                                    .As<T>()
+                                                    .ToListAsync();
 
-                return receiptAccount;
-
-            }
-            catch (ReceiptAccountNotFound ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return receiptAccount;
         }
 
-        public async Task<object> Delete<T>(object id)
+        public async Task<bool> Delete(object id)
         {
-            try
-            {
-                var result = await _receiptAccountCollection.DeleteOneAsync(x => x.Id == id as string);
-                if (result.DeletedCount >= 1)
-                    return "Conta de Recebimento Deletada.";
-                else
-                    throw new DeleteReceiptAccountException("Conta de Recebimento não encontrada.");
-            }
-            catch (DeleteReceiptAccountException ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+
+            var result = await _receiptAccountCollection.DeleteOneAsync(x => x.Id == id as string);
+            if (result.DeletedCount <= 0)
+                throw new EditException("Conta de Recebimento não encontrada.");
+
+            return true;
         }
 
-        public async Task<List<ReceiptAccount>> GetAllReceiptAccounts<T>()
+        public async Task<List<T>> GetAllReceiptAccounts<T>()
         {
-            try
-            {
-                List<ReceiptAccount> result = await _receiptAccountCollection.Find(_ => true).ToListAsync();
-                if (!result.Any())
-                    throw new GetAllReceiptAccountException("Contas de Recebimento não encontradas");
+            var result = await _receiptAccountCollection
+                                    .Find(_ => true)
+                                    .As<T>()
+                                    .ToListAsync();
+            if (!result.Any())
+                throw new RuleException("Contas de Recebimento não encontradas");
 
-                return result;
-            }
-            catch (GetAllReceiptAccountException ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            return result;
         }
     }
 }

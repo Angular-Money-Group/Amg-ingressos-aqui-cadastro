@@ -1,5 +1,4 @@
 using Amg_ingressos_aqui_cadastro_api.Enum;
-using System.ComponentModel.DataAnnotations;
 using MongoDB.Bson;
 using MongoDB.Bson.Serialization.Attributes;
 using System.Text.Json.Serialization;
@@ -8,6 +7,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
 {
     public class TicketSupport
     {
+        public TicketSupport()
+        {
+            this.Id = string.Empty;
+            this.IdPerson = string.Empty;
+            this.Subject = string.Empty;
+            this.Message = string.Empty;
+        }
+
         /// <summary>
         /// Id mongo
         /// </summary>

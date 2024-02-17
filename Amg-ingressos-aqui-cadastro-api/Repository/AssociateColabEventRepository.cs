@@ -9,64 +9,39 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
     {
 
         private readonly IMongoCollection<AssociateCollaboratorEvent> _associateCollection;
-        public AssociateColabEventRepository(IDbConnection<AssociateCollaboratorEvent> dbconnectionIten)
+        public AssociateColabEventRepository(IDbConnection dbconnectionIten)
         {
-            _associateCollection = dbconnectionIten.GetConnection("event_collaborator");
+            _associateCollection = dbconnectionIten.GetConnection<AssociateCollaboratorEvent>("event_collaborator");
         }
-        public async Task<object> AssociateCollaboratorEventAsync(AssociateCollaboratorEvent associateColab)
+        public async Task<AssociateCollaboratorEvent> AssociateCollaboratorEventAsync(AssociateCollaboratorEvent associateCollaborator)
         {
-            try
-            {
-                await _associateCollection.InsertOneAsync(associateColab);
-                return associateColab;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            await _associateCollection.InsertOneAsync(associateCollaborator);
+            return associateCollaborator;
         }
 
-        public async Task<object> AssociateManyColabWithEventAsync(List<AssociateCollaboratorEvent> collaboratorEvent)
+        public async Task<List<AssociateCollaboratorEvent>> AssociateManyColabWithEventAsync(List<AssociateCollaboratorEvent> collaboratorEvent)
         {
-            try
-            {
-                await _associateCollection.InsertManyAsync(collaboratorEvent);
-                return collaboratorEvent;
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+            await _associateCollection.InsertManyAsync(collaboratorEvent);
+            return collaboratorEvent;
         }
 
-        public async Task<object> DeleteAssociateCollaboratorEventAsync(string idAssociate)
+        public async Task<bool> DeleteAssociateCollaboratorEventAsync(string idAssociate)
         {
-            try
-            {
-                var result = await _associateCollection.DeleteOneAsync(x => x.Id == idAssociate);
-                if (result.DeletedCount >= 1)
-                    return "Desassociado";
-                else
-                    throw new Exception("erro ao desassociar colaborador");
-            }
-            catch (Exception ex)
-            {
-                throw;
-            }
+
+            var result = await _associateCollection.DeleteOneAsync(x => x.Id == idAssociate);
+            if (result.DeletedCount <= 0)
+                return false;
+
+            return true;
         }
 
-        public async Task<object> FindAllColabsOfEvent<T>(string idEvent)
+        public async Task<List<T>> GetAllColabsOfEvent<T>(string idEvent)
         {
-           try {
-                var filter = Builders<AssociateCollaboratorEvent>.Filter.Eq(x=> x.IdEvent, idEvent);
-                var eventCollaborator = await _associateCollection.Find(filter)
-                                                .ToListAsync();
-                return eventCollaborator;
-                    
-            }
-            catch (Exception ex) {
-                throw ex;
-            }
+            var filter = Builders<AssociateCollaboratorEvent>.Filter.Eq(x => x.IdEvent, idEvent);
+            var eventCollaborator = await _associateCollection.Find(filter)
+                                            .As<T>()
+                                            .ToListAsync();
+            return eventCollaborator;
         }
     }
 }
