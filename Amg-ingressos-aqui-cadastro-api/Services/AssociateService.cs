@@ -82,7 +82,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         IdUserOrganizer = idUserOrganizer
                     });
             }
-            catch (RuleException ex)
+            catch (Exception ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(AssociateColabOrganizerAsync), ex));
                 throw;
