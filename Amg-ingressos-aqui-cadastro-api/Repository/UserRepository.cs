@@ -72,6 +72,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
             if (user.Address != null) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.Address, user.Address));
             if (user.Contact != null) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.Contact, user.Contact));
 
+            //Adicionado o campo confirmação do email na atualização
+            if (user.UserConfirmation != null) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.UserConfirmation, user.UserConfirmation));
+
             if (!string.IsNullOrEmpty(user.Password))
             {
                 updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.Password, user.Password));
@@ -173,7 +176,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                     );
                 }
 
-                filtersOptions.Add(Builders<User>.Filter.Eq("Type", filters.Type));
             }
 
             var filter = Builders<User>.Filter.And(filtersOptions);
@@ -199,6 +201,39 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 throw new RuleException("Nova senha não pode ser igual a antiga.");
             else
                 throw new RuleException("Erro ao atualizar usuario.");
+        }
+
+        public async Task<object> UpdateUserConfirmation<T>(string id, UserConfirmation userConfirmation)
+        {
+
+            //Monta lista de campos, que serão atualizado - Set do update
+            var updateDefination = new List<UpdateDefinition<User>>();
+
+            //Seta os novos dados para validação do email/celular
+            updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.UserConfirmation, userConfirmation));
+
+            //Where do update
+            var filter = Builders<User>.Filter.Eq(userMongo => userMongo.Id, id);
+
+            //Prepara o objeto para atualização
+            var combinedUpdate = Builders<User>.Update.Combine(updateDefination);
+
+            //Realiza o update
+            UpdateResult updateResult = await _userCollection.UpdateOneAsync(filter, combinedUpdate, new UpdateOptions() { });
+
+            //Se comando executado com sucesso e
+            //encontrou o usuario (id) na collection (MatchedCount > 0) e
+            //atualizou (ModifiedCount > 0) ou não atualiza um a linha (no put, veio o mesmo registro que ja estava no banco de dados)
+            //retorna sucesso no comando update
+            if (updateResult.IsAcknowledged && updateResult.MatchedCount > 0 && updateResult.ModifiedCount >= 0)
+            {
+                // The data was successfully updated
+                return updateResult;
+            }
+            else
+            {
+                throw new RuleException("Erro ao confirmar o email do usuario.");
+            }
         }
     }
 }

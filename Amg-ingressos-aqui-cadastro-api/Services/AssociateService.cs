@@ -3,9 +3,12 @@ using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
+using Amg_ingressos_aqui_cadastro_api.Repository;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Utils;
+using Newtonsoft.Json;
+using System.Collections.Generic;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
@@ -54,14 +57,16 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 //Consulta todos os colaboradores vinculados ao Organizador do evento
                 var listAssociate = await _associateColabOrganizerRepository.GetAllColabsOfProducer<AssociateCollaboratorOrganizer>(idUserOrganizer);
-                string idUserCollaborator = string.Empty;
 
                 //Se o Id do user, estiver vazio, consulta se email ou documentId (cpf) já existe para o tipo colaborador
                 if (string.IsNullOrEmpty(user.Id))
                 {
+                    //Consulta se o email ou cpf já foi cadastrado para este colaborador
+                    ValidateEmailCpfCollaborator(user, listAssociate);
+
                     //Insere o colaborador ao organizador do evento, mesmo se os dados de email e cpf existirem
                     var userSaveLocal = await _userService.SaveAsync(user);
-                    idUserCollaborator = userSaveLocal.ToObject<User>().Id;
+                    user.Id = userSaveLocal.ToObject<User>().Id;
                 }
                 else
                 {
@@ -86,25 +91,39 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        private string ValidateEmailCpfCollaborator(UserDto user, List<AssociateCollaboratorOrganizer> listAssociate, string idUserCollaborator)
+        private void ValidateEmailCpfCollaborator(UserDto user, List<AssociateCollaboratorOrganizer> listAssociate)
         {
-            //TypeUserEnum.Collaborator = 3
-            //Consulta se user do email, é colaborador e se já esta vinculado ao organizador do evento
-            User userData = _userService.FindByGenericField<User>("Contact.Email", user.Contact.Email).Result.ToObject<User>();
-            if (userData != null && userData.Type == TypeUser.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userData.Id))
-                throw new RuleException(MessageLogErrors.Get);
-            else if (userData == null)
+            try
             {
-                //Consulta se user do documentId, é colaborador e se já esta vinculado ao organizador do evento
-                User userLocal = _userService.FindByGenericField<User>("DocumentId", user.DocumentId).Result.ToObject<User>();
-                if (userLocal != null && userLocal.Type == TypeUser.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userLocal.Id))
-                    throw new RuleException(MessageLogErrors.Get);
-                else if (userLocal != null)
-                    idUserCollaborator = userLocal.Id;
+                //Consulta os users, que possuem o mesmo email do colaborador que está sendo cadastrado
+                List<User> listUsers = (List<User>)_userService.GetAsync(new FiltersUser() { Email = user.Contact.Email }).GetAwaiter().GetResult().Data;
+                if (listUsers != null && listUsers.Any())
+                {
+                    //Percorre a lista de user que possuem o mesmo email
+                    foreach (User item in listUsers)
+                    {
+                        //TypeUserEnum.Collaborator = 3
+                        //Consulta se user do email, é colaborador e se já esta vinculado ao organizador do evento
+                        if (item.Type == TypeUser.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == item.Id))
+                        {
+                            throw new RuleException("Colaborador já vinculado ao organizador do evento.");
+                        }
+                    }
+
+                }
+                else if (listUsers == null)
+                {
+                    //Consulta se user do documentId, é colaborador e se já esta vinculado ao organizador do evento
+                    User userLocal = _userService.FindByGenericField<User>("DocumentId", user.DocumentId).Result.ToObject<User>();
+                    if (userLocal != null && userLocal.Type == TypeUser.Collaborator && listAssociate.Exists(x => x.IdUserCollaborator == userLocal.Id))
+                        throw new RuleException("Colaborador já vinculado ao organizador do evento.");
+                }
             }
-            else
-                idUserCollaborator = userData.Id;
-            return idUserCollaborator;
+            catch (RuleException ex)
+            {
+                _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(ValidateEmailCpfCollaborator), ex));
+                throw;
+            }
         }
 
         public async Task<MessageReturn> AssociateManyColabWithEventAsync(List<AssociateCollaboratorEvent> collaboratorEvent)
