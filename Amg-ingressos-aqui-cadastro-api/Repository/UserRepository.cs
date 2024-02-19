@@ -176,7 +176,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                     );
                 }
 
-                //filtersOptions.Add(Builders<User>.Filter.Eq("Type", filters.Type));
             }
 
             var filter = Builders<User>.Filter.And(filtersOptions);

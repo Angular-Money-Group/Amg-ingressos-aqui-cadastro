@@ -57,7 +57,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 //Consulta todos os colaboradores vinculados ao Organizador do evento
                 var listAssociate = await _associateColabOrganizerRepository.GetAllColabsOfProducer<AssociateCollaboratorOrganizer>(idUserOrganizer);
-                string idUserCollaborator = string.Empty;
 
                 //Se o Id do user, estiver vazio, consulta se email ou documentId (cpf) já existe para o tipo colaborador
                 if (string.IsNullOrEmpty(user.Id))
@@ -86,7 +85,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             catch (RuleException ex)
             {
                 _logger.LogError(string.Format(MessageLogErrors.Save, GetType().Name, nameof(AssociateColabOrganizerAsync), ex));
-                _messageReturn.Message = ex.Message;
+                throw;
             }
 
             return _messageReturn;
@@ -98,7 +97,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 //Consulta os users, que possuem o mesmo email do colaborador que está sendo cadastrado
                 List<User> listUsers = (List<User>)_userService.GetAsync(new FiltersUser() { Email = user.Contact.Email }).GetAwaiter().GetResult().Data;
-                if (listUsers != null && listUsers.Count() > 0)
+                if (listUsers != null && listUsers.Any())
                 {
                     //Percorre a lista de user que possuem o mesmo email
                     foreach (User item in listUsers)
