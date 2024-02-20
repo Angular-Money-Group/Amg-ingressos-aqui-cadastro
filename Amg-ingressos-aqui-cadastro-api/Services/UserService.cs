@@ -167,6 +167,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     _ = _emailService.SaveAsync(email);
                 }
 
+                if(!string.IsNullOrEmpty(userSave.Sex)) { user.Sex = userSave.Sex; }
+                if(!string.IsNullOrEmpty(userSave.BirthDate)) { user.BirthDate = userSave.BirthDate; }
+
                 var result = await _userRepository.Save(user);
                 user.Id = result.Id;
                 _messageReturn.Data = user;
