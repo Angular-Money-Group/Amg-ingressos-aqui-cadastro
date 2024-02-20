@@ -80,6 +80,9 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.Password, user.Password));
             }
 
+            if (!string.IsNullOrEmpty(user.Sex)) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.Sex, user.Sex));
+            if (!string.IsNullOrEmpty(user.BirthDate)) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.BirthDate, user.BirthDate));
+
             //Where do update
             var filter = Builders<User>.Filter.Eq(userMongo => userMongo.Id, id);
 
