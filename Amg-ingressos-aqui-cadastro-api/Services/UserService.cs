@@ -137,10 +137,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             try
             {
                 User user = userSave.DtoToModel();
-                if (user.Type != TypeUser.Collaborator && !IsDocumentIdAvailable(user.DocumentId).Result.ToObject<bool>())
+                if (user.Type != TypeUser.Collaborator && IsDocumentIdAvailable(user.DocumentId).Result.ToObject<bool>())
                     throw new RuleException("Documento de Identificação já cadastrado.");
 
-                if (user.Type != TypeUser.Collaborator && !IsEmailAvailable(user.Contact.Email).Result.ToObject<bool>())
+                if (user.Type != TypeUser.Collaborator && IsEmailAvailable(user.Contact.Email).Result.ToObject<bool>())
                     throw new RuleException("Email Indisponível.");
 
                 user.Password = AesOperation.EncryptString(Settings.keyEncrypt, user.Password);
