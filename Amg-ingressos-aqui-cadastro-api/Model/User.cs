@@ -17,7 +17,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
             DocumentId = string.Empty;
             Address = new Address();
             Contact = new Contact();
-            UserConfirmation = new UserConfirmation();
+            //UserConfirmation = new UserConfirmation();
             Password = string.Empty;
             IdAssociate = string.Empty;
             Sex = string.Empty;
@@ -78,7 +78,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// </summary>
         [BsonElement("UserConfirmation")]
         [JsonPropertyName("userConfirmation")]
-        public UserConfirmation UserConfirmation { get; set; }
+        public UserConfirmation? UserConfirmation { get; set; }
 
         /// <summary>
         /// Senha de acesso

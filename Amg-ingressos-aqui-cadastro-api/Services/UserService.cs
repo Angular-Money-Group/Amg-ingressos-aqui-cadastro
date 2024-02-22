@@ -257,11 +257,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 if (!await DoesIdExists(userDb))
                     throw new RuleException("Id de usuário não encontrado.");
 
-                if (userModel.Password != null)
-                    userModel.Password = AesOperation
-                        .EncryptString(Settings.keyEncrypt, userModel.Password);
-                else
-                    userModel.Password = userDb.Password;
+                if (!string.IsNullOrEmpty(userModel.Password))
+                    userModel.Password = AesOperation.EncryptString(Settings.keyEncrypt, userModel.Password);
 
                 if (userModel.Address == null)
                     userModel.Address = userDb.Address;
