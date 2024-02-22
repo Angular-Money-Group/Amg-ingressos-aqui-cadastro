@@ -52,7 +52,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         /// Confirmação do usuário
         /// </summary>
         [JsonPropertyName("userConfirmation")]
-        public UserConfirmation UserConfirmation { get; set; }
+        public UserConfirmation? UserConfirmation { get; set; }
 
         /// <summary>
         /// Senha de acesso
@@ -93,7 +93,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             Type = string.Empty;
             Address = new Address();
             Contact = new Contact();
-            UserConfirmation = new UserConfirmation();
+            //UserConfirmation = new UserConfirmation();
             Password = string.Empty;
             IdAssociate = string.Empty;
             Sex = string.Empty;
