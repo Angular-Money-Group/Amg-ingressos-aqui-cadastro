@@ -13,4 +13,4 @@ docker image tag 590184025050.dkr.ecr.us-east-1.amazonaws.com/users-api-prod:lat
 #stop and remove the current container docker rm -f $container_name
 
 #Creating and starting a docker container using a new image
-docker run -d -p 3002:80 --name $container_name $container_name:latest
+docker run -d -p 3003:80 --name $container_name $container_name:latest
