@@ -36,8 +36,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 List<User> list = new List<User>();
                 result.ForEach(u =>
                 {
-                    u.Password = AesOperation
-                        .DecryptString(Settings.keyEncrypt, u.Password);
+                    u.Password = "";
                     list.Add(u);
                 });
                 _messageReturn.Data = list;
@@ -56,10 +55,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 id.ValidateIdMongo();
                 User user = await _userRepository.GetByField<User>("Id", id);
-
-                //Decript da senha do user
-                user.Password = AesOperation.DecryptString(Settings.keyEncrypt, user.Password);
-
+                user.Password = "";
                 _messageReturn.Data = user;
                 return _messageReturn;
             }
