@@ -6,6 +6,7 @@ using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Utils;
 using Amg_ingressos_aqui_cadastro_api.Consts;
+using MongoDB.Driver;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
@@ -160,7 +161,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
                     };
 
-                    _ = _emailService.SaveAsync(email);
+                    _ = _emailService.SaveAsync(email, Settings.UriEmailVerifyAccount);
                 }
 
                 if(!string.IsNullOrEmpty(userSave.Sex)) { user.Sex = userSave.Sex; }
@@ -350,7 +351,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 await _userRepository.UpdateUser(id, user);
 
-                _ = _emailService.SaveAsync(email);
+                _ = _emailService.SaveAsync(email,Settings.UriEmailVerifyAccount);
 
                 _messageReturn.Data = user;
                 _logger.LogInformation("Finished");

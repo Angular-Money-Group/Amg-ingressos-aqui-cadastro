@@ -138,7 +138,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 Sender = Settings.Sender,
                 To = Settings.ToSupport,
             };
-            await _emailService.SaveAsync(email);
+            await _emailService.SaveAsync(email, Settings.UriTicketSuport);
         }
     }
 }

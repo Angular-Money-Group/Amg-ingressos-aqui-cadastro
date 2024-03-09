@@ -5,6 +5,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Consts
         //Services
         public readonly static string EmailServiceApi = "http://api.ingressosaqui.com:3011/";
         public readonly static string UriEmailVerifyAccount = "v1/notification/verifyAccount";
+        public readonly static string UriEmailLoginCollaborator = "v1/notification/loginCollaboratorCredential";
+        public readonly static string UriTicketSuport = "v1/notification/ticketSupport";
 
         public readonly static string EventServiceApi = "http://api.ingressosaqui.com:3002/";
         public readonly static string UriGetByIdEvent = "v1/events/";

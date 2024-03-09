@@ -21,14 +21,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             _logger = logger;
         }
 
-        public async Task<MessageReturn> SaveAsync<T>(T email)
+        public async Task<MessageReturn> SaveAsync<T>(T email, string uri)
         {
             try
             {
                 var jsonBody = new StringContent(JsonSerializer.Serialize(email),
                 Encoding.UTF8, Application.Json);
+                string jsonString = JsonSerializer.Serialize(email);
                 var url = Settings.EmailServiceApi;
-                var uri = Settings.UriEmailVerifyAccount;
 
                 _logger.LogInformation(string.Format("Call PostAsync - Send: {0}", GetType().Name));
                 var result = await _HttpClient.PostAsync(url + uri, jsonBody);
@@ -54,7 +54,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 listEmail.ForEach(x =>
                 {
-                    _ = SaveAsync(x);
+                    _ = SaveAsync(x,Settings.UriEmailLoginCollaborator);
                 });
                 _messageReturn.Data = "processado";
                 return Task.FromResult(_messageReturn);
@@ -65,13 +65,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 throw;
             }
         }
+        
         public Task<MessageReturn> ProcessEmail(List<EmailTicketSupportDto> listEmail)
         {
             try
             {
                 listEmail.ForEach(x =>
                 {
-                    _ = SaveAsync(x);
+                    _ = SaveAsync(x,Settings.UriTicketSuport);
                 });
                 _messageReturn.Data = "processado";
                 return Task.FromResult(_messageReturn);
@@ -82,13 +83,14 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 throw;
             }
         }
+        
         public Task<MessageReturn> ProcessEmail(List<EmailVerifyAccountDto> listEmail)
         {
             try
             {
                 listEmail.ForEach(x =>
                 {
-                    _ = SaveAsync(x);
+                    _ = SaveAsync(x,Settings.UriEmailVerifyAccount);
                 });
                 _messageReturn.Data = "processado";
                 return Task.FromResult(_messageReturn);
