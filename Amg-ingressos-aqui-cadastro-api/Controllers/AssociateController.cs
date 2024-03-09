@@ -26,7 +26,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
         [Route("organizer/{idUserOrganizer}")]
-        public async Task<IActionResult> AssociateColabWithOrganizerAsync([FromRoute] string idUserOrganizer, [FromBody] UserDto user)
+        public async Task<IActionResult> AssociateColabWithOrganizerAsync([FromRoute] string idUserOrganizer, [FromBody] UserAssociateDto user)
         {
             //Executa o vinculo do organizador de evento ao user colaborador
             MessageReturn result = await _associateService.AssociateColabOrganizerAsync(idUserOrganizer, user);

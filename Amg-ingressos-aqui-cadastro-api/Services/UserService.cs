@@ -154,7 +154,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         To = user.Contact.Email,
                     };
 
-                    user.UserConfirmation = new UserConfirmation()
+                    user.UserConfirmation = new NotificationUserConfirmation()
                     {
                         EmailConfirmationCode = randomNumber.ToString(),
                         EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
@@ -342,7 +342,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     To = user.Contact.Email,
                 };
 
-                user.UserConfirmation = new UserConfirmation()
+                user.UserConfirmation = new NotificationUserConfirmation()
                 {
                     EmailConfirmationCode = randomNumber.ToString(),
                     EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)

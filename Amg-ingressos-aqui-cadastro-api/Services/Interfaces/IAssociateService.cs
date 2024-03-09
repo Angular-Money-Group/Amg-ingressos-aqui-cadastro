@@ -5,7 +5,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
 {
     public interface IAssociateService
     {
-        Task<MessageReturn> AssociateColabOrganizerAsync(string idUserOrganizer, UserDto user);
+        Task<MessageReturn> AssociateColabOrganizerAsync(string idUserOrganizer, UserAssociateDto user);
         Task<MessageReturn> AssociateManyColabWithOrganizerAsync(List<AssociateCollaboratorOrganizer> colaboratorOrganizer);
         Task<MessageReturn> AssociateCollaboratorEventAsync(AssociateCollaboratorEvent collaboratorEvent);
         Task<MessageReturn> AssociateManyColabWithEventAsync(List<AssociateCollaboratorEvent> collaboratorEvent);

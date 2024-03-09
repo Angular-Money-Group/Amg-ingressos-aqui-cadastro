@@ -158,7 +158,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         EventName = eventDetails?.Name ?? string.Empty,
                         LinkQrCode = Settings.UrlLoginCollaborator + eventDetails?.Id ?? string.Empty,
                         Password = user.Password,
-                        UserName = user.Name
+                        UserName = user.Name,
                     };
                 if (listEmail.Any())
                     _messageReturn.Data = await _emailService.ProcessEmail(listEmail.ToList());

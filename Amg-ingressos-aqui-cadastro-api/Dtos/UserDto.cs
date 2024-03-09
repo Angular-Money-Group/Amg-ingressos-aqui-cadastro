@@ -52,7 +52,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         /// Confirmação do usuário
         /// </summary>
         [JsonPropertyName("userConfirmation")]
-        public UserConfirmation? UserConfirmation { get; set; }
+        public NotificationUserConfirmation? UserConfirmation { get; set; }
 
         /// <summary>
         /// Senha de acesso
