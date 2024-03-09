@@ -256,14 +256,17 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 if (!string.IsNullOrEmpty(userModel.Password))
                     userModel.Password = AesOperation.EncryptString(Settings.keyEncrypt, userModel.Password);
 
-                if (userModel.Address == null)
+                if (user.Address == null)
                     userModel.Address = userDb.Address;
 
-                if (userModel.Contact == null)
+                if (user.Contact == null)
                     userModel.Contact = userDb.Contact;
 
-                if (userModel.UserConfirmation == null)
+                if (user.UserConfirmation == null)
                     userModel.UserConfirmation = userDb.UserConfirmation;
+
+                if (string.IsNullOrEmpty(user.Type))
+                    userModel.Type = userDb.Type;
 
                 _messageReturn.Data = await _userRepository.UpdateUser(userModel.Id, userModel);
                 return _messageReturn;

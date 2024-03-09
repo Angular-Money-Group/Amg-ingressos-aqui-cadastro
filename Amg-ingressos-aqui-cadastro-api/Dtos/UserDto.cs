@@ -40,13 +40,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
         /// Endereço do usuário
         /// </summary>
         [JsonPropertyName("address")]
-        public Address Address { get; set; }
+        public Address? Address { get; set; }
 
         /// <summary>
         /// Contato do usuário
         /// </summary>
         [JsonPropertyName("contact")]
-        public Contact Contact { get; set; }
+        public Contact? Contact { get; set; }
 
         /// <summary>
         /// Confirmação do usuário
@@ -91,9 +91,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
             Name = string.Empty;
             DocumentId = string.Empty;
             Type = string.Empty;
-            Address = new Address();
-            Contact = new Contact();
-            //UserConfirmation = new UserConfirmation();
             Password = string.Empty;
             IdAssociate = string.Empty;
             Sex = string.Empty;
@@ -102,7 +99,10 @@ namespace Amg_ingressos_aqui_cadastro_api.Dtos
 
         public User DtoToModel()
         {
-            TypeUser type = (TypeUser)System.Enum.Parse(typeof(TypeUser), Type, true);
+            TypeUser type = TypeUser.Customer;
+            if(!string.IsNullOrEmpty(Type))
+                type = (TypeUser)System.Enum.Parse(typeof(TypeUser), Type, true);
+
             return new User()
             {
                 Address = this.Address,
