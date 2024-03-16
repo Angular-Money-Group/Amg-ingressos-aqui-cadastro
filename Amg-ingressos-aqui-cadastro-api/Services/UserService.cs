@@ -413,8 +413,8 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     throw new RuleException("Código de confirmação inválido");
                 
 
-                //if (user.UserConfirmation.EmailConfirmationExpirationDate < DateTime.Now)
-                //    throw new RuleException("Código expirado");
+                if (user.UserConfirmation.EmailConfirmationExpirationDate < DateTime.Now)
+                    throw new RuleException("Código expirado");
 
                 var email = new EmailConfirmedAccountDto(){
                     Subject = Settings.SubjectComfirmateAccount,

@@ -27,7 +27,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             {
                 var jsonBody = new StringContent(JsonSerializer.Serialize(email),
                 Encoding.UTF8, Application.Json);
-                string jsonString = JsonSerializer.Serialize(email);
                 var url = Settings.EmailServiceApi;
 
                 _logger.LogInformation(string.Format("Call PostAsync - Send: {0}", GetType().Name));
