@@ -15,6 +15,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services.Interfaces
         Task<MessageReturn> UpdateByIdAsync(string id, UserDto user);
         Task<MessageReturn> UpdatePassowrdByIdAsync(string id, string password);
         Task<MessageReturn> ResendUserConfirmationAsync(string id);
+        Task<MessageReturn> VerifyCode(string id,string code);
         Task<MessageReturn> FindByGenericField<T>(string fieldName, object value);
         Task<MessageReturn> DeleteAsync(string id);
     }
