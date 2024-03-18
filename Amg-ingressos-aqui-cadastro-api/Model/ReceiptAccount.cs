@@ -62,7 +62,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         // RECEIPT ACCOUNT FACTORY FUNCTIONS
         public ReceiptAccount MakeReceiptAccount()
         {
-            return new ReceiptAccount();
+            return this;
         }
 
         public ReceiptAccount MakeReceiptAccountSave()
