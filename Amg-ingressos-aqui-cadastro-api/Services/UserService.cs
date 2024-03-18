@@ -37,7 +37,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 List<User> list = new List<User>();
                 result.ForEach(u =>
                 {
-                    u.Password = "";
                     list.Add(u);
                 });
                 _messageReturn.Data = list;
