@@ -1,3 +1,4 @@
+using System.Text.Json.Serialization;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Newtonsoft.Json;
 
@@ -15,11 +16,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// <summary>
         /// Mensagem de retorno
         /// </summary>
+        [JsonPropertyName("Message")]
         public string Message { get; set; }
 
         /// <summary>
         /// Objeto de dados retornado
         /// </summary>
+        [JsonPropertyName("Data")]
         public object Data { get; set; }
 
         // METHODS
