@@ -83,8 +83,17 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 if (!user.HasRunnedSuccessfully())
                     throw new SaveException("O campo IdUser nao tem nenhum usuario correspondente.");
 
+                receiptAccount.Bank = receiptAccountSave.Bank;
+                receiptAccount.BankAccount = receiptAccountSave.BankAccount;
+                receiptAccount.BankDigit = receiptAccountSave.BankDigit;
+                receiptAccount.BankAgency = receiptAccountSave.BankAgency;
+                receiptAccount.FullName = receiptAccountSave.FullName;
+                receiptAccount.IdUser = receiptAccountSave.IdUser;
+
                 var id = await _receiptAccountRepository.Save(receiptAccount);
-                _messageReturn.Data = id;
+                receiptAccount.Id = id.ToString();
+
+                _messageReturn.Data = receiptAccount;
                 return _messageReturn;
             }
             catch (Exception ex)
