@@ -16,13 +16,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Model
         /// <summary>
         /// Mensagem de retorno
         /// </summary>
-        [JsonPropertyName("Message")]
+        [JsonPropertyName("message")]
         public string Message { get; set; }
 
         /// <summary>
         /// Objeto de dados retornado
         /// </summary>
-        [JsonPropertyName("Data")]
+        [JsonPropertyName("data")]
         public object Data { get; set; }
 
         // METHODS
