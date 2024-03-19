@@ -4,9 +4,9 @@ using Amg_ingressos_aqui_cadastro_api.Exceptions;
 
 namespace Amg_ingressos_aqui_cadastro_api.Model
 {
-    public class UserConfirmation
+    public class NotificationUserConfirmation
     {
-        public UserConfirmation()
+        public NotificationUserConfirmation()
         {
             EmailConfirmationCode = string.Empty;
         }

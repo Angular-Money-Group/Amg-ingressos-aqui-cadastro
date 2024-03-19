@@ -30,7 +30,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
                     Email = "isabel1a@gmail.com",
                     PhoneNumber = "34994568769"
                 },
-                UserConfirmation = new UserConfirmation() {
+                UserConfirmation = new NotificationUserConfirmation() {
                     EmailConfirmationCode = "wieufhu233f23fnf",
                     EmailConfirmationExpirationDate = new DateTime(2024, 02, 01, 16, 00, 00),
                     EmailVerified = true,
@@ -65,7 +65,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
                     Email = "isabel1a@gmail.com",
                     PhoneNumber = "34994568769"
                 },
-                UserConfirmation = new UserConfirmation() {
+                UserConfirmation = new NotificationUserConfirmation() {
                     EmailConfirmationCode = "wieufhu233f23fnf",
                     EmailConfirmationExpirationDate = new DateTime(2024, 02, 01, 16, 00, 00),
                     EmailVerified = true,
@@ -100,7 +100,7 @@ namespace Amg_ingressos_aqui_cadastro_tests.FactoryServices
                     Email = "isabel1a@gmail.com",
                     PhoneNumber = "34994568769"
                 },
-                UserConfirmation = new UserConfirmation() {
+                UserConfirmation = new NotificationUserConfirmation() {
                     EmailConfirmationCode = "wieufhu233f23fnf",
                     EmailConfirmationExpirationDate = new DateTime(2024, 02, 01, 16, 00, 00),
                     EmailVerified = true,

@@ -1,4 +1,5 @@
 using Amg_ingressos_aqui_cadastro_api.Dtos;
+using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
@@ -149,6 +150,31 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         public async Task<IActionResult> ResendUserConfirmationAsync([FromRoute] string idUser)
         {
             var result = await _userService.ResendUserConfirmationAsync(idUser);
+            if (result.HasRunnedSuccessfully())
+            {
+                return Ok(result.Data);
+            }
+            else
+            {
+                throw new RuleException(result.Message);
+            }
+        }
+
+        /// <summary>
+        /// Reenviar codigo de confirmação usuario
+        /// </summary>
+        /// <param name="id">Id usuario</param>
+        /// <returns>200 email reenviado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpPost]
+        [Route("confirmEmail/{idUser}")]
+        public async Task<IActionResult> ConfirmEmail([FromRoute] string idUser, [FromBody] UserConfirmationDto userConfirmationDto)
+        {
+            if (string.IsNullOrEmpty(userConfirmationDto.CodeConfirmation) || string.IsNullOrEmpty(idUser))
+                throw new RuleException("Email e Id User são obrigatorios");
+            
+
+            var result = await _userService.VerifyCode(idUser,userConfirmationDto.CodeConfirmation);
             if (result.HasRunnedSuccessfully())
             {
                 return Ok(result.Data);

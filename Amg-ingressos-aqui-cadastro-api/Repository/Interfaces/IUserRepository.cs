@@ -12,6 +12,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
         Task<bool> UpdatePasswordUser(string id, string password);
         Task<bool> Delete(object id);
         Task<List<T>> Get<T>(FiltersUser filters);
-        Task<object> UpdateUserConfirmation<T>(string id, UserConfirmation userConfirmation);
+        Task<object> UpdateUserConfirmation<T>(string id, NotificationUserConfirmation userConfirmation);
     }
 }

@@ -3,12 +3,9 @@ using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
-using Amg_ingressos_aqui_cadastro_api.Repository;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Utils;
-using Newtonsoft.Json;
-using System.Collections.Generic;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
@@ -51,7 +48,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         }
 
-        public async Task<MessageReturn> AssociateColabOrganizerAsync(string idUserOrganizer, UserDto user)
+        public async Task<MessageReturn> AssociateColabOrganizerAsync(string idUserOrganizer, UserAssociateDto user)
         {
             try
             {
@@ -65,15 +62,22 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     ValidateEmailCpfCollaborator(user, listAssociate);
 
                     //Insere o colaborador ao organizador do evento, mesmo se os dados de email e cpf existirem
-                    var userSaveLocal = await _userService.SaveAsync(user);
+                    var userSaveDto = new UserDto(){
+                        Contact = new Contact(){
+                            Email = user.Email
+                        },
+                        DocumentId = user.DocumentId,
+                        Name = user.Name,
+                        Password = user.Password
+                    };
+                    var userSaveLocal = await _userService.SaveAsync(userSaveDto);
                     user.Id = userSaveLocal.ToObject<User>().Id;
                 }
                 else
                 {
                     //Consulta se o colaborador ja está vinculado ao organizador do evento
                     if (listAssociate.Any() && listAssociate.Exists(x => x.IdUserCollaborator == user.Id))
-                        throw new RuleException(MessageLogErrors.Get);
-
+                        throw new RuleException("Colaborador ja vinculado.");
                 }
                 _messageReturn.Data = await _associateColabOrganizerRepository
                     .AssociateColabAsync(new AssociateCollaboratorOrganizer()
@@ -91,12 +95,12 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             return _messageReturn;
         }
 
-        private void ValidateEmailCpfCollaborator(UserDto user, List<AssociateCollaboratorOrganizer> listAssociate)
+        private void ValidateEmailCpfCollaborator(UserAssociateDto user, List<AssociateCollaboratorOrganizer> listAssociate)
         {
             try
             {
                 //Consulta os users, que possuem o mesmo email do colaborador que está sendo cadastrado
-                List<User> listUsers = (List<User>)_userService.GetAsync(new FiltersUser() { Email = user.Contact.Email }).GetAwaiter().GetResult().Data;
+                List<User> listUsers = (List<User>)_userService.GetAsync(new FiltersUser() { Email = user.Email }).GetAwaiter().GetResult().Data;
                 if (listUsers != null && listUsers.Any())
                 {
                     //Percorre a lista de user que possuem o mesmo email

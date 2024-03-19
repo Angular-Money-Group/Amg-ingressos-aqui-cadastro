@@ -6,13 +6,14 @@ using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Utils;
 using Amg_ingressos_aqui_cadastro_api.Consts;
+using MongoDB.Driver;
 
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
     public class UserService : IUserService
     {
         private readonly IUserRepository _userRepository;
-        private readonly INotificationService _emailService;
+        private readonly INotificationService _notificationService;
         private MessageReturn _messageReturn;
         private readonly ILogger<UserService> _logger;
 
@@ -23,7 +24,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
         )
         {
             _userRepository = userRepository;
-            _emailService = emailService;
+            _notificationService = emailService;
             _logger = logger;
             _messageReturn = new MessageReturn();
         }
@@ -36,7 +37,6 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 List<User> list = new List<User>();
                 result.ForEach(u =>
                 {
-                    u.Password = "";
                     list.Add(u);
                 });
                 _messageReturn.Data = list;
@@ -154,21 +154,20 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         To = user.Contact.Email,
                     };
 
-                    user.UserConfirmation = new UserConfirmation()
+                    user.UserConfirmation = new NotificationUserConfirmation()
                     {
                         EmailConfirmationCode = randomNumber.ToString(),
                         EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
                     };
 
-                    _ = _emailService.SaveAsync(email);
+                    _ = _notificationService.SaveAsync(email, Settings.UriEmailVerifyAccount);
                 }
 
                 if(!string.IsNullOrEmpty(userSave.Sex)) { user.Sex = userSave.Sex; }
                 if(!string.IsNullOrEmpty(userSave.BirthDate)) { user.BirthDate = userSave.BirthDate; }
 
-                var result = await _userRepository.Save(user);
-                user.Id = result.Id;
-                _messageReturn.Data = user;
+                _= await _userRepository.Save(user);
+                _messageReturn.Data = user.Id;
                 _logger.LogInformation("Finished");
                 return _messageReturn;
             }
@@ -256,14 +255,17 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 if (!string.IsNullOrEmpty(userModel.Password))
                     userModel.Password = AesOperation.EncryptString(Settings.keyEncrypt, userModel.Password);
 
-                if (userModel.Address == null)
+                if (user.Address == null)
                     userModel.Address = userDb.Address;
 
-                if (userModel.Contact == null)
+                if (user.Contact == null)
                     userModel.Contact = userDb.Contact;
 
-                if (userModel.UserConfirmation == null)
+                if (user.UserConfirmation == null)
                     userModel.UserConfirmation = userDb.UserConfirmation;
+
+                if (string.IsNullOrEmpty(user.Type))
+                    userModel.Type = userDb.Type;
 
                 _messageReturn.Data = await _userRepository.UpdateUser(userModel.Id, userModel);
                 return _messageReturn;
@@ -339,7 +341,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     To = user.Contact.Email,
                 };
 
-                user.UserConfirmation = new UserConfirmation()
+                user.UserConfirmation = new NotificationUserConfirmation()
                 {
                     EmailConfirmationCode = randomNumber.ToString(),
                     EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
@@ -347,7 +349,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
                 await _userRepository.UpdateUser(id, user);
 
-                _ = _emailService.SaveAsync(email);
+                _ = _notificationService.SaveAsync(email,Settings.UriEmailVerifyAccount);
 
                 _messageReturn.Data = user;
                 _logger.LogInformation("Finished");
@@ -390,6 +392,44 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByDocumentIdAndEmailAsync), ex));
                 throw;
             }
+        }
+
+        public async Task<MessageReturn> VerifyCode(string id, string code)
+        {
+            //validate user type
+                var user = await _userRepository.GetUser<User>(id);
+
+                if (user == null)
+                    throw new RuleException("Usuário não mencontrado");
+                
+
+                if (user.UserConfirmation.EmailVerified == true) 
+                    throw new RuleException("Usuário já verificado");
+                
+
+                if (user.UserConfirmation.EmailConfirmationCode != code) 
+                    throw new RuleException("Código de confirmação inválido");
+                
+
+                if (user.UserConfirmation.EmailConfirmationExpirationDate < DateTime.Now)
+                    throw new RuleException("Código expirado");
+
+                var email = new EmailConfirmedAccountDto(){
+                    Subject = Settings.SubjectComfirmateAccount,
+                    Sender = Settings.Sender,
+                    To = user.Contact.Email,
+                    UserName = user.Name
+                };
+                _ = _notificationService.SaveAsync(email,Settings.UriEmailConfirmedAccount);
+
+                user.UserConfirmation.EmailConfirmationCode = null;
+                user.UserConfirmation.EmailConfirmationExpirationDate = null;
+                user.UserConfirmation.EmailVerified = true;
+                user.UserConfirmation.PhoneVerified = false;
+                
+                await _userRepository.UpdateUserConfirmation<object>(user.Id, user.UserConfirmation);
+                _messageReturn.Data = "processado";
+                return _messageReturn;
         }
     }
 }

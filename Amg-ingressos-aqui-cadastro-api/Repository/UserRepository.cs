@@ -206,7 +206,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Repository
                 throw new RuleException("Erro ao atualizar usuario.");
         }
 
-        public async Task<object> UpdateUserConfirmation<T>(string id, UserConfirmation userConfirmation)
+        public async Task<object> UpdateUserConfirmation<T>(string id, NotificationUserConfirmation userConfirmation)
         {
 
             //Monta lista de campos, que serão atualizado - Set do update
