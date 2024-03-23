@@ -71,7 +71,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                         Password = user.Password
                     };
                     var userSaveLocal = await _userService.SaveAsync(userSaveDto);
-                    user.Id = userSaveLocal.ToObject<User>().Id;
+                    user.Id = userSaveLocal.Data.ToString() ?? string.Empty;
                 }
                 else
                 {
