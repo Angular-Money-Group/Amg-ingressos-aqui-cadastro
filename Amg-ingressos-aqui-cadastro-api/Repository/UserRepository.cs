@@ -1,6 +1,7 @@
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Infra;
+using MongoDB.Bson;
 using MongoDB.Driver;
 using Amg_ingressos_aqui_cadastro_api.Enum;
 using MongoDB.Bson;

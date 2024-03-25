@@ -9,6 +9,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Utils
         {
             if (string.IsNullOrEmpty(id))
                 throw new IdMongoException("Id é Obrigatório.");
+                throw new IdMongoException("Id é Obrigatório.");
             else if (id.Length < 24)
                 throw new IdMongoException("Id é obrigatório e está menor que 24 digitos.");
         }

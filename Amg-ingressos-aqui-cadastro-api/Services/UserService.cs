@@ -68,6 +68,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
 
         public async Task<MessageReturn> FindByDocumentIdAsync(System.Enum TEnum, string documentId)
         {
+            this._messageReturn = new MessageReturn();
             try
             {
                 documentId.ValidateCpfFormat();
@@ -126,10 +127,13 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                 _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(IsDocumentIdAvailable), ex));
                 throw;
             }
+
+            return _messageReturn;
         }
 
         public async Task<MessageReturn> SaveAsync(UserDto userSave)
         {
+            this._messageReturn = new MessageReturn();
             try
             {
                 User user = userSave.DtoToModel();
@@ -233,6 +237,18 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
                     return false;
                 else
                     return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(DoesValueExistsOnField), ex));
+                throw;
+            }
+        }
+
+        public async Task<bool> DoesIdExists(string idUser) {
+            this._messageReturn = new MessageReturn();
+            try {
+                return await _userRepository.DoesValueExistsOnField("Id", idUser);
             }
             catch (Exception ex)
             {
