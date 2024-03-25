@@ -1,4 +1,5 @@
-using Amg_ingressos_aqui_cadastro_api.Consts;
+using Amg_ingressos_aqui_cadastro_api.Dtos;
+using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
@@ -6,66 +7,32 @@ using Microsoft.AspNetCore.Mvc;
 
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
 {
-    [Route("v1/usuarios")]
+    [ApiController]
+    [Route("v1/user")]
+    [Produces("application/json")]
     public class UserController : ControllerBase
     {
-        private readonly ILogger<UserController> _logger;
         private readonly IUserService _userService;
 
-
-
-
-        public UserController(ILogger<UserController> logger, IUserService userService)
+        public UserController(IUserService userService)
         {
-            _logger = logger;
             _userService = userService;
         }
-
-        private bool hasRunnedSuccessfully(MessageReturn result) {
-            return string.IsNullOrEmpty(result.Message);
-        }
-
-
-
 
         /// <summary>
         /// Grava usuario
         /// </summary>
-        /// <param name="userObject">Corpo usuario a ser Gravado</param>
+        /// <param name="user">Corpo usuario a ser Gravado</param>
         /// <returns>200 usuario criado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPost]
-        [Route("createUser")]
-        public async Task<IActionResult> SaveUserAsync([FromBody] User userObject)
+        public async Task<IActionResult> SaveUserAsync([FromBody] UserDto user)
         {
-            try
-            {
-                if (!await _userService.IsEmailAvailable(userObject.Contact.Email))
-                    throw new EmailAlreadyExists("Email Indisponível.");
-
-                // userObject.Password = hashPassword;
-                MessageReturn result = await _userService.SaveAsync(userObject);
-
-                if (hasRunnedSuccessfully(result))
-                    return Ok(result.Data);
-                else
-                    throw new SaveUserException(result.Message);
-            }
-            catch (EmailAlreadyExists ex)
-            {
-                _logger.LogInformation(MessageLogErrors.tryToRegisterExistentEmail + "\temail: " + userObject.Contact.Email);
-                return Ok();
-            }
-            catch (SaveUserException ex)
-            {
-                _logger.LogInformation(ex.Message);
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.saveUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.saveUserMessage);
-            }
+            MessageReturn result = await _userService.SaveAsync(user);
+            if (result.HasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new SaveException(result.Message);
         }
 
         /// <summary>
@@ -75,120 +42,146 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
         /// <returns>204 Nenhum usuario encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
-        [Route("getAllUsers")]
         [Produces("application/json")]
-        public async Task<IActionResult> GetAllUsersAsync()
+        public async Task<IActionResult> GetAsync([FromQuery] FiltersUser filters)
         {
-            try
-            {
-                var result = await _userService.GetAllUsersAsync();
-                if (hasRunnedSuccessfully(result))
-                    return Ok(result.Data as List<User>);
-                else
-                    throw new GetAllUserException(result.Message);
-            }
-            catch (GetAllUserException ex)
-            {
-                    _logger.LogInformation(ex.Message);
-                    return NoContent();
-            }
-            catch (Exception ex)
-            {
-                _logger.LogError(MessageLogErrors.GetAllUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.GetAllUserMessage);
-            }
+            var result = await _userService.GetAsync(filters);
+
+            if (result.HasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new GetException(result.Message);
         }
 
         /// <summary>
         /// Busca usuario pelo ID
         /// </summary>
+        /// <param name="type"> tipo de usuario</param>
         /// <param name="id"> id do usuario</param>
         /// <returns>200 usuario da busca</returns>
         /// <returns>204 Nenhum usuario encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpGet]
-        [Route("getUserById")]
+        [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> FindByIdUserAsync(string id)
+        public async Task<IActionResult> GetByIdAsync([FromRoute] string id)
         {
-            try
-            {
-                var result = await _userService.FindByIdAsync(id);
-                if(hasRunnedSuccessfully(result))
-                    return Ok(result.Data as User);
-                else
-                    throw new UserNotFound(result.Message);
-            }
-            catch (UserNotFound ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)    
-            {
-                _logger.LogError(MessageLogErrors.FindByIdUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.FindByIdUserMessage);
-            }
+
+            var result = await _userService.GetByIdAsync(id);
+            if (result.HasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new GetException(result.Message);
         }
 
         /// <summary>
-        /// Busca usuario pelo ID
+        /// Atualiza usuario pelo ID
         /// </summary>
         /// <param name="id"> id do usuario</param>
+        /// <param name="user">Corpo usuario a ser Gravado</param>
         /// <returns>200 usuario da busca</returns>
         /// <returns>204 Nenhum usuario encontrado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpPut]
-        [Route("updateUserById")]
+        [Route("{id}")]
         [Produces("application/json")]
-        public async Task<IActionResult> UpdateByIdUserAsync(string id, User usuarioUpdated)
+        public async Task<IActionResult> UpdateAsync([FromRoute] string id, [FromBody] UserDto user)
         {
-            try
-            {
-                usuarioUpdated.Id = id;
-                MessageReturn result = await _userService.UpdateByIdAsync(usuarioUpdated);
+            MessageReturn result = await _userService.UpdateByIdAsync(id, user);
 
-                if (hasRunnedSuccessfully(result))
-                    return NoContent();
-                else
-                    throw new UpdateUserException(result.Message);
-            }
-            catch (UpdateUserException ex)
-            {
-                return BadRequest(ex.Message);
-            }
-            catch (Exception ex)    
-            {
-                _logger.LogError(MessageLogErrors.updateUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.updateUserMessage);
-            }
+            if (result.HasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new EditException(result.Message);
         }
 
         /// <summary>
-        /// Delete usuario 
+        /// Atualiza usuario pelo ID
+        /// </summary>
+        /// <param name="id"> id do usuario</param>
+        /// <param name="usuarioUpdated">Corpo usuario a ser Gravado</param>
+        /// <returns>200 usuario da busca</returns>
+        /// <returns>204 Nenhum usuario encontrado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpPut]
+        [Route("resetpassword/{id}")]
+        [Produces("application/json")]
+        public async Task<IActionResult> UpdatePassowordAsync([FromRoute] string id, [FromBody] UserDto userPassword)
+        {
+            if (userPassword is null)
+                throw new RuleException("Json de Usuario veio Nulo.");
+
+            MessageReturn result = await _userService.UpdatePassowrdByIdAsync(
+                id,
+                userPassword.Password
+            );
+
+            if (result.HasRunnedSuccessfully())
+                return NoContent();
+            else
+                throw new EditException(result.Message);
+        }
+
+        /// <summary>
+        /// Delete usuario
         /// </summary>
         /// <param name="id">Id usuario</param>
         /// <returns>200 usuario deletado</returns>
         /// <returns>500 Erro inesperado</returns>
         [HttpDelete]
-        public async Task<IActionResult> DeleteUserAsync(string id)
+        [Route("{id}")]
+        public async Task<IActionResult> DeleteAsync([FromRoute] string id)
         {
-            try
+            var result = await _userService.DeleteAsync(id);
+            if (result.HasRunnedSuccessfully())
+                return Ok(result.Data);
+            else
+                throw new DeleteException(result.Message);
+        }
+
+        /// <summary>
+        /// Reenviar codigo de confirmação usuario
+        /// </summary>
+        /// <param name="id">Id usuario</param>
+        /// <returns>200 email reenviado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpGet]
+        [Route("resendEmail/{idUser}")]
+        public async Task<IActionResult> ResendUserConfirmationAsync([FromRoute] string idUser)
+        {
+            var result = await _userService.ResendUserConfirmationAsync(idUser);
+            if (result.HasRunnedSuccessfully())
             {
-                var result = await _userService.DeleteAsync(id);
-                if (hasRunnedSuccessfully(result))
-                    return Ok(result.Data);
-                else
-                    throw new DeleteUserException(result.Message);
+                return Ok(result.Data);
             }
-            catch (DeleteUserException ex)
+            else
             {
-                _logger.LogInformation(MessageLogErrors.deleteUserMessage, ex);
-                return BadRequest(ex.Message);
+                throw new RuleException(result.Message);
             }
-            catch (Exception ex)
+        }
+
+        /// <summary>
+        /// Reenviar codigo de confirmação usuario
+        /// </summary>
+        /// <param name="id">Id usuario</param>
+        /// <returns>200 email reenviado</returns>
+        /// <returns>500 Erro inesperado</returns>
+        [HttpPost]
+        [Route("confirmEmail/{idUser}")]
+        public async Task<IActionResult> ConfirmEmail([FromRoute] string idUser, [FromBody] UserConfirmationDto userConfirmationDto)
+        {
+            if (string.IsNullOrEmpty(userConfirmationDto.CodeConfirmation) || string.IsNullOrEmpty(idUser))
+                throw new RuleException("Email e Id User são obrigatorios");
+            
+
+            var result = await _userService.VerifyCode(idUser,userConfirmationDto.CodeConfirmation);
+            if (result.HasRunnedSuccessfully())
             {
-                _logger.LogError(MessageLogErrors.deleteUserMessage, ex);
-                return StatusCode(500, MessageLogErrors.deleteUserMessage);
+                return Ok(result.Data);
+            }
+            else
+            {
+                throw new RuleException(result.Message);
             }
         }
     }

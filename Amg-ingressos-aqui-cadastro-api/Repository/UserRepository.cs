@@ -1,147 +1,242 @@
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
-using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
-using System.Diagnostics.CodeAnalysis;
 using Amg_ingressos_aqui_cadastro_api.Infra;
 using MongoDB.Bson;
 using MongoDB.Driver;
-using System.Threading.Tasks;
+using Amg_ingressos_aqui_cadastro_api.Enum;
+using MongoDB.Bson;
+using Amg_ingressos_aqui_cadastro_api.Exceptions;
 
 namespace Amg_ingressos_aqui_cadastro_api.Repository
 {
-    public class UserRepository<T> : IUserRepository
+    public class UserRepository : IUserRepository
     {
         private readonly IMongoCollection<User> _userCollection;
 
-        /* public UserRepository(IDbConnection<User> dbConnection, string modelName) {
-            this._userCollection = dbConnection.GetConnection(modelName);
-        } */
-
-        public UserRepository(IDbConnection<User> dbConnection) {
-            this._userCollection = dbConnection.GetConnection("User");
-        }
-        
-        public async Task<object> Save<T>(object userComplet) {
-            try {
-                await this._userCollection.InsertOneAsync(userComplet as User);
-
-                if ((userComplet as User).Id is null)
-                    throw new SaveUserException("Erro ao salvar usuario");
-
-                return (userComplet as User).Id;
-            }
-            catch (SaveUserException ex) {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+        public UserRepository(IDbConnection dbConnection)
+        {
+            _userCollection = dbConnection.GetConnection<User>("user");
         }
 
-        public async Task<IEnumerable<object>> GetAllUsers<T>() {
-            try
-            {
-                var result = await _userCollection.Find(_ => true).ToListAsync();
-                if (!result.Any())
-                    throw new GetAllUserException("Usuários não encontrados");
+        public async Task<User> Save(User user)
+        {
+            await _userCollection.InsertOneAsync(user);
 
-                return result;
-            }
-            catch (GetAllUserException ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }
+            if (user.Id is null)
+                throw new RuleException("Erro ao salvar usuario");
+
+            return user;
         }
 
-        public async Task<bool> DoesValueExistsOnField<T>(string fieldName, T value) {
-            try {
-                var filter = Builders<User>.Filter.Eq(fieldName, value);
-                var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
-                if (user is null)
-                    return false;
+        public async Task<bool> DoesValueExistsOnField(string fieldName, object value)
+        {
+            var filter = Builders<User>.Filter.Eq(fieldName, value);
+            var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
+            if (user is null)
+                return false;
+            return true;
+        }
+
+        public async Task<T> GetUser<T>(string id)
+        {
+            var filter = Builders<User>.Filter.Eq("Id", id);
+            var user = await _userCollection
+                                .Find(filter)
+                                .As<T>()
+                                .FirstOrDefaultAsync();
+
+            return user;
+        }
+
+        public async Task<T> GetByField<T>(string fieldName, object value)
+        {
+            var filter = Builders<User>.Filter.Eq(fieldName, value);
+            var user = await _userCollection
+                                .Find(filter)
+                                .As<T>()
+                                .FirstOrDefaultAsync();
+            if (user == null)
+                throw new RuleException("Usuário não encontrado por " + fieldName + ".");
+
+            return user;
+        }
+
+
+        public async Task<User> UpdateUser(string id, User user)
+        {
+            //Monta lista de campos, que serão atualizado - Set do update
+            var updateDefination = new List<UpdateDefinition<User>>();
+
+            if (!string.IsNullOrEmpty(user.Name)) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.Name, user.Name));
+            if (!string.IsNullOrEmpty(user.DocumentId)) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.DocumentId, user.DocumentId));
+
+            if (user.Address != null) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.Address, user.Address));
+            if (user.Contact != null) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.Contact, user.Contact));
+
+            //Adicionado o campo confirmação do email na atualização
+            if (user.UserConfirmation != null) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.UserConfirmation, user.UserConfirmation));
+
+            if (!string.IsNullOrEmpty(user.Password))
+            {
+                updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.Password, user.Password));
+            }
+
+            if (!string.IsNullOrEmpty(user.Sex)) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.Sex, user.Sex));
+            if (!string.IsNullOrEmpty(user.BirthDate)) updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.BirthDate, user.BirthDate));
+
+            //Where do update
+            var filter = Builders<User>.Filter.Eq(userMongo => userMongo.Id, id);
+
+            //Prepara o objeto para atualização
+            var combinedUpdate = Builders<User>.Update.Combine(updateDefination);
+
+            //Realiza o update
+            UpdateResult updateResult = await _userCollection.UpdateOneAsync(filter, combinedUpdate, new UpdateOptions() { });
+
+            //Se comando executado com sucesso e
+            //encontrou o usuario (id) na collection (MatchedCount > 0) e
+            //atualizou (ModifiedCount > 0) ou não atualiza um a linha (no put, veio o mesmo registro que ja estava no banco de dados)
+            //retorna sucesso no comando update
+            if (updateResult.IsAcknowledged && updateResult.MatchedCount > 0 && updateResult.ModifiedCount >= 0)
+                // The data was successfully updated
+                return user;
+            else
+                throw new RuleException("Erro ao atualizar usuario.");
+        }
+
+        public async Task<bool> Delete(object id)
+        {
+            var user = await _userCollection
+                .Find(Builders<User>.Filter.Eq(userMongo => userMongo.Id, id))
+                .FirstOrDefaultAsync();
+
+            if (user != null)
+            {
+                if (user.Status == TypeStatus.Inactive)
+                {
+                    var result = await _userCollection.UpdateOneAsync(
+                        Builders<User>.Filter.Eq(userMongo => userMongo.Id, id),
+                        Builders<User>.Update.Set(
+                            userMongo => userMongo.Status,
+                            TypeStatus.Active
+                        )
+                    );
+                    if (result.IsAcknowledged && result.ModifiedCount > 0)
+                        // The data was successfully updated
+                        return true;
+                    else
+                        throw new RuleException("Erro ao atualizar usuario.");
+                }
+                else
+                {
+                    var result = await _userCollection.UpdateOneAsync(
+                        Builders<User>.Filter.Eq(userMongo => userMongo.Id, id),
+                        Builders<User>.Update.Set(
+                            userMongo => userMongo.Status,
+                            TypeStatus.Inactive
+                        )
+                    );
+                    if (result.IsAcknowledged && result.ModifiedCount > 0)
+                        // The data was successfully updated
+                        return true;
+                    else
+                        throw new RuleException("Erro ao atualizar usuario.");
+                }
+            }
+            else
+                throw new RuleException("Usuário não encontrado.");
+        }
+
+        public async Task<List<T>> Get<T>(FiltersUser? filters)
+        {
+            var filtersOptions = new List<FilterDefinition<User>> { Builders<User>.Filter.Empty };
+
+            if (filters != null)
+            {
+                if (!string.IsNullOrEmpty(filters.Name))
+                {
+                    filtersOptions.Add(
+                        Builders<User>.Filter.Regex("Name",
+                            new BsonRegularExpression(filters.Name, "i")
+                        )
+                    );
+                }
+
+                if (!string.IsNullOrEmpty(filters.Email))
+                {
+                    filtersOptions.Add(
+                        Builders<User>.Filter.Regex("Contact.Email",
+                            new BsonRegularExpression(filters.Email, "i")
+                        )
+                    );
+                }
+
+                if (!string.IsNullOrEmpty(filters.PhoneNumber))
+                {
+                    filtersOptions.Add(
+                        Builders<User>.Filter.Regex("Contact.PhoneNumber",
+                            new BsonRegularExpression(filters.PhoneNumber, "i")
+                        )
+                    );
+                }
+
+            }
+
+            var filter = Builders<User>.Filter.And(filtersOptions);
+            var pResults = await _userCollection
+                                .Aggregate()
+                                .Match(filter)
+                                .As<T>()
+                                .ToListAsync();
+
+            return pResults;
+        }
+
+        public async Task<bool> UpdatePasswordUser(string id, string password)
+        {
+            var update = Builders<User>.Update.Set(userMongo => userMongo.Password, password);
+            var filter = Builders<User>.Filter.Eq(userMongo => userMongo.Id, id);
+
+            UpdateResult updateResult = await _userCollection.UpdateOneAsync(filter, update);
+            if (updateResult.IsAcknowledged && updateResult.ModifiedCount > 0)
+                // The data was successfully updated
                 return true;
-            }   
-            catch (Exception ex)
-            {
-                throw ex;
-            }
-
+            else if (updateResult.ModifiedCount == 0 && updateResult.MatchedCount > 0)
+                throw new RuleException("Nova senha não pode ser igual a antiga.");
+            else
+                throw new RuleException("Erro ao atualizar usuario.");
         }
 
-        public async Task<object> FindByField<T>(string fieldName, string value) {
-            try {
+        public async Task<object> UpdateUserConfirmation<T>(string id, NotificationUserConfirmation userConfirmation)
+        {
 
-                var filter = Builders<User>.Filter.Eq(fieldName, value);
-                var user = await _userCollection.Find(filter).FirstOrDefaultAsync();
-                if (user is not null)
-                    return user;
-                else
-                    throw new UserNotFound("Usuario nao encontrado por " + fieldName + ".");
-            }
-            catch (UserNotFound ex) {
-                throw ex;
-            }
-            catch (Exception ex)
+            //Monta lista de campos, que serão atualizado - Set do update
+            var updateDefination = new List<UpdateDefinition<User>>();
+
+            //Seta os novos dados para validação do email/celular
+            updateDefination.Add(Builders<User>.Update.Set(userMongo => userMongo.UserConfirmation, userConfirmation));
+
+            //Where do update
+            var filter = Builders<User>.Filter.Eq(userMongo => userMongo.Id, id);
+
+            //Prepara o objeto para atualização
+            var combinedUpdate = Builders<User>.Update.Combine(updateDefination);
+
+            //Realiza o update
+            UpdateResult updateResult = await _userCollection.UpdateOneAsync(filter, combinedUpdate, new UpdateOptions() { });
+
+            //Se comando executado com sucesso e
+            //encontrou o usuario (id) na collection (MatchedCount > 0) e
+            //atualizou (ModifiedCount > 0) ou não atualiza um a linha (no put, veio o mesmo registro que ja estava no banco de dados)
+            //retorna sucesso no comando update
+            if (updateResult.IsAcknowledged && updateResult.MatchedCount > 0 && updateResult.ModifiedCount >= 0)
             {
-                throw ex;
+                // The data was successfully updated
+                return updateResult;
             }
-
-        }
-
-        public async Task<object> UpdateUser<T>(object id, object userComplet) {
-            try {
-                var filter = Builders<User>.Filter
-                .Eq(r => r.Id, id);
-                ReplaceOneResult result = await this._userCollection.ReplaceOneAsync(filter, userComplet as User);
-                if (result.ModifiedCount > 0 || result.MatchedCount > 0)
-                {
-                    // The data was successfully updated
-                    return "Usuário Atualizado.";
-                }
-                else
-                {
-                    throw new UpdateUserException("Erro ao atualizar usuario.");
-                }
-            }
-            catch (UpdateUserException ex) {
-                throw ex;
-            }
-            catch (Exception ex)
+            else
             {
-                throw ex;
-            }
-        }
-        //  public async Task<object> removeValueFromArrayField<T>(object id, object fieldName, object idValueToRemove) {
-
-        //     var filter = Builders<T>.Filter.Eq("_id", id);
-        //     var update = Builders<T>.Update.Pull((FieldDefinition<T>)fieldName, idValueToRemove);
-        //     var options = new FindOneAndUpdateOptions<T> { ReturnDocument = ReturnDocument.After };
-
-        //     var result = await _userCollection.FindOneAndUpdateAsync(filter, update, options);
-
-        //     return result;
-        // }
-        public async Task<object> Delete<T>(object id) {
-            try
-            {
-                var result = await _userCollection.DeleteOneAsync(x => x.Id == id as string);
-                if (result.DeletedCount >= 1)
-                    return "Usuário Deletado.";
-                else
-                    throw new DeleteUserException("Usuário não encontrado.");
-            }
-            catch (DeleteUserException ex)
-            {
-                throw ex;
-            }
-            catch (Exception ex)
-            {
-                throw ex;
+                throw new RuleException("Erro ao confirmar o email do usuario.");
             }
         }
     }

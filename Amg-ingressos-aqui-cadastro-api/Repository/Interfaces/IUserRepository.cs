@@ -1,13 +1,17 @@
+using Amg_ingressos_aqui_cadastro_api.Model;
+
 namespace Amg_ingressos_aqui_cadastro_api.Repository.Interfaces
 {
-    public interface IUserRepository 
+    public interface IUserRepository
     {
-        Task<object> Save<T>(object userComplet);
-        Task<bool> DoesValueExistsOnField<T>(string fieldName, T value);
-        Task<object> FindByField<T>(string value, string fieldname);
-        Task<object> UpdateUser<T>(object id, object userComplet);
-        // Task<object> removeValueFromArrayField<T>(object id, string fieldname, object IdValueToRemove);
-        Task<object> Delete<T>(object id);
-        Task<IEnumerable<object>> GetAllUsers<T>();
+        Task<User> Save(User user);
+        Task<bool> DoesValueExistsOnField(string fieldName, object value);
+        Task<T> GetUser<T>(string id);
+        Task<T> GetByField<T>(string fieldName, object value);
+        Task<User> UpdateUser(string id, User user);
+        Task<bool> UpdatePasswordUser(string id, string password);
+        Task<bool> Delete(object id);
+        Task<List<T>> Get<T>(FiltersUser filters);
+        Task<object> UpdateUserConfirmation<T>(string id, NotificationUserConfirmation userConfirmation);
     }
 }

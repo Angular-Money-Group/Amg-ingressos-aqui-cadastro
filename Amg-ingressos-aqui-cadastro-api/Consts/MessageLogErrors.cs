@@ -2,20 +2,18 @@ namespace Amg_ingressos_aqui_cadastro_api.Consts
 {
     public static class MessageLogErrors
     {
-        public const string saveTransactionMessage = "SaveTransactionAsync : Erro inesperado ao salvar uma transação";
-        public const string paymentTransactionMessage = "PaymentTransactionAsync : Erro inesperado ao realizar pagamento de uma transação";
-        public const string updateTransactionMessage = "UpdateTransactionAsync : Erro inesperado ao atualizar uma transação";
-        public const string getByIdTransactionMessage = "GetByIdTransactionAsync : Erro inesperado ao buscar uma transação";
-
-
-
-        public const string getByPersonTransactionMessage = "GetByPersonTransactionAsync : Erro inesperado ao buscar uma transação";
-        public const string FindByIdUserMessage = "FindByIdUserAsync : Erro inesperado ao buscar um usuario por id";
-        public const string GetAllUserMessage = "GetAllUsersAsync : Erro inesperado ao buscar usuarios";
-        public const string saveUserMessage = "SaveUserAsync : Erro inesperado ao salvar um usuario";
-        public const string deleteUserMessage = "DeleteUserAsync : Erro inesperado ao deletar um usuario";
-        public const string updateUserMessage = "UpdateUserAsync : Erro inesperado ao atualizar um usuario";
-
-        public const string tryToRegisterExistentEmail = "SaveUserAsync : Tentativa de Cadastrar um Email ja cadastrado.";
+        public const string GetById = "{0}:{1} - erro ao buscar {2} por Id.";
+        public const string Get = "{0}:{1} - erro ao buscar {2}.";
+        public const string Save = "{0}:{1} - erro ao salvar {2}.";
+        public const string Delete = "{0}:{1} - erro ao apagar {2}.";
+        public const string Edit = "{0}:{1} - erro ao editar {2}.";
+        public const string Report = "{0}:{1} - erro ao gerar relatório {2}.";
+        public const string ReportController = "{0}:{1} - erro inesperador ao gerar relatório.";
+        public const string GetController = "{0}:{1} - erro inesperador ao buscar {2}.";
+        public const string SaveController = "{0}:{1} - erro inesperador ao salvar {2}.";
+        public const string EditController = "{0}:{1} - erro inesperador ao editar {2}.";
+        public const string DeleteController = "{0}:{1} - erro inesperador ao deletar {2}.";
+        public const string SendController = "{0}:{1} - erro inesperador ao enviar {2}.";
+        public const string ObjectInvalid = "Objeto inválido ou nulo";
     }
 }

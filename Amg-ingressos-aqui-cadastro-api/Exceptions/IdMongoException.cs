@@ -1,4 +1,3 @@
-using System;
 using System.Runtime.CompilerServices;
 
 namespace Amg_ingressos_aqui_cadastro_api.Exceptions

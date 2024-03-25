@@ -1,150 +1,248 @@
 using Amg_ingressos_aqui_cadastro_api.Dtos;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
+using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Repository.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
 using Amg_ingressos_aqui_cadastro_api.Utils;
-using System;
-using System.Text.RegularExpressions;
-/* 
-Notas:
-    - ver os campos recebidos pelas funcoes de find by field
-    - testar as funcoes de find por field
- */
+using Amg_ingressos_aqui_cadastro_api.Consts;
+using MongoDB.Driver;
+
 namespace Amg_ingressos_aqui_cadastro_api.Services
 {
     public class UserService : IUserService
     {
-        private IUserRepository _userRepository;
-        private MessageReturn? _messageReturn;
+        private readonly IUserRepository _userRepository;
+        private readonly INotificationService _notificationService;
+        private MessageReturn _messageReturn;
+        private readonly ILogger<UserService> _logger;
 
         public UserService(
-            IUserRepository userRepository)
+            IUserRepository userRepository,
+            INotificationService emailService,
+            ILogger<UserService> logger
+        )
         {
-            this._userRepository = userRepository;
-            // this._messageReturn = new MessageReturn();
+            _userRepository = userRepository;
+            _notificationService = emailService;
+            _logger = logger;
+            _messageReturn = new MessageReturn();
         }
-        
-        public async Task<MessageReturn> GetAllUsersAsync()
+
+        public async Task<MessageReturn> GetAsync(FiltersUser filters)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
-                _messageReturn.Data = await _userRepository.GetAllUsers<User>();
-            }
-            catch (GetAllUserException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                var result = await _userRepository.Get<User>(filters);
+                List<User> list = new List<User>();
+                result.ForEach(u =>
+                {
+                    list.Add(u);
+                });
+                _messageReturn.Data = list;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(GetAsync), ex));
+                throw;
             }
-            return _messageReturn;
         }
-        public async Task<MessageReturn> FindByIdAsync(string idUser)
+
+        public async Task<MessageReturn> GetByIdAsync(string id)
         {
-            this._messageReturn = new MessageReturn();
             try
             {
-                idUser.ValidateIdMongo();
-
-                _messageReturn.Data = await _userRepository.FindByField<User>("Id", idUser);
-
-            }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UserNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                id.ValidateIdMongo();
+                User user = await _userRepository.GetByField<User>("Id", id);
+                user.Password = "";
+                _messageReturn.Data = user;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(GetByIdAsync), ex));
+                throw;
             }
-
-            return _messageReturn;
         }
-        
-        public async Task<MessageReturn> FindByEmailAsync(string email)
+
+        public async Task<MessageReturn> FindByDocumentIdAsync(System.Enum TEnum, string documentId)
         {
             this._messageReturn = new MessageReturn();
             try
             {
-                ValidateEmailFormat(email);
-
-                _messageReturn.Data = await _userRepository.FindByField<User>("Contact.Email", email);
-
-            }
-            catch (UserEmptyFieldsException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (InvalidFormatException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UserNotFound ex)
-            {
-                _messageReturn.Data = string.Empty;
-                _messageReturn.Message = ex.Message;
+                documentId.ValidateCpfFormat();
+                User user = await _userRepository.GetByField<User>("DocumentId", documentId);
+                _messageReturn.Data = user;
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByDocumentIdAsync), ex));
+                throw;
+            }
+        }
+
+        public async Task<MessageReturn> FindByEmailAsync(System.Enum TEnum, string email)
+        {
+            try
+            {
+                email.ValidateEmailFormat();
+                _messageReturn.Data = await _userRepository
+                    .GetByField<User>("Contact.Email", email);
+                return _messageReturn;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByEmailAsync), ex));
+                throw;
+            }
+        }
+
+        public async Task<MessageReturn> IsEmailAvailable(string email)
+        {
+            try
+            {
+                _messageReturn.Data = await _userRepository
+                    .DoesValueExistsOnField("Contact.Email", email);
+                return _messageReturn;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(IsEmailAvailable), ex));
+                throw;
+            }
+        }
+
+        public async Task<MessageReturn> IsDocumentIdAvailable(string documentId)
+        {
+            try
+            {
+                _messageReturn.Data = await _userRepository
+                    .DoesValueExistsOnField("DocumentId", documentId);
+                return _messageReturn;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(IsDocumentIdAvailable), ex));
+                throw;
             }
 
             return _messageReturn;
         }
 
-        public async Task<bool> IsEmailAvailable(string email) {
-            this._messageReturn = new MessageReturn();
-            try {
-                return !await _userRepository.DoesValueExistsOnField("Contact.Email", email);
-            }
-            catch (Exception ex)
-            {
-                throw ex;
-            }   
-        }
-        public async Task<MessageReturn> SaveAsync(User userSave) {
+        public async Task<MessageReturn> SaveAsync(UserDto userSave)
+        {
             this._messageReturn = new MessageReturn();
             try
             {
-                if (userSave.Id is not null)
-                    userSave.Id = null;
-                ValidateModelSave(userSave);
-                //criptografar senha
-                _messageReturn.Data = await _userRepository.Save<User>(userSave);
-            }
-            catch (UserEmptyFieldsException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (InvalidFormatException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (SaveUserException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                User user = userSave.DtoToModel();
+                if (user.Type != TypeUser.Collaborator && IsDocumentIdAvailable(user.DocumentId).Result.ToObject<bool>())
+                    throw new RuleException("Documento de Identificação já cadastrado.");
+
+                if (user.Type != TypeUser.Collaborator && IsEmailAvailable(user.Contact.Email).Result.ToObject<bool>())
+                    throw new RuleException("Email Indisponível.");
+
+                user.Password = AesOperation.EncryptString(Settings.keyEncrypt, user.Password);
+
+                int randomNumber = new Random().Next(100000, 999999);
+
+                if (user.Type != TypeUser.Collaborator)
+                {
+
+                    var email = new EmailVerifyAccountDto
+                    {
+                        CodeValidation = randomNumber,
+                        Subject = Settings.SubjectComfirmationAccount,
+                        Sender = Settings.Sender,
+                        To = user.Contact.Email,
+                    };
+
+                    user.UserConfirmation = new NotificationUserConfirmation()
+                    {
+                        EmailConfirmationCode = randomNumber.ToString(),
+                        EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
+                    };
+
+                    _ = _notificationService.SaveAsync(email, Settings.UriEmailVerifyAccount);
+                }
+
+                if(!string.IsNullOrEmpty(userSave.Sex)) { user.Sex = userSave.Sex; }
+                if(!string.IsNullOrEmpty(userSave.BirthDate)) { user.BirthDate = userSave.BirthDate; }
+
+                _= await _userRepository.Save(user);
+                _messageReturn.Data = user.Id;
+                _logger.LogInformation("Finished");
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(SaveAsync), ex));
+                throw;
             }
+        }
 
-            return _messageReturn;
+        public async Task<MessageReturn> SaveColabAsync(UserDto colabSave)
+        {
+            User userDb;
+            try
+            {
+                User user = colabSave.DtoToModel();
+                var result = await FindByDocumentIdAsync(
+                    TypeUser.Collaborator,
+                    user.DocumentId
+                );
+                if (result.HasRunnedSuccessfully())
+                    userDb = result.ToObject<User>();
+                else
+                {
+                    result = await FindByEmailAsync(
+                        TypeUser.Collaborator,
+                        user.Contact.Email
+                    );
+                    if (result.HasRunnedSuccessfully())
+                        userDb = _messageReturn.ToObject<User>();
+                    else
+                        _messageReturn = new MessageReturn();
+                    userDb = await _userRepository.Save(user);
+                }
+                _messageReturn.Data = userDb.Id;
+                return _messageReturn;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(SaveColabAsync), ex));
+                throw;
+            }
+        }
+
+        public Task<bool> DoesIdExists(User user)
+        {
+            try
+            {
+                return Task.FromResult(DoesValueExistsOnField(user));
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(DoesIdExists), ex));
+                throw;
+            }
+        }
+
+        public bool DoesValueExistsOnField(User user)
+        {
+            try
+            {
+                if (user == null)
+                    return false;
+                else
+                    return true;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(DoesValueExistsOnField), ex));
+                throw;
+            }
         }
 
         public async Task<bool> DoesIdExists(string idUser) {
@@ -154,180 +252,200 @@ namespace Amg_ingressos_aqui_cadastro_api.Services
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(DoesValueExistsOnField), ex));
+                throw;
             }
         }
 
-        public async Task<MessageReturn> UpdateByIdAsync(User userUpdated) {
-            this._messageReturn = new MessageReturn();
-            try {
-                ValidateModelUpdate(userUpdated);
+        public async Task<MessageReturn> UpdateByIdAsync(string id, UserDto user)
+        {
+            try
+            {
+                User userModel = user.DtoToModel();
+                userModel.Id = id;
+                User userDb = await _userRepository.GetUser<User>(userModel.Id);
 
-                if (!await DoesIdExists(userUpdated.Id))
-                    throw new UserNotFound("Id de usuário não encontrado.");
+                if (!await DoesIdExists(userDb))
+                    throw new RuleException("Id de usuário não encontrado.");
 
-                _messageReturn.Data = await _userRepository.UpdateUser<User>(userUpdated.Id, userUpdated);
-            }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UserEmptyFieldsException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UserNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (InvalidFormatException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UpdateUserException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                if (!string.IsNullOrEmpty(userModel.Password))
+                    userModel.Password = AesOperation.EncryptString(Settings.keyEncrypt, userModel.Password);
+
+                if (user.Address == null)
+                    userModel.Address = userDb.Address;
+
+                if (user.Contact == null)
+                    userModel.Contact = userDb.Contact;
+
+                if (user.UserConfirmation == null)
+                    userModel.UserConfirmation = userDb.UserConfirmation;
+
+                if (string.IsNullOrEmpty(user.Type))
+                    userModel.Type = userDb.Type;
+
+                _messageReturn.Data = await _userRepository.UpdateUser(userModel.Id, userModel);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(UpdateByIdAsync), ex));
+                throw;
             }
-
-            return _messageReturn;
         }
 
-        public async Task<MessageReturn> DeleteAsync(string id) {
-            this._messageReturn = new MessageReturn();
+        public async Task<MessageReturn> UpdatePassowrdByIdAsync(string id, string password)
+        {
+            try
+            {
+                User userDb = await _userRepository.GetUser<User>(id);
+                if (!await DoesIdExists(userDb))
+                    throw new RuleException("Id de usuário não encontrado.");
+
+                password = AesOperation.EncryptString(Settings.keyEncrypt, password);
+
+                _messageReturn.Data = await _userRepository
+                    .UpdatePasswordUser(id, password);
+                return _messageReturn;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(UpdatePassowrdByIdAsync), ex));
+                throw;
+            }
+        }
+
+        public async Task<MessageReturn> DeleteAsync(string id)
+        {
             try
             {
                 id.ValidateIdMongo();
-                
-                if (!await DoesIdExists(id))
-                    throw new UserNotFound("Id de usuário não encontrado.");
+                User userDb = await _userRepository.GetUser<User>(id);
+                if (!await DoesIdExists(userDb))
+                    throw new RuleException("Id de usuário não encontrado.");
 
-                _messageReturn.Data = await _userRepository.Delete<User>(id) as string;
-            }
-            catch (IdMongoException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (UserNotFound ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
-            }
-            catch (DeleteUserException ex)
-            {
-                _messageReturn.Data = null;
-                _messageReturn.Message = ex.Message;
+                _messageReturn.Data = await _userRepository.Delete(id);
+                return _messageReturn;
             }
             catch (Exception ex)
             {
-                throw ex;
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(DeleteAsync), ex));
+                throw;
             }
-            return _messageReturn;
         }
 
-
-        /************************************************************************/
-        /************************************************************************/
-        /************************************************************************/
-        /************************************************************************/
-        private void ValidateEmailFormat(string email) {
-            if (string.IsNullOrEmpty(email))
-                throw new UserEmptyFieldsException("Email é Obrigatório.");
-            if (!Regex.IsMatch(email, @"^[A-Za-z0-9+_.-]+[@]{1}[A-Za-z0-9-]+[.]{1}[A-Za-z.]+$"))
-                throw new InvalidFormatException("Formato de email inválido.");
-        }
-        private void ValidateModelSave(User userSave)
+        public async Task<MessageReturn> ResendUserConfirmationAsync(string id)
         {
-            if (string.IsNullOrEmpty(userSave.Name))
-                throw new UserEmptyFieldsException("Nome é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.DocumentId))
-                throw new UserEmptyFieldsException("Documento de identificação é Obrigatório.");
-            if (userSave.Status is null) //VALIDAR SE O CPF CONDIZ COM O TIPO
-                throw new UserEmptyFieldsException("Status de usuario é Obrigatório.");
+            try
+            {
+                id.ValidateIdMongo();
 
-            if (userSave.Address is null)
-                throw new UserEmptyFieldsException("Endereço é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.Cep))
-                throw new UserEmptyFieldsException("CEP é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.AddressDescription))
-                throw new UserEmptyFieldsException("Logradouro do Endereço é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.Number))
-                throw new UserEmptyFieldsException("Número Endereço é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.Neighborhood))
-                throw new UserEmptyFieldsException("Vizinhança é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.Complement))
-                throw new UserEmptyFieldsException("Complemento é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.ReferencePoint))
-                throw new UserEmptyFieldsException("Ponto de referência é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.City))
-                throw new UserEmptyFieldsException("Cidade é Obrigatório.");
-            if (string.IsNullOrEmpty(userSave.Address.State))
-                throw new UserEmptyFieldsException("Estado é Obrigatório.");
+                User user = await _userRepository.GetByField<User>("Id", id);
 
-            if (userSave.Contact is null)
-                throw new UserEmptyFieldsException("Contato é Obrigatório.");
-            ValidateEmailFormat(userSave.Contact.Email);
-            if (string.IsNullOrEmpty(userSave.Contact.PhoneNumber))
-                throw new UserEmptyFieldsException("Número de Telefone é Obrigatório.");
+                if (user.Type == TypeUser.Collaborator)
+                    throw new RuleException("Usuário não pode ser colaborador");
 
-            if (string.IsNullOrEmpty(userSave.Password))
-                throw new UserEmptyFieldsException("Senha é Obrigatório.");
+                if (user.UserConfirmation.EmailVerified)
+                    throw new RuleException("Usuário já verificado");
+
+                int randomNumber = new Random().Next(100000, 999999);
+
+                var email = new EmailVerifyAccountDto
+                {
+                    CodeValidation = randomNumber,
+                    Subject = Settings.SubjectComfirmationAccount,
+                    Sender = Settings.Sender,
+                    To = user.Contact.Email,
+                };
+
+                user.UserConfirmation = new NotificationUserConfirmation()
+                {
+                    EmailConfirmationCode = randomNumber.ToString(),
+                    EmailConfirmationExpirationDate = DateTime.Now.AddMinutes(15)
+                };
+
+                await _userRepository.UpdateUser(id, user);
+
+                _ = _notificationService.SaveAsync(email,Settings.UriEmailVerifyAccount);
+
+                _messageReturn.Data = user;
+                _logger.LogInformation("Finished");
+                return _messageReturn;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(ResendUserConfirmationAsync), ex));
+                throw;
+            }
         }
-        private void ValidateModelUpdate(User userUpdated)
+        public async Task<MessageReturn> FindByDocumentIdAndEmailAsync(System.Enum TEnum, string documentId, string email)
         {
-            userUpdated.Id.ValidateIdMongo();
-            if (string.IsNullOrEmpty(userUpdated.Name))
-                throw new UserEmptyFieldsException("Nome é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.DocumentId))
-                throw new UserEmptyFieldsException("Documento de identificação é Obrigatório.");
-            if (userUpdated.Status is null) //VALIDAR SE O CPF CONDIZ COM O TIPO
-                throw new UserEmptyFieldsException("Status de usuario é Obrigatório.");
+            try
+            {
+                email.ValidateEmailFormat();
 
-            if (userUpdated.Address is null)
-                throw new UserEmptyFieldsException("Endereço é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.Cep))
-                throw new UserEmptyFieldsException("CEP é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.AddressDescription))
-                throw new UserEmptyFieldsException("Logradouro do Endereço é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.Number))
-                throw new UserEmptyFieldsException("Número Endereço é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.Neighborhood))
-                throw new UserEmptyFieldsException("Vizinhança é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.Complement))
-                throw new UserEmptyFieldsException("Complemento é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.ReferencePoint))
-                throw new UserEmptyFieldsException("Ponto de referência é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.City))
-                throw new UserEmptyFieldsException("Cidade é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.Address.State))
-                throw new UserEmptyFieldsException("Estado é Obrigatório.");
+                //validate user type
+                User user = await _userRepository.GetByField<User>("Contact.Email", email);
+                _messageReturn.Data = user;
+                return _messageReturn;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByDocumentIdAndEmailAsync), ex));
+                throw;
+            }
+        }
 
-            if (userUpdated.Contact is null)
-                throw new UserEmptyFieldsException("Contato é Obrigatório.");
-            ValidateEmailFormat(userUpdated.Contact.Email);
-            if (string.IsNullOrEmpty(userUpdated.Contact.PhoneNumber))
-                throw new UserEmptyFieldsException("Número de Telefone é Obrigatório.");
+        public async Task<MessageReturn> FindByGenericField<T>(string fieldName, object value)
+        {
+            try
+            {
+                //validate user type
+                _messageReturn.Data = await _userRepository.GetByField<User>(fieldName, value);
+                return _messageReturn;
+            }
+            catch (Exception ex)
+            {
+                _logger.LogError(string.Format(MessageLogErrors.Save, this.GetType().Name, nameof(FindByDocumentIdAndEmailAsync), ex));
+                throw;
+            }
+        }
 
-            if (string.IsNullOrEmpty(userUpdated.Password))
-                throw new UserEmptyFieldsException("Senha é Obrigatório.");
+        public async Task<MessageReturn> VerifyCode(string id, string code)
+        {
+            //validate user type
+                var user = await _userRepository.GetUser<User>(id);
 
-            if (userUpdated.UserConfirmation is null)
-                throw new UserEmptyFieldsException("UserConfirmation é Obrigatório.");
-            if (string.IsNullOrEmpty(userUpdated.UserConfirmation.EmailConfirmationCode))
-                throw new UserEmptyFieldsException("Código de Confirmação de Email é Obrigatório.");
-            if (!userUpdated.UserConfirmation.EmailConfirmationExpirationDate.HasValue)
-                throw new UserEmptyFieldsException("Data de Expiração de Código de Confirmação de Email é Obrigatório.");
-            if (!userUpdated.UserConfirmation.PhoneVerified.HasValue)
-                throw new UserEmptyFieldsException("Status de Verificação de Telefone é Obrigatório.");
+                if (user == null)
+                    throw new RuleException("Usuário não mencontrado");
+                
+
+                if (user.UserConfirmation.EmailVerified == true) 
+                    throw new RuleException("Usuário já verificado");
+                
+
+                if (user.UserConfirmation.EmailConfirmationCode != code) 
+                    throw new RuleException("Código de confirmação inválido");
+                
+
+                if (user.UserConfirmation.EmailConfirmationExpirationDate < DateTime.Now)
+                    throw new RuleException("Código expirado");
+
+                var email = new EmailConfirmedAccountDto(){
+                    Subject = Settings.SubjectComfirmateAccount,
+                    Sender = Settings.Sender,
+                    To = user.Contact.Email,
+                    UserName = user.Name
+                };
+                _ = _notificationService.SaveAsync(email,Settings.UriEmailConfirmedAccount);
+
+                user.UserConfirmation.EmailConfirmationCode = null;
+                user.UserConfirmation.EmailConfirmationExpirationDate = null;
+                user.UserConfirmation.EmailVerified = true;
+                user.UserConfirmation.PhoneVerified = false;
+                
+                await _userRepository.UpdateUserConfirmation<object>(user.Id, user.UserConfirmation);
+                _messageReturn.Data = "processado";
+                return _messageReturn;
         }
     }
 }
