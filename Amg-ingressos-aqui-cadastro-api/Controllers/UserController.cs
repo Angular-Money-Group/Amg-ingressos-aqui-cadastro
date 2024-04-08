@@ -3,6 +3,7 @@ using Amg_ingressos_aqui_cadastro_api.Enum;
 using Amg_ingressos_aqui_cadastro_api.Exceptions;
 using Amg_ingressos_aqui_cadastro_api.Model;
 using Amg_ingressos_aqui_cadastro_api.Services.Interfaces;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 
 namespace Amg_ingressos_aqui_cadastro_api.Controllers
@@ -10,6 +11,7 @@ namespace Amg_ingressos_aqui_cadastro_api.Controllers
     [ApiController]
     [Route("v1/user")]
     [Produces("application/json")]
+    [Authorize(Policy = "PublicSecure")]
     public class UserController : ControllerBase
     {
         private readonly IUserService _userService;
